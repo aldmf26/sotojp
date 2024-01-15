@@ -156,10 +156,11 @@ class M_salon extends CI_model
 
 		return $query->result();
 	}
-	public function search_produk_2()
+	public function search_produk_2($search_keyword)
 	{
 		$this->db->select('*');
 		$this->db->from('tb_servis');
+		$this->db->like('nm_servis', $search_keyword);
 		$this->db->order_by('nm_servis', 'asc');
 		$query = $this->db->get();
 

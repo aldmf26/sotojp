@@ -25,20 +25,22 @@ class Produk extends CI_Controller
 
     public function search_produk()
     {
-        $kategori = '0';
+        $kategori = '1';
         $keyword = '';
 
         if ($this->input->post('keyword')) {
             $keyword = $this->input->post('keyword');
         }
 
+
+
         if ($this->input->post('kategori') !== null) {
             $kategori = $this->input->post('kategori');
         }
 
-        if (empty($keyword) && $kategori == '0') {
+        if ($kategori == '0') {
 
-            $load = $this->M_salon->search_produk_2();
+            $load = $this->M_salon->search_produk_2($keyword);
         } else {
 
             $load = $this->M_salon->search_produk($keyword, $kategori);
