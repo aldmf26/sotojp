@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Orchard</title>
+    <title>Login Crepe</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="icon" type="image/png" href="<?= base_url('asset/');?>orchard_small.png"/>
+    <link rel="icon" type="image/png" href="<?= base_url('asset/img/'); ?>crepe_logo.png" />
     <style>
         :root {
             --input-padding-x: 1.5rem;
@@ -38,8 +38,8 @@
         }
 
         body {
-            background: #FADADD;
-            background: linear-gradient(to right, #FADADD, #FADADD);
+            background: #FFF192;
+            background: linear-gradient(to right, #FFF192, #FFF192);
         }
 
         .card-signin {
@@ -178,7 +178,7 @@
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card card-signin my-5">
                     <div class="card-body">
-                        <h5 class="card-title text-center" style="font-weight: bold; color: #787878;">Login Orchard</h5>
+                        <h5 class="card-title text-center" style="font-weight: bold; color: #787878;">Login Crepe Signature</h5>
                         <?php echo $this->session->flashdata('message'); ?>
                         <form class="form-signin" method="post" action="<?= base_url('Login'); ?>">
                             <div class="form-label-group">
@@ -194,7 +194,7 @@
                             </div>
                             <hr class="my-4">
                             <input type="hidden" name="menu" value="2">
-                            <button type="submit" class="btn btn-lg btn-block text-uppercase" style="background-color: #F766AE; color:#fff;" type="submit">Login</button>
+                            <button type="submit" class="btn btn-lg btn-block text-uppercase" style="background-color: #FFEA61; color:#EF0097;" type="submit">Login</button>
                             <hr class="my-4">
                             <!-- <div align="center"><a href="<?= base_url() ?>"><strong>KEMBALI KE MENU UTAMA</strong></a></div> -->
 

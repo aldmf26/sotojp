@@ -26,11 +26,11 @@ foreach ($produk as $op) {
 					<a href="<?= base_url("Match/export_data_produk") ?>" class="btn btn-info mb-2 ">Export</a>
 
 					<div class="form-group float-right">
-						<label >Total Modal</label>
+						<label>Total Modal</label>
 						<p><strong><?= number_format($ttl_modal, 0) ?></strong></p>
 					</div>
 					<div class="form-group float-right mr-2">
-						<label >Total Jual</label>
+						<label>Total Jual</label>
 						<p><strong><?= number_format($ttl_jual, 0) ?></strong></p>
 					</div>
 					<!-- <a href="<?= base_url("Excel/export") ?>" class="btn btn-info mb-2 ml-2 float-right"><i class="fas fa-file-download"></i> Export</a>		
@@ -45,9 +45,9 @@ foreach ($produk as $op) {
 		<div class="container-fluid">
 
 			<hr>
-			
+
 			<div id="loadTabel"></div>
-			
+
 		</div>
 	</div>
 </div>
@@ -175,85 +175,88 @@ foreach ($produk as $op) {
 			}
 		});
 	}
-	
 </script>
 <script>
-	$(document).ready(function () {
-	    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
- $.fn.dataTable.tables( {visible: true, api: true} )
-    .responsive.recalc()
-    .columns.adjust();
-});
-        $.ajax({
-				type: "get",
-				url: "<?= base_url() ?>/match/loadTabel",
-				success: function (r) {
-					$("#loadTabel").html(r);
-					$('#produk').DataTable({
-						"paging": false,
-						"pageLength": 100,
-				// 		"scrollY": "350px",
-						"lengthChange": false,
-						"ordering": false,
-						"info": false,
-						"stateSave": true,
-						"autoWidth": true,
-				// 		"responsive": true,
-						"stateSave": true,
-						// "order": [ 5, 'DESC' ],
-						// "searching": false,
-					});
+	$(document).ready(function() {
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+			$.fn.dataTable.tables({
+					visible: true,
+					api: true
+				})
+				.responsive.recalc()
+				.columns.adjust();
+		});
+		$.ajax({
+			type: "get",
+			url: "<?= base_url() ?>/Produk/loadTabel",
+			success: function(r) {
+				$("#loadTabel").html(r);
+				$('#produk').DataTable({
+					"paging": false,
+					"pageLength": 100,
+					// 		"scrollY": "350px",
+					"lengthChange": false,
+					"ordering": false,
+					"info": false,
+					"stateSave": true,
+					"autoWidth": true,
+					// 		"responsive": true,
+					"stateSave": true,
+					// "order": [ 5, 'DESC' ],
+					// "searching": false,
+				});
 				// 	$('.select').select2()
-				}
-			});
-			
-			$(document).on('click', '.btnDelete', function(){
+			}
+		});
+
+		$(document).on('click', '.btnDelete', function() {
 			var id_produk = $(this).attr('id_produk')
 			var filter = $("#countriesDropdown").val()
-			
-			if(confirm('Yakin ingin dihapus ? ')) {
+
+			if (confirm('Yakin ingin dihapus ? ')) {
 				$.ajax({
 					type: "GET",
 					url: `<?= base_url() ?>match/drop_produk/${id_produk}`,
-					success: function (r) {
+					success: function(r) {
 						loadFilteranFix(filter)
 					}
 				});
 			}
 		})
 
-		
+
 	});
+
 	function loadFilteranFix(filter) {
 		$.ajax({
-				type: "GET",
-				url: `<?= base_url() ?>match/getProdukDrowdown/${filter}`,
-				success: function (r) {
-					$('#tblDropdown').html(r);
-					$('#tabelBefore').css("display", "none");
-					$("#produkLoad").DataTable({
-						"paging": false,
-						"pageLength": 100,
-				// 		"scrollY": "350px",
-						"lengthChange": false,
-						"ordering": false,
-						"info": false,
-						"stateSave": true,
-						"autoWidth": true,
-						"stateSave": true,
-					})
+			type: "GET",
+			url: `<?= base_url() ?>match/getProdukDrowdown/${filter}`,
+			success: function(r) {
+				$('#tblDropdown').html(r);
+				$('#tabelBefore').css("display", "none");
+				$("#produkLoad").DataTable({
+					"paging": false,
+					"pageLength": 100,
+					// 		"scrollY": "350px",
+					"lengthChange": false,
+					"ordering": false,
+					"info": false,
+					"stateSave": true,
+					"autoWidth": true,
+					"stateSave": true,
+				})
 				// 	$('.select').select2()
-				}
-			});
+			}
+		});
 	}
-	
-	$(document).on('change', '#countriesDropdown', function(){
-			var filter = $(this).val()
-			loadFilteranFix(filter)
-			// filterTable(filter)
+
+	$(document).on('change', '#countriesDropdown', function() {
+		var filter = $(this).val()
+		loadFilteranFix(filter)
+		// filterTable(filter)
 	})
 
-	
+
 
 	$("#checkAll").click(function() {
 		$('input:checkbox').not(this).prop('checked', this.checked);

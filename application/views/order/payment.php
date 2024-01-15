@@ -32,168 +32,124 @@
 		<div class="col-md-12">
 			<?= $this->session->flashdata('message'); ?>
 		</div>
-		<?php
-		$cart =	$this->cart->contents();
 
-		?>
 		<div class="col-sm-7">
-			<div class="card">
-				<div class="card-body">
-					<h3 class="text-center">Rincian Product</h3>
-					<hr>
-					<div class="row">
-						<?php
-						$subtotal_produk = 0;
-						$jumlah_produk = 0;
-						?>
-						<?php foreach ($cart as $key => $value) : ?>
-							<?php
-							if ($value['type'] == 'barang') :
-								$subtotal_produk += $value['price'] * $value['qty'];
-								$jumlah_produk += $value['qty'];
-							?>
-								<div class="col-md-8">
-									<?php foreach ($value['nm_karyawan'] as $nm_karyawan) : ?>
-										<span class="badge badge-secondary mr-1"><?= $nm_karyawan ?></span>
-									<?php endforeach; ?>
-									| <span class="badge badge-info"><?= $value['satuan'] ?></span><br><br>
-									<img width="80" class="img-thumbnail" src="<?= base_url() ?>upload/produk/<?= $value['picture'] ?>" alt="">
-									<span style="margin-left: 20px;"><?= $value['name'] ?></span>
-
-								</div>
-
-								<div class="col-md-4">
-									<p style="margin-top: 55px;" class="float-right"><?= $value['qty'] ?> x <strong>Rp.<?= number_format($value['price']) ?></strong> </p>
-								</div>
-							<?php endif; ?>
-						<?php endforeach ?>
-						<div class="container">
-							<strong>Subtotal <?= $jumlah_produk ?> produk</strong> <strong style="float: right;">Rp. <?= number_format($subtotal_produk) ?></strong>
-							<hr>
-							<!-- <strong style="font-size: 20px;">Total</strong> <strong style="float: right; font-size: 22px;">Rp. <?= number_format($subtotal) ?></strong> -->
-						</div>
-						<div class="col-12">
-							<div class="container">
-								<h3 class="text-center">Rincian Service</h3>
-								<hr>
-							</div>
-						</div>
+			<form action="<?= base_url() ?>produk/checkout" method="post">
+				<div class="card">
+					<div class="card-body">
+						<h3 class="text-center">Rincian Product</h3>
 						<hr>
-						<?php
-						$subtotal_order = 0;
-						$jumlah_servis = 0;
-						?>
-
-						<?php foreach ($cart as $key => $value) : ?>
+						<div class="row">
 							<?php
-
-
-							// $jumlah += $value['qty'];
-							if ($value['type'] == 'order') :
-								$jumlah_servis += $value['qty'];
-								$subtotal_order += $value['price'] * $value['qty'];
+							$subtotal_produk = 0;
+							$jumlah_produk = 0;
 							?>
-								<div class="col-md-8">
-									<?php foreach ($value['terapis'] as $terapis) : ?>
-										<span class="badge badge-secondary mr-1"><?= $terapis ?></span>
-									<?php endforeach; ?> <br><br>
-									<span style="margin-left: 20px;"><?= $value['name'] ?></span>
+							<div class="col-12">
+								<table width="100%">
+									<?php foreach ($cart as $key => $value) : ?>
 
-								</div>
+										<tr>
+											<?php
+											$allCartItems = $this->cart->contents();
+											// Filter item yang memiliki properti 'ibu' sesuai dengan 'id_produk' saat ini
+											$productItems = array_filter($allCartItems, function ($item) use ($value) {
+												return isset($item['ibu']) && $item['ibu'] == $value['id_produk'];
+											});
+											$toping = $productItems;
 
-								<div class="col-md-4">
-									<p style="margin-top: 55px;" class="float-right"><?= $value['qty'] ?> x <strong>Rp.<?= number_format($value['price'] * $value['qty']) ?></strong> </p>
-								</div>
-							<?php endif; ?>
-						<?php endforeach ?>
-						<div class="container">
-							<strong>Subtotal Appointment</strong> <strong style="float: right;">Rp. <?= number_format($subtotal_order) ?></strong>
-							<hr>
-							<!-- <strong style="font-size: 20px;">Total</strong> <strong style="float: right; font-size: 22px;">Rp. <?= number_format($subtotal) ?></strong> -->
-						</div>
+											$subtotal_produk += $value['price'] * $value['qty'];
+											$jumlah_produk += $value['qty'];
+											?>
 
-						<div class="container">
-							<strong style="font-size: 20px;">Total</strong> <strong style="float: right; font-size: 22px;">Rp. <?= number_format($subtotal_produk + $subtotal_order) ?></strong>
-						</div>
+											<td width="80">
+												<img width="80" class="img-thumbnail" src="<?= base_url() ?>upload/produk/default.png" alt="">
+											</td>
+											<td>
+												<?= $value['name'] ?>
+											</td>
+											<input type="hidden" name="id_produk[]" value="<?= $value['id'] ?>">
+											<input type="hidden" name="qty[]" value="<?= $value['qty'] ?>">
+											<td class="text-right">
+												<?= $value['qty'] ?> x Rp.<?= number_format($value['price']) ?>
+											</td>
+											<td class="text-right">
+												<strong>Rp.<?= number_format($value['qty'] * $value['price']) ?>
+											</td>
 
-						<?php $total = $subtotal_produk + $subtotal_order ?>
-						<div class="container">
-							<hr>
-							<h3 class="text-center mb-4">Pembayaran</h3>
-							<hr>
-							<div class="row">
-
-								<div class="col-4">
-									<div class="form-group">
-										<div class="custom-control custom-switch custom-switch-off-warning custom-switch-on-success">
-											<input type="checkbox" class="custom-control-input" id="cb_dp">
-											<label class="custom-control-label" for="cb_dp">DP</label>
-										</div>
-									</div>
-								</div>
-
-								<div class="col-6 d_dp_input">
-									<div class="form-group">
-										<select id="data_dp" class="form-control select select_dp" disabled>
-											<option value="">- Pilih DP -</option>
-											<?php foreach ($dp as $dp) : ?>
-												<option value="<?= $dp->id_dp ?>"><?= $dp->kd_dp ?> | <?= $dp->nama ?> | <?= $dp->ket ?></option>
-											<?php endforeach; ?>
-										</select>
-									</div>
-								</div>
+										</tr>
+										<?php
+										$ttl_toping = 0;
+										foreach ($toping as $t) :
+											$ttl_toping += $t['qty'] * $t['price'];
+										?>
+											<tr>
+												<td></td>
+												<td>
+													<p class="ml-4 text-sm"><?= $t['name'] ?></p>
+												</td>
+												<td class="text-right">
+													<p class="ml-4 text-sm"><?= $t['qty'] ?> x Rp.<?= number_format($t['price']) ?></p>
+												</td>
+												<td>
+													<p class="text-right text-sm">Rp.<?= number_format($t['qty'] * $t['price']) ?>
+												</td>
+											</tr>
+										<?php endforeach ?>
+									<?php endforeach ?>
 
 
+
+								</table>
 							</div>
 
-							<form id="form_vcr_inv">
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<div class="custom-control custom-switch custom-switch-off-warning custom-switch-on-success">
-												<input type="checkbox" class="custom-control-input" id="vcr_inv">
-												<label class="custom-control-label" for="vcr_inv">Voucher</label>
+							<!-- <div class="container mt-2">
+								<strong>Subtotal <?= $jumlah_produk ?> produk</strong> <strong style="float: right;">Rp. <?= number_format($subtotal_produk) ?></strong>
+								<hr>
+							</div> -->
+
+							<div class="container">
+								<hr>
+								<strong style="font-size: 20px;">Total</strong> <strong style="float: right; font-size: 22px;">Rp. <?= number_format($subtotal_produk + $ttl_toping) ?></strong>
+							</div>
+
+							<?php $total = $subtotal_produk + $ttl_toping  ?>
+							<div class="container">
+								<hr>
+								<h3 class="text-center mb-4">Pembayaran</h3>
+								<hr>
+								<form id="form_vcr_inv">
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<div class="custom-control custom-switch custom-switch-off-warning custom-switch-on-success">
+													<input type="checkbox" class="custom-control-input" id="vcr_inv">
+													<label class="custom-control-label" for="vcr_inv">Voucher</label>
+												</div>
 											</div>
 										</div>
-									</div>
 
-									<div class="col-5 vcr_inv">
-										<div class="form-group">
-											<input type="text" id="data_vcr_inv" name="no_voucher" class="form-control select_vcr_inv" placeholder="Masukan kode voucher" required>
+										<div class="col-5 vcr_inv">
+											<div class="form-group">
+												<input type="text" id="data_vcr_inv" name="no_voucher" class="form-control select_vcr_inv" placeholder="Masukan kode voucher" required>
+											</div>
+										</div>
+
+										<div class="col-1 vcr_inv">
+											<button type="butt" class="btn btn-sm mt-1 btn-primary select_vcr_inv">Cek</button>
 										</div>
 									</div>
-
-									<div class="col-1 vcr_inv">
-										<button type="submit" class="btn btn-sm mt-1 btn-primary select_vcr_inv">Cek</button>
-									</div>
-								</div>
-							</form>
-
-
-							<form action="<?= base_url() ?>match/checkout" method="post">
-
-								<div class="form-group row d_dp_input">
-									<label for="staticEmail" class="col-md-4 col-form-label">DP</label>
-									<div class="col-md-6">
-										<input type="number" id="debit" name="debit" class="form-control pembayaran select_dp" value="0" readonly>
-										<!--<input type="hidden" id="id_customer" name="id_customer" class="form-control pembayaran select_dp" >-->
-										<input type="hidden" id="tgl_dp" name="tgl_dp" class="form-control pembayaran select_dp">
-										<input type="hidden" id="kd_dp" name="kd_dp" class="form-control pembayaran select_dp">
-										<input type="hidden" id="metode" name="metode" class="form-control pembayaran select_dp">
-									</div>
-								</div>
-
+								</form>
 								<div class="form-group row vcr_inv">
 									<label for="staticEmail" class="col-md-4 col-form-label">Voucher </label>
 									<div class="col-md-6">
-										<input type="text" id="nominal_voucher" name="nominal_voucher" class="form-control pembayaran select_vcr_inv" value="0" readonly>
+										<input type="text" id="nominal_voucher" name="nominal_voucher" class="form-control pembayaran select_vcr_inv" value="0">
 										<input type="hidden" id="id_voucher" name="id_voucher" class="form-control pembayaran select_vcr_inv">
 									</div>
 								</div>
 
 
 								<?php if (!empty($diskon)) : ?>
-									<?php $total = $subtotal_produk + $subtotal_order ?>
+									<?php $total = $subtotal_produk + $ttl_toping  ?>
 
 
 									<div class="form-group row">
@@ -204,7 +160,7 @@
 												<option value="<?= $diskon->id_diskon ?>"><?= $diskon->nm_diskon ?></option>
 											<?php endforeach; ?>
 										</select>
-										<input type="text" name="diskon[]" class="form-control pembayaran diskon col-3 ml-1" value="0" readonly>
+										<input type="text" name="diskon" class="form-control pembayaran diskon col-3 ml-1" value="0" readonly>
 										<input type="hidden" name="id_diskon" class="form-control col-3 ml-1" id="id_diskon">
 									</div>
 
@@ -212,9 +168,16 @@
 
 
 								<?php else : ?>
-									<input type="hidden" name="diskon[]" class="form-control pembayaran diskon" value="0">
+									<input type="hidden" name="diskon" class="form-control pembayaran diskon" value="0">
 								<?php endif; ?>
 								<div class="form-group row">
+									<label for="staticEmail" class="col-md-4 col-form-label">Total Pembayaran</label>
+									<div class="col-md-6">
+										<input type="number" class="form-control total_pembayaran" readonly value="<?= $total; ?>">
+									</div>
+								</div>
+								<hr>
+								<!-- <div class="form-group row">
 									<label for="staticEmail" class="col-md-4 col-form-label">Customer</label>
 									<div class="col-md-6">
 										<select class="select" name="id_customer">
@@ -224,7 +187,7 @@
 											<?php endforeach ?>
 										</select>
 									</div>
-								</div>
+								</div> -->
 								<div class="form-group row">
 									<label for="staticEmail" class="col-md-4 col-form-label">Cash</label>
 									<div class="col-md-6">
@@ -260,27 +223,24 @@
 									</div>
 								</div>
 								<div class="form-group row">
-									<label for="staticEmail" class="col-md-4 col-form-label">Shoope</label>
+									<label for="staticEmail" class="col-md-4 col-form-label">Gopay</label>
 									<div class="col-md-6">
 										<input type="number" name="shoope" class="form-control pembayaran" value="0" id="shoope">
 									</div>
 								</div>
-								<div class="form-group row">
-									<label for="staticEmail" class="col-md-4 col-form-label">Tokopedia</label>
-									<div class="col-md-6">
-										<input type="number" name="tokopedia" class="form-control pembayaran" value="0" id="tokopedia">
-									</div>
-								</div>
+
 
 								<input type="hidden" name="total" id="total" value="<?= $total; ?>">
-								<button class="btn btn-primary btn-block" style="background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%); border-color: #F7889D; font-weight: bold; color: #fff;" id="btn_bayar" disabled>PROSES BAYAR <i class="fas fa-money-check-alt"></i> <i class="fa fa-chevron-right" style="float: right;"></i></button>
-							</form>
 
+								<button class="btn btn-primary btn-block" style="background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%); border-color: #F7889D; font-weight: bold; color: #fff;" id="btn_bayar" disabled>PROSES BAYAR <i class="fas fa-money-check-alt"></i> <i class="fa fa-chevron-right" style="float: right;"></i></button>
+
+
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<?php $total = $subtotal_produk + $subtotal_order ?>
+			</form>
+			<?php $total = $subtotal_produk + $ttl_toping  ?>
 		</div>
 
 
@@ -289,101 +249,7 @@
 
 
 
-<style>
-	.buying-selling.active {
-		background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
-	}
 
-	#option1 {
-		display: none;
-	}
-
-	.buying-selling {
-		width: 100%;
-		padding: 10px;
-		position: relative;
-	}
-
-	.buying-selling-word {
-		font-size: 15px;
-		font-weight: 600;
-		margin-left: 35px;
-	}
-
-	.radio-dot:before,
-	.radio-dot:after {
-		content: "";
-		display: block;
-		position: absolute;
-		background: #fff;
-		border-radius: 100%;
-	}
-
-	.radio-dot:before {
-		width: 20px;
-		height: 20px;
-		border: 1px solid #ccc;
-		top: 10px;
-		left: 16px;
-	}
-
-	.radio-dot:after {
-		width: 12px;
-		height: 12px;
-		border-radius: 100%;
-		top: 14px;
-		left: 20px;
-	}
-
-	.buying-selling.active .buying-selling-word {
-		color: #fff;
-	}
-
-	.buying-selling.active .radio-dot:after {
-		background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
-	}
-
-	.buying-selling.active .radio-dot:before {
-		background: #fff;
-		border-color: #699D17;
-	}
-
-	.buying-selling:hover .radio-dot:before {
-		border-color: #adadad;
-	}
-
-	.buying-selling.active:hover .radio-dot:before {
-		border-color: #699D17;
-	}
-
-
-	.buying-selling.active .radio-dot:after {
-		background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
-	}
-
-	.buying-selling:hover .radio-dot:after {
-		background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
-	}
-
-	.buying-selling.active:hover .radio-dot:after {
-		background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
-
-	}
-
-	@media (max-width: 400px) {
-
-		.mobile-br {
-			display: none;
-		}
-
-		.buying-selling {
-			width: 49%;
-			padding: 10px;
-			position: relative;
-		}
-
-	}
-</style>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -415,7 +281,6 @@
 
 			var voucher = parseInt($("#nominal_voucher").val());
 
-			var dp = parseInt($("#debit").val());
 			// var diskon = parseInt($("#diskon").val());
 			var cash = parseInt($("#cash").val());
 			var mandiri_kredit = parseInt($("#mandiri_kredit").val());
@@ -423,12 +288,13 @@
 			var bca_kredit = parseInt($("#bca_kredit").val());
 			var bca_debit = parseInt($("#bca_debit").val());
 			var shoope = parseInt($("#shoope").val());
-			var tokopedia = parseInt($("#tokopedia").val());
+			// var tokopedia = parseInt($("#tokopedia").val());
 
 
 
 			var total = parseInt($("#total").val());
-			var bayar = mandiri_kredit + mandiri_debit + cash + bca_kredit + bca_debit + shoope + tokopedia + dp + diskon + voucher;
+			var bayar = mandiri_kredit + mandiri_debit + cash + bca_kredit + bca_debit + shoope + diskon + voucher;
+
 			if (total <= bayar) {
 				$('#btn_bayar').removeAttr('disabled');
 			} else {
@@ -510,6 +376,16 @@
 						if (data.jenis == 1) {
 							$("#nominal_voucher").val(data.jumlah);
 							$("#id_voucher").val(data.id_voucher);
+							var disc = $(".diskon").val();
+							var ttl = $('#total').val();
+							var ttl_pembayaran = parseFloat(ttl) - parseFloat(disc) - parseFloat(data.jumlah);
+
+							if (ttl_pembayaran < 0) {
+								$('.total_pembayaran').val('0')
+							} else {
+								$('.total_pembayaran').val(ttl_pembayaran)
+							}
+
 						} else {
 							var jumlah = parseInt($("#total").val()) > 0 ? parseInt($("#total").val()) * parseInt(data.jumlah) / 100 : 0;
 							$("#nominal_voucher").val(jumlah);
@@ -572,11 +448,28 @@
 				success: function(data) {
 					if (data.jenis == 1) {
 						$(".diskon").val(data.jumlah);
+						var diskon = data.jumlah;
 					} else {
 						var jumlah = parseInt($("#total").val()) * parseInt(data.jumlah) / 100;
 						$(".diskon").val(jumlah);
+						var diskon = jumlah;
 					}
+					var ttl = $('#total').val();
+					var disc = diskon;
+					var voucher = $("#nominal_voucher").val();
+					if (isNaN(disc)) {
+						var ttl_pembayaran = parseFloat(ttl) - parseFloat(voucher);
+					} else {
+						var ttl_pembayaran = parseFloat(ttl) - parseFloat(disc) - parseFloat(voucher);
+					}
+					if (ttl_pembayaran < 0) {
+						$('.total_pembayaran').val('0')
+					} else {
+						$('.total_pembayaran').val(ttl_pembayaran)
+					}
+
 					$("#id_diskon").val(data.id_diskon);
+					bayar_default();
 				}
 			});
 
@@ -621,7 +514,7 @@
 				diskon += parseInt($(this).val());
 			});
 
-			var dp = parseInt($("#debit").val());
+
 			// var diskon = parseInt($("#diskon").val());
 			var cash = parseInt($("#cash").val());
 			var mandiri_kredit = parseInt($("#mandiri_kredit").val());
@@ -629,10 +522,10 @@
 			var bca_kredit = parseInt($("#bca_kredit").val());
 			var bca_debit = parseInt($("#bca_debit").val());
 			var shoope = parseInt($("#shoope").val());
-			var tokopedia = parseInt($("#tokopedia").val());
+			// var tokopedia = parseInt($("#tokopedia").val());
 			var total = parseInt($("#total").val());
 			var nominal_voucher = parseInt($("#nominal_voucher").val());
-			var bayar = mandiri_kredit + mandiri_debit + cash + bca_kredit + bca_debit + shoope + tokopedia + dp + diskon + nominal_voucher;
+			var bayar = mandiri_kredit + mandiri_debit + cash + bca_kredit + bca_debit + shoope + diskon + nominal_voucher;
 			if (total <= bayar) {
 				$('#btn_bayar').removeAttr('disabled');
 			} else {

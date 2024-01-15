@@ -1,9 +1,9 @@
-<a href="../../"><img src="<?= base_url('asset/');?>orchard_small2.png"width="200"></a> 
+<a href="../../"><img src="<?= base_url('asset/'); ?>orchard_small2.png" width="200"></a>
 <div class="login-box" style="font-size: 18px;">
   <div class="login-logo panel-default">
-    <a href=""><b>Login Orchard</b></a>
+    <a href=""><b>Login Orchar</b></a>
   </div>
-  <div class="card" >
+  <div class="card">
     <div class="card-body login-card-body">
       <?= $this->session->flashdata('message'); ?>
       <form action="<?= base_url('Login'); ?>" method="post">
@@ -27,5 +27,3 @@
     </div>
   </div>
 </div>
-
-

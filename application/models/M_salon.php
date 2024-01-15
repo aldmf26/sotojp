@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 // public function __construct()
 // {
@@ -7,21 +7,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // 	$this->load->database();
 // }
 
-class M_salon extends CI_model {
+class M_salon extends CI_model
+{
 
-	public function dt_app($where=""){
-		return $this->db->query("Select * FROM tb_appoiment " .$where. " order by id_app DESC ")->result();
+	public function dt_app($where = "")
+	{
+		return $this->db->query("Select * FROM tb_appoiment " . $where . " order by id_app DESC ")->result();
 	}
 
-	public function rkp_app($where=""){
-		return $this->db->query("Select * FROM rekap_app " .$where. " order by nm_app ASC ")->result();
+	public function rkp_app($where = "")
+	{
+		return $this->db->query("Select * FROM rekap_app " . $where . " order by nm_app ASC ")->result();
 	}
 
-	public function dt_denda($where=""){
-		return $this->db->query("Select * FROM ctt_denda " .$where. " order by id_denda DESC ")->result();
+	public function dt_denda($where = "")
+	{
+		return $this->db->query("Select * FROM ctt_denda " . $where . " order by id_denda DESC ")->result();
 	}
 
-	public function get_list_penjualan($where=""){
+	public function get_list_penjualan($where = "")
+	{
 		return $this->db->query("Select tb_pembelian.no_nota, tb_pembelian.nm_karyawan, tb_pembelian.tanggal,
 		tb_produk.nm_produk,
 		tb_pembelian.jumlah,
@@ -29,124 +34,145 @@ class M_salon extends CI_model {
 		tb_pembelian.harga,
 		tb_pembelian.diskon,
 		tb_pembelian.total,
-		tb_pembelian.admin FROM tb_pembelian LEFT JOIN tb_produk ON tb_pembelian.id_produk = tb_produk.id_produk LEFT JOIN tb_satuan ON tb_produk.id_satuan = tb_satuan.id_satuan" .$where. " order by id_pembelian DESC ")->result();
+		tb_pembelian.admin FROM tb_pembelian LEFT JOIN tb_produk ON tb_pembelian.id_produk = tb_produk.id_produk LEFT JOIN tb_satuan ON tb_produk.id_satuan = tb_satuan.id_satuan" . $where . " order by id_pembelian DESC ")->result();
 	}
 
-	public function daftar_komisi($where=""){
-		return $this->db->query("Select * FROM komisi LEFT JOIN tb_karyawan ON komisi.id_kry = tb_karyawan.id_kry" .$where. " order by komisi.id DESC ")->result();
+	public function daftar_komisi($where = "")
+	{
+		return $this->db->query("Select * FROM komisi LEFT JOIN tb_karyawan ON komisi.id_kry = tb_karyawan.id_kry" . $where . " order by komisi.id DESC ")->result();
 	}
 
 	// public function laporan_komisi($where=""){
 	// 	return $this->db->query("SELECT nm_kry, tb_komisi_app.total_app, komisi.total_produk FROM tb_karyawan
-    //     LEFT JOIN (SELECT komisi.id_kry, SUM(komisi.komisi) as total_produk FROM komisi GROUP BY komisi.id_kry ".$where." ) komisi ON tb_karyawan.id_kry = komisi.id_kry
-    //     LEFT JOIN (SELECT tb_komisi_app.id_kry, SUM(tb_komisi_app.komisi) as total_app FROM tb_komisi_app GROUP BY tb_komisi_app.id_kry ".$where.") tb_komisi_app ON tb_karyawan.id_kry = tb_komisi_app.id_kry")->result();
+	//     LEFT JOIN (SELECT komisi.id_kry, SUM(komisi.komisi) as total_produk FROM komisi GROUP BY komisi.id_kry ".$where." ) komisi ON tb_karyawan.id_kry = komisi.id_kry
+	//     LEFT JOIN (SELECT tb_komisi_app.id_kry, SUM(tb_komisi_app.komisi) as total_app FROM tb_komisi_app GROUP BY tb_komisi_app.id_kry ".$where.") tb_komisi_app ON tb_karyawan.id_kry = tb_komisi_app.id_kry")->result();
 	// }
 
-	public function daftar_app($where=""){
-		return $this->db->query("Select tb_app.no_nota, tb_customer.nama, tb_app.nm_karyawan, tb_servis.nm_servis, tb_app.qty, tb_app.total, tb_app.tgl, tb_app.admin FROM tb_app LEFT JOIN tb_servis ON tb_app.id_servis = tb_servis.id_servis LEFT JOIN tb_customer ON tb_app.id_customer = tb_customer.id_customer" .$where. " order by tb_app.id_app DESC ")->result();
+	public function daftar_app($where = "")
+	{
+		return $this->db->query("Select tb_app.no_nota, tb_customer.nama, tb_app.nm_karyawan, tb_servis.nm_servis, tb_app.qty, tb_app.total, tb_app.tgl, tb_app.admin FROM tb_app LEFT JOIN tb_servis ON tb_app.id_servis = tb_servis.id_servis LEFT JOIN tb_customer ON tb_app.id_customer = tb_customer.id_customer" . $where . " order by tb_app.id_app DESC ")->result();
 	}
 
-	public function daftar_invoice($where=""){
-		return $this->db->query("Select * FROM tb_invoice LEFT JOIN tb_customer ON tb_invoice.id_customer = tb_customer.id_customer " .$where. " order by tb_invoice.id DESC ")->result();
+	public function daftar_invoice($where = "")
+	{
+		return $this->db->query("Select * FROM tb_invoice LEFT JOIN tb_customer ON tb_invoice.id_customer = tb_customer.id_customer " . $where . " order by tb_invoice.id DESC ")->result();
 	}
 
-	public function daftar_opname($where=""){
-		return $this->db->query("Select * FROM tb_opname " .$where. " GROUP BY kode_opname ORDER BY id_opname DESC")->result();
+	public function daftar_opname($where = "")
+	{
+		return $this->db->query("Select * FROM tb_opname " . $where . " GROUP BY kode_opname ORDER BY id_opname DESC")->result();
 	}
 
-	public function daftar_komisi_app($where=""){
-		return $this->db->query("Select * FROM tb_komisi_app LEFT JOIN tb_karyawan ON tb_komisi_app.id_kry = tb_karyawan.id_kry" .$where. " order by tb_komisi_app.id_komisi DESC ")->result();
+	public function daftar_komisi_app($where = "")
+	{
+		return $this->db->query("Select * FROM tb_komisi_app LEFT JOIN tb_karyawan ON tb_komisi_app.id_kry = tb_karyawan.id_kry" . $where . " order by tb_komisi_app.id_komisi DESC ")->result();
 	}
 
-	public function get_list_produk_masuk($where=""){
-		return $this->db->query("Select * FROM tbl_produk_masuk LEFT JOIN tb_produk ON tbl_produk_masuk.id_produk = tb_produk.id_produk LEFT JOIN tb_kategori ON tb_produk.id_kategori = tb_kategori.id_kategori LEFT JOIN tb_satuan ON tb_produk.id_satuan = tb_satuan.id_satuan" .$where. " order by id DESC ")->result();
+	public function get_list_produk_masuk($where = "")
+	{
+		return $this->db->query("Select * FROM tbl_produk_masuk LEFT JOIN tb_produk ON tbl_produk_masuk.id_produk = tb_produk.id_produk LEFT JOIN tb_kategori ON tb_produk.id_kategori = tb_kategori.id_kategori LEFT JOIN tb_satuan ON tb_produk.id_satuan = tb_satuan.id_satuan" . $where . " order by id DESC ")->result();
 	}
 
-	public function dt_kasbon($where=""){
-		return $this->db->query("Select * FROM ctt_kasbon " .$where. " order by id_kasbon DESC ")->result();
+	public function dt_kasbon($where = "")
+	{
+		return $this->db->query("Select * FROM ctt_kasbon " . $where . " order by id_kasbon DESC ")->result();
 	}
 
-	public function dt_tips($where=""){
-		return $this->db->query("Select * FROM ctt_tips " .$where. " order by id_tips DESC ")->result();
+	public function dt_tips($where = "")
+	{
+		return $this->db->query("Select * FROM ctt_tips " . $where . " order by id_tips DESC ")->result();
 	}
 
-	public function dt_kry($where=""){
-		return $this->db->query("Select * FROM tb_karyawan " .$where. " order by id_kry DESC ")->result();
+	public function dt_kry($where = "")
+	{
+		return $this->db->query("Select * FROM tb_karyawan " . $where . " order by id_kry DESC ")->result();
 	}
 
-	public function dt_user($where=""){
-		return $this->db->query("Select * FROM view_user " .$where)->result();
+	public function dt_user($where = "")
+	{
+		return $this->db->query("Select * FROM view_user " . $where)->result();
 	}
 
-	public function dt_role($where=""){
-		return $this->db->query("Select * FROM tb_role " .$where)->result();
+	public function dt_role($where = "")
+	{
+		return $this->db->query("Select * FROM tb_role " . $where)->result();
 	}
-	
-	public function dt_servis($where=""){
-		return $this->db->order_by('nm_servis','ASC')->get('tb_servis')->result();
+
+	public function dt_servis($where = "")
+	{
+		return $this->db->order_by('nm_servis', 'ASC')->get('tb_servis')->result();
 	}
-	
-	public function dt_kom($where="")
+
+	public function dt_kom($where = "")
 	{
 		$this->db->select('*');
-		$this->db->from('tb_komisi' .$where);
+		$this->db->from('tb_komisi' . $where);
 		$data = $this->db->get();
 		return $data->result();
 	}
-	
-	public function dt_cancel($where="")
+
+	public function dt_cancel($where = "")
 	{
-		return $this->db->query("Select * FROM tb_cancel " .$where. " order by id_cancel DESC ")->result();
+		return $this->db->query("Select * FROM tb_cancel " . $where . " order by id_cancel DESC ")->result();
 	}
-	
-	public function dt_customer($where="")
+
+	public function dt_customer($where = "")
 	{
 		$this->db->select('*');
-		$this->db->from('tb_customer' .$where);
+		$this->db->from('tb_customer' . $where);
 		$this->db->order_by('id_customer', 'desc');
 		$data = $this->db->get();
 		return $data->result();
 	}
 
-	public function dt_cancel_sum($where="")
+	public function dt_cancel_sum($where = "")
 	{
 		$this->db->select('*');
-		$this->db->from('tb_cancel' .$where);
-		$this->db->group_by('nama');
-		$data = $this->db->get();
-		return $data->result();
-	}
-	
-	public function dt_customer_sum($where="")
-	{
-		$this->db->select('*');
-		$this->db->from('tb_customer' .$where);
+		$this->db->from('tb_cancel' . $where);
 		$this->db->group_by('nama');
 		$data = $this->db->get();
 		return $data->result();
 	}
 
-	public function search_produk($search_keyword,$kategori)
+	public function dt_customer_sum($where = "")
 	{
 		$this->db->select('*');
-		$this->db->from('tb_produk');
-	
-		$this->db->where('id_kategori', $kategori);		
-		$this->db->like('nm_produk', $search_keyword);
-	
-		$this->db->order_by('nm_produk', 'asc');
+		$this->db->from('tb_customer' . $where);
+		$this->db->group_by('nama');
+		$data = $this->db->get();
+		return $data->result();
+	}
+
+	public function search_produk($search_keyword, $kategori)
+	{
+		$this->db->select('*');
+		$this->db->from('tb_servis');
+
+		$this->db->where('id_kategori', $kategori);
+		$this->db->like('nm_servis', $search_keyword);
+
+		$this->db->order_by('nm_servis', 'asc');
 		$query = $this->db->get();
-	
+
+		return $query->result();
+	}
+	public function search_produk_2()
+	{
+		$this->db->select('*');
+		$this->db->from('tb_servis');
+		$this->db->order_by('nm_servis', 'asc');
+		$query = $this->db->get();
+
 		return $query->result();
 	}
 
-	public function get_opname($search_keyword,$kategori)
+	public function get_opname($search_keyword, $kategori)
 	{
 		$this->db->select('*');
 		$this->db->from('tb_produk');
-		$this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori','left');
-		$this->db->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan','left');
-		$this->db->where('tb_produk.id_kategori', $kategori);		
+		$this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left');
+		$this->db->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left');
+		$this->db->where('tb_produk.id_kategori', $kategori);
 		$this->db->like('nm_produk', $search_keyword);
 		// $this->db->or_like('harga', $search_keyword);
 		$this->db->order_by('nm_produk', 'asc');
@@ -154,12 +180,13 @@ class M_salon extends CI_model {
 		// $query = $this->db->query("SELECT * FROM tb_produk  WHERE id_kategori = '$kategori' AND nm_produk LIKE '$search_keyword'");
 		return $query->result();
 	}
-	
+
 	// =============================================== PROSEDUR ================================================
-	public function summary_app($tgl1, $tgl2){
-		return $this->db->query('call sum_app("'.$tgl1.'", "'.$tgl2.'" )')->result();
+	public function summary_app($tgl1, $tgl2)
+	{
+		return $this->db->query('call sum_app("' . $tgl1 . '", "' . $tgl2 . '" )')->result();
 	}
-	
+
 	public function summary_app1($tgl1, $tgl2)
 	{
 		$this->db->select('*');
@@ -199,7 +226,8 @@ class M_salon extends CI_model {
 		return $query->result();
 	}
 
-	public function summary_app3($tgl1, $tgl2){
+	public function summary_app3($tgl1, $tgl2)
+	{
 		$this->db->select('*');
 		$this->db->from('komisi');
 		$this->db->join('tb_karyawan', 'komisi.id_kry = tb_karyawan.id_kry', 'left');
@@ -211,7 +239,8 @@ class M_salon extends CI_model {
 		return $query->result();
 	}
 
-	public function summary_app4($tgl1, $tgl2){
+	public function summary_app4($tgl1, $tgl2)
+	{
 		$this->db->select('*');
 		$this->db->from('tb_komisi_app');
 		$this->db->join('tb_karyawan', 'tb_komisi_app.id_kry = tb_karyawan.id_kry', 'left');
@@ -223,19 +252,23 @@ class M_salon extends CI_model {
 		return $query->result();
 	}
 
-	public function summary_tips($tgl1, $tgl2){
-		return $this->db->query('call sum_tips("'.$tgl1.'", "'.$tgl2.'" )')->result();
+	public function summary_tips($tgl1, $tgl2)
+	{
+		return $this->db->query('call sum_tips("' . $tgl1 . '", "' . $tgl2 . '" )')->result();
 	}
 
-	public function summary_kasbon($tgl1, $tgl2){
-		return $this->db->query('call sum_kasbon("'.$tgl1.'", "'.$tgl2.'" )')->result();
+	public function summary_kasbon($tgl1, $tgl2)
+	{
+		return $this->db->query('call sum_kasbon("' . $tgl1 . '", "' . $tgl2 . '" )')->result();
 	}
 
-	public function summary_denda($tgl1, $tgl2){
-		return $this->db->query('call sum_denda("'.$tgl1.'", "'.$tgl2.'" )')->result();
+	public function summary_denda($tgl1, $tgl2)
+	{
+		return $this->db->query('call sum_denda("' . $tgl1 . '", "' . $tgl2 . '" )')->result();
 	}
 
-	public function summary_produk_masuk($tgl1, $tgl2){
+	public function summary_produk_masuk($tgl1, $tgl2)
+	{
 		$this->db->select('*');
 		$this->db->from('tbl_produk_masuk');
 		$this->db->join('tb_produk', 'tbl_produk_masuk.id_produk = tb_produk.id_produk', 'left');
@@ -246,7 +279,8 @@ class M_salon extends CI_model {
 		return $query->result();
 	}
 
-	public function summary_penjualan_produk($tgl1, $tgl2){
+	public function summary_penjualan_produk($tgl1, $tgl2)
+	{
 		$this->db->select('*');
 		$this->db->from('tb_pembelian');
 		$this->db->join('tb_produk', 'tb_pembelian.id_produk = tb_produk.id_produk', 'left');
@@ -260,7 +294,8 @@ class M_salon extends CI_model {
 		return $query->result();
 	}
 
-	public function summary_servis($tgl1, $tgl2){
+	public function summary_servis($tgl1, $tgl2)
+	{
 		$this->db->select('*');
 		$this->db->from('tb_app');
 		$this->db->join('tb_servis', 'tb_app.id_servis = tb_servis.id_servis', 'left');
@@ -273,7 +308,7 @@ class M_salon extends CI_model {
 		$query = $this->db->get();
 		return $query->result();
 	}
-	
+
 	public function summary_canel($nama)
 	{
 		$this->db->select('*');
@@ -282,38 +317,40 @@ class M_salon extends CI_model {
 		$query = $this->db->get();
 		return $query->result();
 	}
-	
+
 	// =============================================== SEARCHING ================================================
 
-	function ambil_anak(){ 
+	function ambil_anak()
+	{
 		return $this->db->get('tb_karyawan');
 	}
 
-	function cari_anak($id){
-		$query= $this->db->get_where('tb_karyawan',array('nm_kry'=>$id));
+	function cari_anak($id)
+	{
+		$query = $this->db->get_where('tb_karyawan', array('nm_kry' => $id));
 		return $query;
 	}
-	
-	function absen($where="")
+
+	function absen($where = "")
 	{
 		$this->db->select('*');
-		$this->db->from('tb_absen' .$where);
+		$this->db->from('tb_absen' . $where);
 		$this->db->order_by('id_absen', 'DESC');
 		$data = $this->db->get();
 		return $data->result();
 	}
 
-	function d_nama($where="")
+	function d_nama($where = "")
 	{
 		$this->db->select('nm_kry');
-		$this->db->from('tb_karyawan' .$where);
+		$this->db->from('tb_karyawan' . $where);
 		$this->db->order_by('nm_kry', 'ASC');
 		$data = $this->db->get();
 		return $data->result();
 	}
 
 	// =============================================== CRUD ================================================
-	
+
 	public function update_produk($data_update)
 	{
 		$this->db->where('id_produk', $data_update['id_produk']);
@@ -339,19 +376,21 @@ class M_salon extends CI_model {
 		return $res;
 	}
 
-	public function UpdateData($tabelName, $data, $where){
+	public function UpdateData($tabelName, $data, $where)
+	{
 		$res = $this->db->update($tabelName, $data, $where);
 		return $res;
 	}
 
-	public function DropData($tabelName, $where){
+	public function DropData($tabelName, $where)
+	{
 		$res = $this->db->delete($tabelName, $where);
 		return $res;
 	}
 
-//AKtiva
+	//AKtiva
 
-public function aktiva($nota)
+	public function aktiva($nota)
 	{
 		$this->db->select('*');
 		$this->db->from('aktiva');
@@ -371,5 +410,4 @@ public function aktiva($nota)
 		$data = $this->db->get();
 		return $data->result();
 	}
-
 }

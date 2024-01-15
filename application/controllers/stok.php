@@ -1,265 +1,373 @@
-<?php 
-// ================================== STOK CABUT ==========================================
-    function stok_cabut(){
-        $data['title']   = "Gudang Cabut";
-        $data['stok']    = $this->Mymodel->dt_ambil(" where no_grade = 'STOK' ");
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
 
-        $this->load->view('tema/Header', $data);
-        $this->load->view('cabut/stok', $data);
-        $this->load->view('tema/Footer');
+class Stok extends CI_Controller
+{
+
+    public function __construct()
+    {
+
+        parent::__construct();
+        if (!$this->session->userdata('nm_user')) {
+            redirect('Login');
+        }
+        $this->load->model('M_opname');
+        date_default_timezone_set('Asia/Makassar');
     }
 
-    function input_stok_cabut(){
-        $data_input = array(
-            'pengambil'   => $this->input->post('pengambil'),
-            'harga'       => $this->input->post('harga'),
-            'no_grade'    => 'STOK',
-            'pcs'         => $this->input->post('pcs'),
-            'gram'        => $this->input->post('gram'),
-            'tgl_ambil'   => $this->input->post('tgl_ambil')
-        );
-        $res = $this->Mymodel->InputData('tb_ambil', $data_input);
-        $this->session->set_flashdata('message', '<div class="alert alert-primary" role="alert">Stok Berhasil Di Tambah</div>');
-        redirect ('Match/stok_cabut');
-    }
+    //stok produk/////////    
 
-    function edit_stok_cabut($id_ambil){
-        $a = $this->Mymodel->dt_ambil(" where id_ambil ='$id_ambil'");
+    public function index()
+    {
+
+        if (empty($this->input->get('tgl1'))) {
+            $tgl1   = date('Y-m-') . '01';
+            $tgl2   = date('Y-m-t');
+        } else {
+            $tgl1   = $this->input->get('tgl1');
+            $tgl2   = $this->input->get('tgl2');
+        }
+
         $data = array(
-            "id_ambil"  => $a[0]['id_ambil'],
-            "pengambil" => $a[0]['pengambil'],           
-            "tgl_ambil" => $a[0]['tgl_ambil'],           
-            "harga"     => $a[0]['harga'],
-            "pcs"       => $a[0]['pcs'],
-            "gram"      => $a[0]['gram']
+            'title'  => "Stok Produk",
+            'stok_produk' => $this->db->select('*')->select_sum('debit')->select_sum('kredit')->where('tgl >=', $tgl1)->where('tgl <=', $tgl2)->where('jenis', 'masuk')->group_by('kode_stok_produk')->order_by('id_stok_produk', 'DESC')->get('tb_stok_produk')->result()
         );
-        $data['title'] = 'EDIT STOK CABUT';
-        
-        $this->load->view('tema/Header', $data);
-        $this->load->view('gudang/edit_cabut', $data);
-        $this->load->view('tema/Footer');
+
+
+        $this->load->view('stok/stok_produk', $data);
     }
 
-    function update_stok_cabut(){
-        $id_ambil   = $this->input->post('id_ambil');
+    //stok masuk
+    public function create_stok_masuk()
+    {
+        $produk = $this->db->query("SELECT a.*, b.stok as stok_program, c.nm_kategori, d.satuan
+        FROM tb_produk as a
+        left join (
+            SELECT b.id_produk , sum(b.debit - b.kredit) stok
+            FROM tb_stok_produk as b 
+            where b.opname ='T'
+            group by b.id_produk
+        ) as b on b.id_produk = a.id_produk
+        left join tb_kategori as c on c.id_kategori = a.id_kategori
+        left join tb_satuan as d on d.id_satuan = a.id_satuan
+        ")->result();
         $data = array(
-            'pengambil'   => $this->input->post('pengambil'),
-            'harga'       => $this->input->post('harga'),
-            'no_grade'    => 'STOK',
-            'pcs'         => $this->input->post('pcs'),
-            'gram'        => $this->input->post('gram'),
-            'tgl_ambil'   => $this->input->post('tgl_ambil')
+            'title'  => "Create Stok Masuk",
+            'produk' => $produk,
+            'kategori' => $this->db->get('tb_kategori')->result()
+            // 'produk'   => $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->get('tb_produk')->result(),
+            // 'kategori'    => $this->db->get('tb_produk')->result(),
+            // 'produk' => $this->db->get('tb_produk')->result(),
         );
-        $where = array('id_ambil' => $id_ambil);
-        $res = $this->Mymodel->UpdateData('tb_ambil', $data, $where);
-        $this->session->set_flashdata('message', '<div class="alert alert-primary" role="alert">Stok Berhasil Di Update</div>');
-        redirect ('Match/stok_cabut');
+
+        $this->load->view('stok/create_produk_masuk', $data);
     }
 
-    function drop_stok_cabut($id_ambil){
-        $where = array('id_ambil' => $id_ambil);
-        $res = $this->Mymodel->DropData('tb_ambil', $where);
-        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Stok Berhasil Di Hapus !!</div>');
-        redirect("Match/stok_cabut");
+    public function input_produk_masuk()
+    {
+        $id_produk = $this->input->post('id_stok_produk');
+        $kode_stok_produk = 'INV' . date('ymd') . strtoupper(random_string('alpha', 3));
+        $admin = $this->session->userdata('nm_user');
+
+        foreach ($id_produk as $id) {
+            $get_produk = $this->db->query("SELECT a.id_produk , if(b.stok is null,0,b.stok) as stok, a.harga
+            FROM tb_produk as a 
+            left join (
+                SELECT b.id_produk , sum(b.debit - b.kredit) as stok
+                FROM tb_stok_produk as b
+                where b.opname = 'T'
+                group by b.id_produk
+            ) as b on b.id_produk = a.id_produk
+            where a.id_produk = '$id'
+            ")->row();
+            $data = [
+                'kode_stok_produk' => $kode_stok_produk,
+                'id_produk' => $get_produk->id_produk,
+                'stok_program' => $get_produk->stok,
+                'ttl_stok' => $get_produk->stok,
+                'debit' => 0,
+                'kredit' => 0,
+                'harga' => $get_produk->harga,
+                'admin' => $admin,
+                'jenis' => 'Masuk',
+                'status' => 'Draft',
+                'tgl_input' => date('Y-m-d H:i:s'),
+                'tgl' => date('Y-m-d'),
+                'ket' => 'stok masuk'
+            ];
+            $this->db->insert('tb_stok_produk', $data);
+        }
+        redirect("Stok/detail_produk_masuk?kode=$kode_stok_produk");
     }
-// ================================== end STOK cabut ==========================================
 
-// ================================== STOK CETAK ==========================================
-    function stok_cetak(){
-        $data['title']   = "Gudang Cetak";
-        $data['stok']    = $this->Mymodel->dt_summary_cabut(" where status = 'stok' ");
+    public function detail_produk_masuk()
+    {
+        $kode_stok_produk = $this->input->get('kode');
 
-        $this->load->view('tema/Header', $data);
-        $this->load->view('stok/cetak', $data);
-        $this->load->view('tema/Footer');
+        $produk = $this->db->query("SELECT a.*, b.stok as stok_program, c.nm_kategori, d.satuan
+        FROM tb_produk as a
+        left join (
+            SELECT b.id_produk , sum(b.debit - b.kredit) stok
+            FROM tb_stok_produk as b 
+            group by b.id_produk
+        ) as b on b.id_produk = a.id_produk
+        left join tb_kategori as c on c.id_kategori = a.id_kategori
+        left join tb_satuan as d on d.id_satuan = a.id_satuan
+        ")->result();
+        $data = [
+            'title'  => "Detail Produk Masuk",
+
+            'cek_status' => $this->db->group_by('kode_stok_produk')->get_where('tb_stok_produk', ['kode_stok_produk' => $kode_stok_produk])->row(),
+
+            'stok' => $this->db->query("SELECT a.id_stok_produk, b.id_produk, b.nm_produk, e.satuan, d.nm_kategori, b.harga, a.stok_program, a.debit, a.ttl_stok, c.stok as ttl_stok
+            FROM tb_stok_produk as a
+            left join tb_produk as b on b.id_produk = a.id_produk
+            left join (
+                SELECT b.id_produk , sum(b.debit - b.kredit) stok
+                FROM tb_stok_produk as b 
+                where b.opname = 'T'
+                group by b.id_produk
+            ) as c on c.id_produk = b.id_produk
+            left join tb_kategori as d on d.id_kategori = b.id_kategori
+            left join tb_satuan as e on e.id_satuan = b.id_satuan
+            where a.kode_stok_produk = '$kode_stok_produk'
+            group by a.id_produk
+            
+            ")->result(),
+
+            'kode_stok_produk' => $kode_stok_produk,
+
+            'produk' => $this->M_opname->get_opname(),
+            'kategori' => $this->db->get('tb_kategori')->result()
+        ];
+
+        $this->load->view('stok/detail_stok_masuk', $data);
     }
 
-    function input_stok_cetak(){
-        $data_input = array(
-            'pengambil'   => $this->input->post('pengambil'),
-            'pekerjaan'   => 'STOK',
-            'status'      => 'STOK',
-            'no_nota'     => $this->input->post('no_nota'),
-            'pcs_d'       => $this->input->post('pcs_d'),
-            'gram'        => $this->input->post('gram'),
-            'harga'       => $this->input->post('harga'),
-            'tanggal'     => date('Y-m-d'),
-            'tgl_selesai' => date('Y-m-d')
-        );
-        $res = $this->Mymodel->InputData('tb_kerja_cabut', $data_input);
-        $this->session->set_flashdata('message', '<div class="alert alert-primary" role="alert">Stok Berhasil Di Tambah</div>');
-        redirect ('Match/stok_cetak');
+    public function tambah_stok_masuk()
+    {
+        $id_produk = $this->input->post('id_produk_stok');
+        $kode_stok_produk = $this->input->post('kode_stok_produk');
+        $admin = $this->session->userdata('nm_user');
+
+        foreach ($id_produk as $id) {
+            $get_produk = $this->db->get_where('tb_produk', array(
+                'id_produk' => $id
+            ))->row();
+            $cek = $this->db->get_where('tb_stok_produk', [
+                'kode_stok_produk' => $kode_stok_produk,
+                'id_produk' => $id
+            ])->num_rows();
+            if ($cek > 0) {
+                continue;
+            } else {
+                $data = [
+                    'kode_stok_produk' => $kode_stok_produk,
+                    'id_produk' => $get_produk->id_produk,
+                    'stok_program' => $get_produk->stok,
+                    'ttl_stok' => $get_produk->stok,
+                    'debit' => 0,
+                    'kredit' => 0,
+                    'harga' => $get_produk->harga,
+                    'admin' => $admin,
+                    'jenis' => 'Masuk',
+                    'status' => 'Draft',
+                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'tgl' => date('Y-m-d'),
+                    'ket' => 'stok masuk'
+                ];
+                $this->db->insert('tb_stok_produk', $data);
+            }
+        }
+        $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">Produk berhasil ditambah!  <div class="ml-5 btn btn-sm"><i class="fas fa-sync-alt fa-2x"></i></div></div>');
+        redirect("Stok/detail_produk_masuk?kode=$kode_stok_produk");
     }
 
-    function edit_stok_cetak($no_nota){
-        $a = $this->Mymodel->dt_kerja_cabut(" where no_nota ='$no_nota'");
+    public function delete_stok()
+    {
+        $kode_stok_produk = $this->input->get('kode_stok_produk');
+        $this->db->where('kode_stok_produk', $kode_stok_produk);
+        $this->db->delete('tb_stok_produk');
+
+        $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">Data berhasil dihapus!  <div class="ml-5 btn btn-sm"><i class="fas fa-sync-alt fa-2x"></i></div></div>');
+        redirect("Stok");
+    }
+
+    public function edit_stok_masuk()
+    {
+        if ($this->input->post('action') == 'selesai') {
+
+            $id_stok_produk = $this->input->post('id_stok_produk');
+            $id_produk = $this->input->post('id_produk');
+            $debit = $this->input->post('debit');
+
+
+            for ($x = 0; $x < sizeof($id_stok_produk); $x++) {
+
+                $dt_produk = $this->db->select('stok_program')->get_where('tb_stok_produk', ['id_stok_produk' => $id_stok_produk[$x]])->row();
+
+                $ttl_stok = $debit[$x] + $dt_produk->stok_program;
+
+                $data = [
+                    'debit' => $debit[$x],
+                    'status' => 'Selesai',
+                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'tgl' => date('Y-m-d'),
+                    'ttl_stok' => $ttl_stok
+                ];
+                $this->db->where('id_stok_produk', $id_stok_produk[$x]);
+                $this->db->update('tb_stok_produk', $data);
+            }
+            $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">Opname Produk Selesai  <div class="ml-5 btn btn-sm"><i class="fas fa-sync-alt fa-2x"></i></div></div>');
+            redirect("Stok");
+        }
+
+        if ($this->input->post('action') == 'edit') {
+            $id_stok_produk = $this->input->post('id_stok_produk');
+            $id_produk = $this->input->post('id_produk');
+            $debit = $this->input->post('debit');
+            $tgl_expired = $this->input->post('tgl_expired');
+
+
+            for ($x = 0; $x < sizeof($id_stok_produk); $x++) {
+                $dt_produk = $this->db->select('stok_program')->get_where('tb_stok_produk', ['id_stok_produk' => $id_stok_produk[$x]])->row();
+
+                $ttl_stok = $debit[$x] + $dt_produk->stok_program;
+                $data = [
+                    'debit' => $debit[$x],
+                    'tgl_expired' => $tgl_expired[$x],
+                    // 'status' => 'Selesai',
+                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'tgl' => date('Y-m-d'),
+                    'ttl_stok' => $ttl_stok
+                ];
+                $this->db->where('id_stok_produk', $id_stok_produk[$x]);
+                $this->db->update('tb_stok_produk', $data);
+            }
+            $this->session->set_flashdata('message', '<div class="alert bg-success" role="alert">Data Berhasil Di Edit</div>');
+            redirect(isset($_SERVER['HTTP_REFERER']) ? htmlspecialchars($_SERVER['HTTP_REFERER']) : '');
+        }
+    }
+
+    public function print_stok_masuk()
+    {
+        $kode_stok_produk = $this->input->get('kode_stok_produk');
+        $data = [
+            'stok' => $this->db->group_by('kode_stok_produk')->get_where('tb_stok_produk', ['kode_stok_produk' => $kode_stok_produk])->row(),
+            'detail_stok' => $this->db->join('tb_produk', 'tb_stok_produk.id_produk = tb_produk.id_produk', 'left')
+                ->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')
+                ->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left')
+                ->get_where('tb_stok_produk', ['kode_stok_produk' => $kode_stok_produk])->result(),
+            'kode_stok_produk' => $kode_stok_produk
+        ];
+        $this->load->view('stok/print_stok_masuk', $data);
+    }
+
+    //stok keluar
+    public function create_stok_keluar()
+    {
         $data = array(
-            "no_nota"   => $a[0]->no_nota,
-            "pengambil" => $a[0]->pengambil,           
-            "harga"     => $a[0]->harga,
-            "pcs_d"     => $a[0]->pcs_d,
-            "gram"      => $a[0]->gram
+            'title'  => "Create Stok Keluar",
+            'produk' => $this->M_opname->get_opname(),
+            'kategori' => $this->db->get('tb_kategori')->result()
+            // 'produk'   => $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->get('tb_produk')->result(),
+            // 'kategori'    => $this->db->get('tb_produk')->result(),
+            // 'produk' => $this->db->get('tb_produk')->result(),
         );
-        $data['title'] = 'EDIT STOK CETAK';
-
-        $this->load->view('tema/Header', $data);
-        $this->load->view('gudang/edit_cetak', $data);
-        $this->load->view('tema/Footer');
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('produk/create_produk_keluar', $data);
+        $this->load->view('templates/footer');
     }
 
-    function update_stok_cetak(){
-        $no_nota   = $this->input->post('no_nota');
+    public function input_produk_keluar()
+    {
+        $id_produk = $this->input->post('id_stok_produk');
+        $kode_stok_produk = 'INV' . date('ymd') . strtoupper(random_string('alpha', 3));
+        $admin = $this->session->userdata('id_user');
+
+        foreach ($id_produk as $id) {
+            $get_produk = $this->db->get_where('tb_produk', array(
+                'id_produk' => $id
+            ))->row();
+            $data = [
+                'kode_stok_produk' => $kode_stok_produk,
+                'id_produk' => $get_produk->id_produk,
+                'stok_program' => $get_produk->stok,
+                'ttl_stok' => $get_produk->stok,
+                'debit' => 0,
+                'kredit' => 0,
+                'harga' => $get_produk->harga,
+                'admin' => $admin,
+                'jenis' => 'Keluar',
+                'status' => 'Draft',
+                'tgl_input' => date('Y-m-d H:i:s'),
+                'tgl' => date('Y-m-d')
+            ];
+            $this->db->insert('tb_stok_produk', $data);
+        }
+        redirect("Produk/detail_produk_keluar?kode=$kode_stok_produk");
+    }
+
+    public function detail_produk_keluar()
+    {
+        $kode_stok_produk = $this->input->get('kode');
         $data = array(
-            'pengambil'   => $this->input->post('pengambil'),
-            'harga'       => $this->input->post('harga'),
-            'pcs_d'       => $this->input->post('pcs_d'),
-            'gram'        => $this->input->post('gram')
+            'title'  => "Detail Produk Keluar",
+
+            'cek_status' => $this->db->group_by('kode_stok_produk')->get_where('tb_stok_produk', ['kode_stok_produk' => $kode_stok_produk])->row(),
+
+            'stok' => $this->db->join('tb_produk', 'tb_stok_produk.id_produk = tb_produk.id_produk', 'left')->join('tb_satuan', 'tb_produk.id_satuan = tb_produk.id_satuan', 'left')->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori')->group_by('tb_stok_produk.id_produk')->get_where('tb_stok_produk', [
+                'kode_stok_produk' => $kode_stok_produk,
+                'jenis' => 'Keluar'
+            ])->result(),
+
+            'kode_stok_produk' => $kode_stok_produk,
+
+            'produk' => $this->M_opname->get_opname(),
+            'kategori' => $this->db->get('tb_kategori')->result()
         );
-        $where = array('no_nota' => $no_nota);
-        $res = $this->Mymodel->UpdateData('tb_kerja_cabut', $data, $where);
-        $this->session->set_flashdata('message', '<div class="alert alert-warning" role="alert">Stok Berhasil Di Update</div>');
-        redirect ('Match/stok_cetak');
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('produk/detail_stok_keluar', $data);
+        $this->load->view('templates/footer');
     }
 
-    function drop_stok_cetak($no_nota){
-        $where = array('no_nota' => $no_nota);
-        $res = $this->Mymodel->DropData('tb_kerja_cabut', $where);
-        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Stok Berhasil Di Hapus !!</div>');
-        redirect("Match/stok_cetak");
+    public function tambah_stok_keluar()
+    {
+        $id_produk = $this->input->post('id_produk_stok');
+        $kode_stok_produk = $this->input->post('kode_stok_produk');
+        $admin = $this->session->userdata('id_user');
+
+        foreach ($id_produk as $id) {
+            $get_produk = $this->db->get_where('tb_produk', array(
+                'id_produk' => $id
+            ))->row();
+            $cek = $this->db->get_where('tb_stok_produk', [
+                'kode_stok_produk' => $kode_stok_produk,
+                'id_produk' => $id
+            ])->num_rows();
+            if ($cek > 0) {
+                continue;
+            } else {
+                $data = [
+                    'kode_stok_produk' => $kode_stok_produk,
+                    'id_produk' => $get_produk->id_produk,
+                    'stok_program' => $get_produk->stok,
+                    'ttl_stok' => $get_produk->stok,
+                    'debit' => 0,
+                    'kredit' => 0,
+                    'harga' => $get_produk->harga,
+                    'admin' => $admin,
+                    'jenis' => 'Keluar',
+                    'status' => 'Draft',
+                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'tgl' => date('Y-m-d')
+                ];
+                $this->db->insert('tb_stok_produk', $data);
+            }
+        }
+        $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">Produk berhasil ditambah!  <div class="ml-5 btn btn-sm"><i class="fas fa-sync-alt fa-2x"></i></div></div>');
+        redirect("Produk/detail_produk_keluar?kode=$kode_stok_produk");
     }
-// ================================== end STOK CETAK ==========================================
-
-// ================================== STOK GRADING ==========================================
-    function stok_grading(){
-        $data['title']   = "Gudang Grading";
-        $data['stok']    = $this->Mymodel->dt_summary_cetak(" where status = 'stok' ");
-
-        $this->load->view('tema/Header', $data);
-        $this->load->view('stok/grading', $data);
-        $this->load->view('tema/Footer');
-    }
-
-    function input_stok_grading(){
-        $data_input = array(
-            'pengambil'   => $this->input->post('pengambil'),
-            'pekerjaan'   => 'STOK',
-            'status'      => 'STOK',
-            'no_nota'     => $this->input->post('no_nota'),
-            'pcs'         => $this->input->post('pcs'),
-            'gram'        => $this->input->post('gram'),
-            'harga'       => $this->input->post('harga'),
-            'tanggal'     => date('Y-m-d'),
-            'tgl_selesai' => date('Y-m-d')
-        );
-        $res = $this->Mymodel->InputData('tb_kerja_cetak', $data_input);
-        $this->session->set_flashdata('message', '<div class="alert alert-primary" role="alert">Stok Berhasil Di Tambah</div>');
-        redirect ('Match/stok_grading');
-    }
-
-    function edit_stok_grade($no_nota){
-        $a = $this->Mymodel->dt_kerja_cetak(" where no_nota ='$no_nota'");
-        $data = array(
-            "no_nota"   => $a[0]->no_nota,
-            "pengambil" => $a[0]->pengambil,           
-            "harga"     => $a[0]->harga,
-            "pcs"       => $a[0]->pcs,
-            "gram"      => $a[0]->gram
-        );
-        $data['title'] = 'EDIT STOK GRADING';
-
-        $this->load->view('tema/Header', $data);
-        $this->load->view('gudang/edit_grade', $data);
-        $this->load->view('tema/Footer');
-    }
-
-    function update_stok_grade(){
-        $no_nota   = $this->input->post('no_nota');
-        $data = array(
-            'pengambil'   => $this->input->post('pengambil'),
-            'harga'       => $this->input->post('harga'),
-            'pcs'         => $this->input->post('pcs'),
-            'gram'        => $this->input->post('gram')
-        );
-        $where = array('no_nota' => $no_nota);
-        $res = $this->Mymodel->UpdateData('tb_kerja_cetak', $data, $where);
-        $this->session->set_flashdata('message', '<div class="alert alert-warning" role="alert">Stok Berhasil Di Update</div>');
-        redirect ('Match/stok_grading');
-    }
-
-    function drop_stok_grade($no_nota){
-        $where = array('no_nota' => $no_nota);
-        $res = $this->Mymodel->DropData('tb_kerja_cetak', $where);
-        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Stok Berhasil Di Hapus !!</div>');
-        redirect("Match/stok_grading");
-    }
-// ================================== end STOK GRADING ==========================================
-
-// ================================== STOK SORTIR ==========================================
-    function stok_sortir(){
-        $data['title']   = "Gudang Sortir";
-        $data['d_grade'] = $this->Mymodel->d_grade_x();
-        $data['stok']    = $this->Mymodel->dt_gudang_grading(" where status = 'STOK' ");
-
-        $this->load->view('tema/Header', $data);
-        $this->load->view('stok/sortir', $data);
-        $this->load->view('tema/Footer');
-    }
-
-    function input_stok_sortir(){
-        $data_input = array(
-            'pengambil'   => $this->input->post('pengambil'),
-            'no_grade'    => $this->input->post('no_grade'),
-            'harga'       => $this->input->post('harga'),  
-            'status'      => 'STOK',
-            'pcs'         => $this->input->post('pcs'),
-            'gram'        => $this->input->post('gram')
-        );
-        $res = $this->Mymodel->InputData('tb_kerja_grade', $data_input);
-        $this->session->set_flashdata('message', '<div class="alert alert-primary" role="alert">Stok Berhasil Di Tambah</div>');
-        redirect ('Match/stok_sortir');
-    }
-
-    function edit_stok_sortir($idk_grade){
-        $a = $this->Mymodel->dt_gudang_grading(" where idk_grade ='$idk_grade'");
-        $data = array(
-            "idk_grade" => $a[0]->idk_grade,
-            "no_grade"  => $a[0]->no_grade,
-            "pengambil" => $a[0]->pengambil,           
-            "harga"     => $a[0]->harga,
-            "pcs"       => $a[0]->pcs,
-            "gram"      => $a[0]->gram
-        );
-        $data['title']   = 'EDIT STOK SORTIR';
-        $data['d_grade'] = $this->Mymodel->d_grade_x();
-
-        $this->load->view('tema/Header', $data);
-        $this->load->view('gudang/edit_sortir', $data);
-        $this->load->view('tema/Footer');
-    }
-
-    function update_stok_sortir(){
-        $idk_grade   = $this->input->post('idk_grade');
-        $data = array(
-            'pengambil'   => $this->input->post('pengambil'),
-            'no_grade'    => $this->input->post('no_grade'),
-            'status'      => 'STOK',
-            'harga'       => $this->input->post('harga'),  
-            'pcs'         => $this->input->post('pcs'),
-            'gram'        => $this->input->post('gram')
-        );
-        $where = array('idk_grade' => $idk_grade);
-        $res = $this->Mymodel->UpdateData('tb_kerja_grade', $data, $where);
-        $this->session->set_flashdata('message', '<div class="alert alert-warning" role="alert">Stok Berhasil Di Update</div>');
-        redirect ('Match/stok_sortir');
-    }
-
-    function drop_stok_sortir($idk_grade){
-        $where = array('idk_grade' => $idk_grade);
-        $res = $this->Mymodel->DropData('tb_kerja_grade', $where);
-        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Stok Berhasil Di Hapus !!</div>');
-        redirect("Match/stok_sortir");
-    }
-// ================================== end STOK SORTIR ==========================================
-
-
-?>
+}

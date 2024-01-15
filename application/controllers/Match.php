@@ -96,57 +96,7 @@ public function story_in_out($id_produk)
 
 
 
-public function search_produk()
-{
-//    $kategori = $this->input->post('kategori');
-//    $keyword = $this->input->post('keyword');
-//     if (isEmpty($this->input->post('kategori')) || isEmpty($this->input->post('keyword'))){
-//         $keyword = "";
-//         $kategori = "";
-//     }
-    $kategori = 1;
-    
-    // if (isset($_POST['kategori'])) 
-    // {
-    //   $kategori = $this->input->post('kategori');
-    //   $keyword = $this->input->post('keyword');
-    // }
-    $keyword = '';
-    if (isset($_POST['keyword'])) 
-    {
-      $keyword = $this->input->post('keyword');
-    //   $kategori = $this->input->post('kategori');
-    }
-    if (isset($_POST['kategori'])) 
-    {
-      $kategori = $this->input->post('kategori');
-    }
 
-$data = $this->M_salon->search_produk($keyword,$kategori);
-echo '<div class="row">';
-foreach ($data as $key => $value) 
-{
-  echo '<div class="col-sm-6 col-md-4 col-lg-3">';
-  echo '<a type="button" data-toggle="modal" data-target="#myModal'.$value->id_produk.'">';
-  echo '<div class="card">';
-  echo '<div class="card-body">';
-  if (empty($value->foto)) 
-  {
-      echo '<img src="" alt="">';
-  }
-  else
-  {
-    echo '<img class="img-thumbnail" loading=”lazy” width="170" src="'. base_url() ?>upload/produk/<?= $value->foto .'" alt="">';
-}
-echo '<h6 class="mt-2 text-sm">'. word_limiter($value->nm_produk, 4).'</h6>';
-echo '<h6 style="font-weight: bold;">Rp. '. number_format($value->harga).'</h6>';
-echo '</div>';
-echo '</div>';
-echo '</a>';
-echo '</div>';
-}
-echo '</div>';
-}
 
 
 
@@ -154,7 +104,7 @@ public function produk()
 {
     $cek = ['13'];
     $data = array(
-        'title'  => "Orchard Produk", 
+        'title'  => "Crepe Produk", 
         'produk'   => $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left')->where_not_in('tb_produk.id_kategori',$cek)->get('tb_produk')->result(),
         'kategori'    => $this->db->get('tb_kategori')->result(),
         'satuan'    => $this->db->get('tb_satuan')->result(),
@@ -165,7 +115,7 @@ public function export_produk()
 {
     $cek = ['13'];
     $data = array(
-        'title'  => "Orchard Produk", 
+        'title'  => "Crepe Produk", 
         'produk'   => $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left')->where_not_in('tb_produk.id_kategori',$cek)->get('tb_produk')->result(),
         'kategori'    => $this->db->get('tb_kategori')->result(),
         'satuan'    => $this->db->get('tb_satuan')->result(),
@@ -461,20 +411,12 @@ public function update_satuan(){
     redirect('Match/satuan');
 }
 
-public function loadTabel(){
-    $cek = ['13'];
-    $data = array(
-        'title'  => "Orchard Produk", 
-        'produk'   => $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left')->where_not_in('tb_produk.id_kategori',$cek)->get('tb_produk')->result(),
-        'kategori'    => $this->db->get('tb_kategori')->result(),
-        'satuan'    => $this->db->get('tb_satuan')->result(),
-    );
-    $this->load->view('produk/loadTabel', $data);
-}
+
 
 public function getProdukDrowdown($filter){
     if($filter == 'all') {
-        $produk = $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left')->get('tb_produk')->result();
+        $cek = ['13', '20'];
+        $produk = $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left')->where_not_in('tb_produk.id_kategori', $cek)->get('tb_produk')->result();
     } else {
         $produk = $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left')->where('tb_produk.id_kategori',$filter)->get('tb_produk')->result();
     }
@@ -1256,12 +1198,13 @@ function excel_app_det(){
 public function order()
 {
     $names = ['T1', 'T2', 'T3','T4','T5','T6','T7','T8','T9','T10'];
+    $cek = ['13', '20','26'];
     $kry = $this->db->where_not_in('nm_kry', $names)->get('tb_karyawan')->result();
     $data = array(
-        'title'  => "Orchard Order Produk", 
-        'produk'   => $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->join('tb_satuan', 'tb_produk.id_satuan = tb_satuan.id_satuan', 'left')->get('tb_produk')->result(),
-        'karyawan'  => $kry,
-        'kategori'    => $this->db->where('id_kategori !=','13')->get('tb_kategori')->result(),
+        'title'  => "Crepe Order Produk", 
+        'produk'   => $this->db->join('tb_kategori', 'tb_servis.id_kategori = tb_kategori.id_kategori', 'left')->get('tb_servis')->result(),
+        'toping'  => $this->db->get_where('tb_produk',['id_kategori' => '26'])->result(),
+        'kategori'    => $this->db->where_not_in('id_kategori',$cek)->get('tb_kategori')->result(),
         'diskon_servis' => $this->db->get('tb_diskon_servis')->result()
     );
     $this->load->view('order/tabel', $data);
@@ -1270,37 +1213,6 @@ public function order()
 
 public function cart()
 {
-//     $id_produk = $this->input->post('id_produk');
-//     $jumlah = $this->input->post('jumlah');
-//     $satuan = $this->input->post('satuan');
-//     $catatan = $this->input->post('catatan');
-//     $id_karyawan= $this->input->post('id_karyawan');
-//     $karyawan = $this->db->get_where('tb_karyawan', array('id_kry' => $id_karyawan))->row();
-//     $detail = $this->db->get_where('tb_produk', array('id_produk' => $id_produk))->row();
-//     if ($jumlah > $detail->stok) 
-//     {
-//         $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Produk gagal dimasukan kedalam keranjang, stok kurang dari jumlah permintaan!  <div class="ml-5 btn btn-sm"><i class="fas fa-times-circle fa-2x"></i></div></div>');
-//         redirect("Match/order");
-//     }
-//     else
-//     {
-//        $data = array(
-//         'id'      => $id_produk,
-//         'qty'     => $this->input->post('jumlah'),
-//         'price'   => $detail->harga,
-//         'name'    => $detail->nm_produk,
-//         'picture' => $detail->foto,
-//         'disc'    => $detail->diskon,
-//         'satuan'  => $satuan,
-//         'catatan' => $catatan,
-//         'id_karyawan'   => $id_karyawan,
-//         'nm_karyawan'   => $karyawan->nm_kry
-//     );
-
-//        $this->cart->insert($data);
-//        $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Produk berhasil dimasukan kedalam keranjang!  <div class="ml-5 btn btn-sm"><i class="fas fa-times-circle fa-2x"></i></div></div>');
-//        redirect("Match/order");
-//    }
 $sku = $this->input->post('sku');
 $id_produk = $this->input->post('id_produk');
 $jumlah = $this->input->post('jumlah');
@@ -1319,7 +1231,7 @@ foreach($this->cart->contents() as $cart){
     }   
     }
 
-    $detail = $this->db->get_where('tb_produk', array('id_produk' => $id_produk))->row();
+    $detail = $this->db->get_where('tb_servis', array('id_servis' => $id_produk))->row();
     if(empty($id_karyawan)){
         echo "null";
     }else{
@@ -1436,7 +1348,7 @@ public function get_cart(){
         </div';
             echo '<div class="card-body">
             <hr>
-            <h3 class="text-center">Service</h3>
+            <h3 class="text-center">Service dsadsa</h3>
             <hr>
             </div>';
             echo '<div class="row">';
@@ -1493,7 +1405,7 @@ public function get_cart(){
                 </div>
                 
             </div>
-            <a type="button" data-toggle="modal" data-target="#myModalp" class="btn btn-primary btn-block" style="background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%); border-color: #F7889D; font-weight: bold; color: #fff;">LANJUTKAN KE PEMBAYARAN</a>
+            <a type="button" data-toggle="modal" data-target="#myModalp" class="btn btn-primary btn-block" style="background-image: linear-gradient(to right, #FFF192 0%, #FFF192 19%, #FFEA61 60%, #FFDD3C 100%); border-color: #F7889D; font-weight: bold; color: #EF0097;">LANJUTKAN KE PEMBAYARAN</a>
             </div>
             </div>';    
         
@@ -1523,18 +1435,14 @@ $this->cart->update($data);
 
     public function plus_cart()
     {
-        $id_produk = $_POST['id_produk'];
-        $produk = $this->db->get_where('tb_produk', array('sku' => $id_produk))->result_array()[0];
-        $stok_produk = $produk['stok'] - 1;
-        if($stok_produk < $_POST['qty']){
-            echo '<div style="background-color: #FFA07A;" class="alert" role="alert">Stok tidak ckup!  <div class="ml-5 btn btn-sm"><i class="fas fa-times-circle fa-2x"></i></div></div>';
-        }else{
+        
+        
             $data = array(
                 'rowid' => $_POST['rowid'],
-                'qty'   => $_POST['qty'] +1
+                'qty'   => $_POST['qty'] + 1
         );
         $this->cart->update($data);
-        }
+        
         
     }
 
@@ -7231,7 +7139,7 @@ public function invoice(){
         $dt_b   = $this->input->post('tgl2');
         // $dt_b = date('Y-m-d', strtotime('+1 days', strtotime($this->input->post('tgl2'))));
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Invoice", 
+            'title'  => "Crepe Beauty | Daftar Invoice", 
             'invoice' => $this->M_salon->daftar_invoice(" where tb_invoice.tgl_jam >= '$dt_a' AND tb_invoice.tgl_jam <= '$dt_b' AND status = 0")
         );
     }
@@ -8386,9 +8294,10 @@ function excel_denda_sum(){
 public function dt_servis()
 {
   $data = array(
-      'title'  => "Orchard Beauty", 
-      'kasbon' => $this->M_salon->dt_servis(),
-      'bahan' => $this->db->where('id_kategori','20')->get('tb_produk')->result()
+      'title'  => "Crepe Signature", 
+      'kasbon' => $this->db->query("SELECT * FROM tb_servis as a left join tb_kategori as b on b.id_kategori = a.id_kategori")->result(),
+      'bahan' => $this->db->where('id_kategori','20')->get('tb_produk')->result(),
+      'kategori' => $this->db->get_where('tb_kategori',['id_kategori !=' => '20'])->result()
   );
   $this->load->view('servis/tabel', $data);
 }
@@ -8397,10 +8306,8 @@ public function add_servis()
 {
    $data_input = array(
     'nm_servis'   => $this->input->post('servis'),
-    'durasi'  => $this->input->post('jam'),
-    'menit'  => $this->input->post('menit'),
+    'id_kategori'  => $this->input->post('id_kategori'),
     'biaya'  => $this->input->post('biaya'),
-    'komisi'  => $this->input->post('komisi'),
 );
    $res  = $this->M_salon->InputData('tb_servis', $data_input);
    $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Data Berhasil Di Input !! <div class="ml-5 btn btn-sm"><i class="fas fa-cloud-download-alt fa-2x"></i></div></div>');
@@ -8514,7 +8421,7 @@ $data_sku = [
 $this->db->where('id_produk', $id_produk);
 $this->db->update('tb_produk', $data_sku);
    $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Data Berhasil Di Input !! <div class="ml-5 btn btn-sm"><i class="fas fa-cloud-download-alt fa-2x"></i></div></div>');
-   redirect("Match/bahan");
+   redirect("Bahan");
 }
 
 public function edit_bahan()

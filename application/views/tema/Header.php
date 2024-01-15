@@ -31,7 +31,7 @@
 
   <link rel="stylesheet" href="<?= base_url('asset/'); ?>ambil/apis.css">
   <link rel="stylesheet" href="<?= base_url('asset/'); ?>popover.js">
-  <link rel="icon" type="image/png" href="<?= base_url('asset/');  ?>orchard_small.png" />
+  <link rel="icon" type="image/png" href="<?= base_url('asset/img/');  ?>crepe_logo.png" />
   <link rel="stylesheet" href="<?= base_url() ?>asset/time/jquery.skedTape.css">
 </head>
 
@@ -43,8 +43,8 @@
   }
 
   .bg-gradient {
-    background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
-    color: white;
+    background-image: linear-gradient(to right, #FFF192 0%, #FFF192 19%, #FFEA61 60%, #FFDD3C 100%);
+    color: #EF0097;
   }
 
   table {
@@ -60,7 +60,7 @@
   } */
 
   th {
-    background: #fadadd;
+    background: #FFF192;
     position: sticky;
     color: #787878;
     top: 0;
@@ -117,10 +117,10 @@
 
       ?> -->
 
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<body class="hold-transition sidebar-mini sidebar-collapse">
   <div class="wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light" style=" background:#fadadd; color: #787878;">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light" style=" background:#FFF192; color: #787878;">
       <!-- Left navbar links -->
       <ul class="navbar-nav">
         <li class="nav-item">
@@ -146,32 +146,7 @@
       ?>
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
-        <!-- Messages Dropdown Menu -->
-        <li class="nav-item dropdown mr-4">
-          <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="fas fa-birthday-cake"></i>
-            <span class="badge badge-danger navbar-badge"><?= empty($count) ? '' : "$count" ?></span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-            <?php foreach ($ultah as $no => $u) : ?>
-                   
-              <a href="#" class="dropdown-item" onclick="wa(<?= (String) $u->telepon ?>)">
-                <div class="media">
-                  <div class="media-body">
-                    <h3 class="dropdown-item-title">
-                      <?= $u->nama ?>
-                      <span class="float-right text-sm "><i class="fas fa-calendar-minus"></i></span>
-                    </h3>
-                    <p class="text-sm text-muted"><i class="fas fa-mobile-alt mr-1"></i> <?= $u->telepon ?> </p>
-                    <p class="text-sm text-muted"><i class="fas fa-calendar-week mr-1"></i> <?= date('d-m-Y', strtotime($u->tanggal_lahir)) ?></p>
-                  </div>
-                </div>
 
-              </a>
-              <div class="dropdown-divider"></div>
-            <?php endforeach ?>
-          </div>
-        </li>
 
         <li class="nav-item mr-2">
           <a href="<?= base_url('Login/logout'); ?>" id="tombolmenu" class="nav-link shadow"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -206,14 +181,14 @@
       </div>
     </div>
     <script>
-        function wa(no) {
-            location.href = "https://wa.me/62"+no
-        }
-        
-        var loading = document.getElementById('loading');
+      function wa(no) {
+        location.href = "https://wa.me/62" + no
+      }
 
-        window.addEventListener('load', function() {
-            loading.style.display = "none";
-        })
+      var loading = document.getElementById('loading');
+
+      window.addEventListener('load', function() {
+        loading.style.display = "none";
+      })
     </script>
     <?php $this->load->view('tema/sidebar'); ?>
