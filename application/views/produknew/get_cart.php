@@ -18,6 +18,7 @@
             <?php
             $subtotal_produk = 0;
             $jumlah = 0;
+            $total_toping = 0;
             foreach ($cart_content as $key => $value) :
                 $allCartItems = $this->cart->contents();
 
@@ -30,7 +31,7 @@
 
                 <div class="row">
                     <?php
-                    $subtotal_produk += $value['price'] * $value['qty'];
+                    $subtotal_produk += ($value['price'] * $value['qty']) - $value['diskon'];
                     $jumlah += $value['qty'];
                     ?>
                     <div class="col-6">
@@ -43,16 +44,22 @@
                         <p><?= $value['qty'] ?></p>
                     </div>
                     <div class="col-4">
-                        <strong class="float-right">Rp. <?= number_format($value['qty'] * $value['price'], 0) ?></strong>
+                        <?php if (empty($value['diskon'])) : ?>
+                            <strong class="float-right"> Rp. <?= number_format($value['qty'] * $value['price'], 0) ?></strong>
+                        <?php else : ?>
+                            <strong class="float-right"><s> Rp. <?= number_format($value['qty'] * $value['price'], 0) ?></s></strong>
+                            <strong class="float-right"> Rp. <?= number_format(($value['qty'] * $value['price']) - $value['diskon'], 0) ?></strong>
+                        <?php endif ?>
+
                     </div>
                     <div class="col-1">
                         <a class="delete_cart mr-2" id="<?= $value['rowid'] ?>" href="javascript:void(0)" style="margin-top: 50px;"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
                 <?php
-                $total_toping = 0;
+
                 foreach ($toping as $key => $t) :
-                    $total_toping += $t['qty'] * $t['price'];
+
                 ?>
                     <div class="row">
 
@@ -69,8 +76,11 @@
                             <a class=" text-sm delete_cart mr-2" id="<?= $t['rowid'] ?>" href="javascript:void(0)" style="margin-top: 50px;"><i class="fa fa-times"></i></a>
                         </div>
                     </div>
-                <?php endforeach ?>
-            <?php endforeach ?>
+                <?php $total_toping += $t['qty'] * $t['price'];
+                endforeach ?>
+            <?php
+
+            endforeach ?>
             <div class="container">
                 <hr>
                 <strong style="font-size: 20px;">Total</strong> <strong style="float: right; font-size: 22px;">Rp. <?= number_format($subtotal_produk + $total_toping) ?></strong>

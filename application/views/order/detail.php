@@ -11,6 +11,10 @@
     <div class="col-sm-8 col-md-8">
         <h6 class="mt-2"><?= $produk->nm_servis ?></h6>
         <h6 style="font-weight: bold; color: #FA778E; font-size: 20px;">Rp. <?= number_format($produk->biaya) ?></h6>
+        <?php if (empty($produk->diskon)) : ?>
+        <?php else : ?>
+            <hp style="font-weight: bold; color: #FA778E; font-size: 10px;">Discount Rp. <?= number_format($produk->diskon) ?></hp>
+        <?php endif ?>
         <div class="row">
             <div class="col-sm-6 col-md-6">
                 <div class="form-group">

@@ -2,6 +2,13 @@
 
 <script src="<?= base_url('css_maruti/'); ?>js/jquery.min.js"></script>
 <script src="<?php echo base_url('css_maruti/'); ?>assets/ajax.js"></script>
+<style>
+	.toko_active {
+		background-color: #FFF192;
+		color: #EF7A8A;
+		font-weight: bold;
+	}
+</style>
 
 <!-- ======================================================== conten ======================================================= -->
 <!-- Content Wrapper. Contains page content -->
@@ -30,7 +37,28 @@
 		$cart =	$this->cart->contents();
 		$total = 0;
 		?>
-		<div class="col-sm-4 col-4">
+		<div class="col-4">
+			<a href="<?= base_url("match/order?dis=1") ?>">
+				<div class="card <?= $dis == '1' ? 'bg-gradient' : '' ?> ">
+					<div class="card-body">
+						<h5 class="text-center">OFFLINE ORDER</h5>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col-4">
+			<a href="<?= base_url("match/order?dis=2") ?>">
+				<div class="card <?= $dis == '2' ? 'bg-gradient' : '' ?>">
+					<div class="card-body">
+						<h5 class="text-center">ONLINE ORDER</h5>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col-lg-12 ">
+			<input type="hidden" id="id_distribusi" value="<?= $dis ?>">
+		</div>
+		<!-- <div class="col-sm-4 col-4">
 			<div class="card">
 				<div class="card-body">
 					<select name="kategori" id="kategori" class="form-control">
@@ -41,16 +69,34 @@
 					</select>
 				</div>
 			</div>
+		</div> -->
+		<input type="hidden" id="kategori">
+		<div class="col-8 muncul">
+			<div class="data-kategori">
+
+			</div>
 		</div>
-		<div class="col-sm-4 col-4">
+
+
+		<div class="col-sm-2 col-2 mb-2 hilang">
+			<button type="button" class="btn btn-warning back_kategori "><i class="fas fa-long-arrow-alt-left"></i> Kembali</button>
+		</div>
+		<div class="col-10 hilang"></div>
+
+		<div class="col-sm-8 col-8 hilang">
+
 			<div class="card">
 				<div class="card-body">
 					<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Cari Produk . .">
 				</div>
 			</div>
+			<div class="data-produk">
+
+			</div>
 
 		</div>
-		<div class="col-sm-4 col-4">
+
+		<div class="col-sm-4 col-4 ">
 			<a href="<?= base_url() ?>match/list_penjualan">
 				<div class="card bg-gradient">
 					<div class="card-body">
@@ -58,21 +104,14 @@
 					</div>
 				</div>
 			</a>
+			<div id="cart">
+
+			</div>
 		</div>
 		<!-- <div class="tab-content" id="pills-tabContent">
 			<div class="tab-pane fade show active" id="semua" role="tabpanel" aria-labelledby="pills-home-tab"> -->
-		<div class="col-sm-8 col-md-8">
-			<div class="tab-content" id="pills-tabContent">
-				<div class="tab-pane fade show active" id="semua" role="tabpanel" aria-labelledby="pills-home-tab">
-					<div class="data-produk">
 
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-4 col-md-4" id="cart">
 
-		</div>
 	</div>
 </div>
 
@@ -203,7 +242,7 @@
 			<div class="modal-header">
 				<h5 class="modal-title">Detail Produk</h5>
 				<form method="post" class="input_cart">
-					<button type="submit" class="btn btn-primary"> SIMPAN</button>
+					<button type="submit" class="btn btn-primary btn-simpan" disabled> SIMPAN</button>
 			</div>
 			<!-- Modal body -->
 			<div class="modal-body">
@@ -211,14 +250,15 @@
 
 				</div>
 				<hr>
-				<h5 style="font-size: 1rem;">ADD TOPING</h5>
+				<h5 style="font-size: 1rem;">ADD PERLENGKAPAN</h5>
 				<div class="buying-selling-group" id="buying-selling-group" data-toggle="buttons">
+					<input type="hidden" id="distribusi" value="<?= $dis ?>">
 					<div class="row">
-						<?php foreach ($toping as $key => $t) : ?>
+						<?php foreach ($perlengkapan as $key => $t) : ?>
 							<div class="col-lg-3">
 								<div class="card">
 									<div class="card-body">
-										<h6 style="font-weight: bold;"><?= $t->nm_produk ?></h6>
+										<h6 style="font-weight: bold;"><?= $t->nm_produk ?> <span class="float-right">Rp. <?= number_format($t->harga, 0) ?></span></h6>
 
 										<div class="row">
 											<div class="col-lg-6">
@@ -226,6 +266,41 @@
 											</div>
 											<div class="col-lg-6">
 												<div class="row">
+
+													<input type="hidden" name="id_toping[]" class="id_toping" value="<?= $t->id_produk ?>">
+													<div class="col-lg-2 mt-2"><a href="" class="minus_toping" id_toping="<?= $t->id_produk ?>"><i class="fas fa-minus"></i></a></div>
+													<div class="col-lg-8"><input type="text" class="form-control qty_toping qty_perlengkapan text-center qty_toping<?= $t->id_produk ?> " value="0"></div>
+													<div class="col-lg-2 mt-2"><a href="" class="plus_toping" id_toping="<?= $t->id_produk ?>"><i class="fas fa-plus"></i></a></div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						<?php endforeach ?>
+					</div>
+
+				</div>
+				<hr>
+				<h5 style="font-size: 1rem;">ADD TOPING</h5>
+				<div class="buying-selling-group" id="buying-selling-group" data-toggle="buttons">
+					<input type="hidden" id="distribusi" value="<?= $dis ?>">
+					<div class="row">
+						<?php foreach ($toping as $key => $t) : ?>
+							<div class="col-lg-3">
+								<div class="card">
+									<div class="card-body">
+										<h6 style="font-weight: bold;"><?= $t->nm_produk ?> <span class="float-right">Rp. <?= number_format($t->harga, 0) ?></span></h6>
+
+										<div class="row">
+											<div class="col-lg-6">
+												<p class="text-sm">+ Quantity</p>
+											</div>
+											<div class="col-lg-6">
+												<div class="row">
+
 													<input type="hidden" name="id_toping[]" class="id_toping" value="<?= $t->id_produk ?>">
 													<div class="col-lg-2 mt-2"><a href="" class="minus_toping" id_toping="<?= $t->id_produk ?>"><i class="fas fa-minus"></i></a></div>
 													<div class="col-lg-8"><input type="text" class="form-control qty_toping text-center qty_toping<?= $t->id_produk ?> " value="0"></div>
@@ -265,7 +340,7 @@
 
 			<!-- Modal footer -->
 			<div class="modal-footer">
-				<a href="<?= base_url() ?>produk/payment" class="btn btn-primary"> Lanjutkan</a>
+				<a href="<?= base_url("produk/payment?dis=$dis") ?>" class="btn btn-primary"> Lanjutkan</a>
 				<button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
 			</div>
 
@@ -287,6 +362,28 @@
 			$('#save-voucher').hide();
 			$('#save-voucher').attr('disabled', 'true');
 		}
+		$('.back_kategori').click(function(e) {
+			e.preventDefault();
+
+			$('.hilang').css('display', 'none');
+			$('.muncul').css('display', 'block');
+
+		});
+		load_kategori();
+
+		function load_kategori() {
+			$.ajax({
+				method: "GET",
+				url: "<?php echo site_url() ?>Produk/kategori",
+				success: function(hasil) {
+					$('.data-kategori').html(hasil);
+					$('.hilang').css('display', 'none')
+				}
+			});
+		}
+
+
+
 		load_cart();
 
 		function load_cart() {
@@ -348,6 +445,7 @@
 			var satuan = $("#cart_satuan").val();
 			var catatan = $("#cart_catatan").val();
 			var id_karyawan = $(".cart_id_karyawan").val();
+			var distribusi = $("#distribusi").val();
 			var id_toping = $(".id_toping").map(function() {
 				return $(this).val();
 			}).get();
@@ -366,6 +464,7 @@
 					satuan: satuan,
 					catatan: catatan,
 					id_toping: id_toping,
+					distribusi: distribusi,
 					qty_toping: qty_toping,
 				},
 				success: function(data) {
@@ -499,30 +598,46 @@
 
 	$(document).ready(function() {
 
-		load_data();
+		$(document).on('click', '.menu_muncul', function(e) {
+			e.preventDefault();
+			var id_distribusi = $("#id_distribusi").val();
+			var id_kategori = $(this).attr('id_kategori');
+			var keyword = $("#keyword").val();
 
-		function load_data(keyword, kategori) {
+			$('#kategori').val(id_kategori);
+			$('.hilang').css('display', 'block');
+			$('.muncul').css('display', 'none');
+			load_data(keyword, id_kategori, id_distribusi);
+
+		});
+
+
+		function load_data(keyword, kategori, id_distribusi) {
+			var id_distribusi = $("#id_distribusi").val();
 			$.ajax({
 				method: "POST",
 				url: "<?php echo site_url() ?>Produk/search_produk",
 				data: {
 					keyword: keyword,
-					kategori: kategori
+					kategori: kategori,
+					id_distribusi: id_distribusi,
 				},
 				success: function(hasil) {
 					$('.data-produk').html(hasil);
 				}
 			});
 		}
-		$('#keyword').keyup(function() {
+		$(document).on('keyup', '#keyword', function() {
 			var keyword = $("#keyword").val();
 			var kategori = $("#kategori").val();
-			load_data(keyword, kategori);
+			var id_distribusi = $("#id_distribusi").val();
+			load_data(keyword, kategori, id_distribusi);
 		});
 		$('#kategori').change(function() {
 			var keyword = $("#keyword").val();
 			var kategori = $("#kategori").val();
-			load_data(keyword, kategori);
+			var id_distribusi = $("#id_distribusi").val();
+			load_data(keyword, kategori, id_distribusi);
 		});
 
 
@@ -537,13 +652,15 @@
 
 		$(document).on('click', '.klikdetail', function(e) {
 			e.preventDefault();
-
+			$('.qty_toping').val(0);
 			var id_produk = $(this).attr('id_produk');
+			var id_distribusi = $("#id_distribusi").val();
 			$.ajax({
 				type: "get",
 				url: "<?= base_url('Produk/detail_order') ?>",
 				data: {
-					id_produk: id_produk
+					id_produk: id_produk,
+					id_distribusi: id_distribusi
 				},
 				success: function(response) {
 					$('.load_detail').html(response);
@@ -561,6 +678,19 @@
 			var total = parseFloat(qty) - 1;
 			$('.qty_toping' + id_toping).val(total);
 
+			var totalSum = 0;
+			$('.qty_perlengkapan').each(function() {
+				totalSum += parseFloat($(this).val()) || 0;
+			});
+
+			if (parseFloat(totalSum) > 0) {
+				$('.btn-simpan').prop('disabled', false);
+			} else {
+				$('.btn-simpan').prop('disabled', true);
+			}
+
+
+
 
 		});
 		$('.plus_toping').click(function(e) {
@@ -571,6 +701,16 @@
 			var total = parseFloat(qty) + 1;
 			$('.qty_toping' + id_toping).val(total);
 
+			var totalSum = 0;
+			$('.qty_perlengkapan').each(function() {
+				totalSum += parseFloat($(this).val()) || 0;
+			});
+
+			if (parseFloat(totalSum) > 0) {
+				$('.btn-simpan').prop('disabled', false);
+			} else {
+				$('.btn-simpan').prop('disabled', true);
+			}
 
 		});
 	});

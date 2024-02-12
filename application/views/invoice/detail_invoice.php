@@ -49,15 +49,17 @@
 					<br>
 					<div class="row">
 
-						<?php foreach ($produk as $p) : ?>
+						<?php
+						$total_toping = 0;
+						foreach ($produk as $p) : ?>
 							<?php
-							$total_produk += $p->harga * $p->jumlah;
+							$total_produk += ($p->harga * $p->jumlah) - $p->diskon;
 							$qty_produk += $p->jumlah;
 
 							$toping = $this->db->query("SELECT a.*, b.nm_produk
 							FROM tb_pembelian as a 
 							left join tb_produk as b on b.id_produk = a.id_produk
-							where a.id_produk_toping = '$p->id_produk'
+							where a.id_produk_toping = '$p->id_produk' and a.no_nota = '$no_nota'
 							")->result();
 
 							?>
@@ -65,12 +67,18 @@
 								<p><?= $p->jumlah; ?> &nbsp <?= $p->nm_servis; ?></p>
 							</div>
 							<div class="col-md-4">
-								<p class="float-right"><?= number_format($p->harga * $p->jumlah, 0); ?></p>
+								<?php if (empty($p->diskon)) : ?>
+									<p class="float-right"><?= number_format($p->harga * $p->jumlah, 0); ?></p>
+								<?php else : ?>
+									<p class="text-right"><s><?= number_format($p->harga * $p->jumlah, 0); ?></s></p>
+									<p class="text-right"><?= number_format(($p->harga * $p->jumlah) - $p->diskon, 0); ?></p>
+								<?php endif ?>
+
 							</div>
 							<?php
-							$total_toping = 0;
+
 							foreach ($toping as $t) :
-								$total_toping += $t->harga * $t->jumlah;
+
 							?>
 								<div class="col-md-8">
 									<p class="ml-3 text-sm"><?= $t->jumlah; ?> &nbsp <?= $t->nm_produk; ?></p>
@@ -78,9 +86,11 @@
 								<div class="col-md-4">
 									<p class="float-right text-sm"><?= number_format($t->harga * $t->jumlah, 0); ?></p>
 								</div>
-							<?php endforeach ?>
+							<?php $total_toping += $t->harga * $t->jumlah;
+							endforeach ?>
 
-						<?php endforeach; ?>
+						<?php
+						endforeach; ?>
 					</div>
 
 
@@ -191,7 +201,7 @@
 						<a href="<?= base_url(); ?>match/nota?invoice=<?= $no_nota; ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Print</a>
 
 					<?php else : ?>
-						<input type="hidden" name="total" id="total" value="<?= $total_app + $total_produk; ?>">
+						<input type="hidden" name="total" id="total" value="<?= $total_produk + $total_toping; ?>">
 						<hr>
 						<form action="<?= base_url(); ?>/match/edit_pembayaran" method="POST">
 							<?php if ($invoice->nominal_voucher > 0) : ?>
@@ -216,42 +226,54 @@
 								<input type="hidden" class="form-control pembayaran" id="diskon" value="0" name="diskon" readonly>
 							<?php endif; ?>
 
-							<div class="form-group row">
-								<input type="hidden" name="id_invoice" value="<?= $invoice->id; ?>">
-								<input type="hidden" name="no_nota" value="<?= $invoice->no_nota; ?>">
-								<label for="cash" class="col-md-4 col-form-label">Cash </label>
-								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="cash" value="<?= $invoice->cash; ?>" name="cash">
-								</div>
-							</div>
-							<div class="form-group row">
+
+							<style>
+								.hilang_row {
+									display: none;
+								}
+							</style>
+							<div class="form-group row hilang_row">
 								<label for="mandiri_kredit" class="col-md-4 col-form-label">Mandiri Kredit</label>
 								<div class="col-md-6">
 									<input type="number" class="form-control pembayaran" id="mandiri_kredit" value="<?= $invoice->mandiri_kredit; ?>" name="mandiri_kredit">
 								</div>
 							</div>
-							<div class="form-group row">
+							<div class="form-group row hilang_row">
 								<label for="mandiri_debit" class="col-md-4 col-form-label">Mandiri Debit</label>
 								<div class="col-md-6">
 									<input type="number" class="form-control pembayaran" id="mandiri_debit" value="<?= $invoice->mandiri_debit; ?>" name="mandiri_debit">
 								</div>
 							</div>
-							<div class="form-group row">
+							<div class="form-group row hilang_row">
 								<label for="bca_kredit" class="col-md-4 col-form-label">BCA Kredit</label>
 								<div class="col-md-6">
 									<input type="number" class="form-control pembayaran" id="bca_kredit" value="<?= $invoice->bca_kredit; ?>" name="bca_kredit">
 								</div>
 							</div>
-							<div class="form-group row">
+							<!-- <div class="form-group row hilang_row">
 								<label for="bca_debit" class="col-md-4 col-form-label">BCA Debit</label>
+								<div class="col-md-6">
+									<input type="number" class="form-control pembayaran" id="bca_debit" value="<?= $invoice->bca_debit; ?>" name="bca_debit">
+								</div>
+							</div> -->
+							<div class="form-group row ">
+								<label for="bca_debit" class="col-md-4 col-form-label">GOPAY</label>
+								<div class="col-md-6">
+									<input type="number" class="form-control pembayaran" id="shoope" value="<?= $invoice->gopay; ?>" name="gopay">
+								</div>
+							</div>
+							<div class="form-group row ">
+								<label for="bca_debit" class="col-md-4 col-form-label">GRABFOOD</label>
 								<div class="col-md-6">
 									<input type="number" class="form-control pembayaran" id="bca_debit" value="<?= $invoice->bca_debit; ?>" name="bca_debit">
 								</div>
 							</div>
 							<div class="form-group row">
-								<label for="bca_debit" class="col-md-4 col-form-label">Gopay</label>
+								<input type="hidden" name="id_invoice" value="<?= $invoice->id; ?>">
+								<input type="hidden" name="no_nota" value="<?= $invoice->no_nota; ?>">
+								<label for="cash" class="col-md-4 col-form-label">CASH </label>
 								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="shoope" value="<?= $invoice->gopay; ?>" name="shoope">
+									<input type="number" class="form-control pembayaran" id="cash" value="<?= $invoice->cash; ?>" name="cash">
 								</div>
 							</div>
 							<div class="form-group row">
@@ -267,7 +289,8 @@
 
 							<hr>
 
-							<a href="<?= base_url(); ?>produk/nota?invoice=<?= $no_nota; ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Print</a>
+							<a target="_blank" href="<?= base_url(); ?>produk/save_nota?invoice=<?= $no_nota; ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Invoice</a>
+							<a target="_blank" href="<?= base_url(); ?>produk/save_checker?invoice=<?= $no_nota; ?>" class="btn mr-2 btn-success float-right"><i class="fas fa-print"></i> Checker</a>
 							<button class="btn btn-info float-right mr-2" id="edit_pembayaran" disabled type="submit"><i class="fas fa-edit"></i> Edit</button>
 						</form>
 					<?php endif; ?>
@@ -437,18 +460,13 @@
 
 		});
 		$('.pembayaran').keyup(function() {
-			var dp = parseInt($("#dp").val());
-			var nominal_voucher = parseInt($("#nominal_voucher").val());
-			var diskon = parseInt($("#diskon").val());
+			// var dp = parseInt($("#dp").val());
+
 			var cash = parseInt($("#cash").val());
-			var mandiri_kredit = parseInt($("#mandiri_kredit").val());
-			var mandiri_debit = parseInt($("#mandiri_debit").val());
-			var bca_kredit = parseInt($("#bca_kredit").val());
 			var bca_debit = parseInt($("#bca_debit").val());
 			var shoope = parseInt($("#shoope").val());
-			var tokopedia = parseInt($("#tokopedia").val());
 			var total = parseInt($("#total").val());
-			var bayar = mandiri_kredit + mandiri_debit + cash + bca_kredit + shoope + tokopedia + bca_debit + dp + diskon + nominal_voucher;
+			var bayar = cash + shoope + bca_debit;
 			$("#kembalian").val(bayar - total);
 			if (total <= bayar) {
 				$('#edit_pembayaran').removeAttr('disabled');

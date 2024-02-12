@@ -44,22 +44,17 @@
 <!-- <div class="content-wrapper"> -->
 
 <div class="content-header">
-	<div class="container">
+	<div class="container-fluid">
 
 		<div class="row mb-2">
 			<div class="col-sm-6">
 				<h1 class="m-0 text-dark">Daftar Invoice</h1>
 			</div>
 			<div class="col-sm-6">
-				<?php if ($this->session->userdata('edit_hapus') == '1') : ?>
-					<!-- <button data-toggle="modal" data-target="#modal-detail" class="btn btn-success"><i class="fas fa-download"></i> Detail</button> -->
-					<!--<button data-toggle="modal" data-target="#modal-view" class="btn btn-success"><i class="fas fa-eye"></i> View</button>-->
-					<!--<button data-toggle="modal" data-target="#modal-summary" class="btn btn-success"><i class="fas fa-print"></i> Summary</button>-->
-					<!-- <button data-toggle="modal" data-target="#modal-delete" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button> -->
-				<?php endif ?>
-				<button data-toggle="modal" data-target="#modal-view" class="btn btn-success"><i class="fas fa-eye"></i> View</button>
-				<button data-toggle="modal" data-target="#modal-summary" class="btn btn-success"><i class="fas fa-print"></i> Summary</button>
-				<button data-toggle="modal" data-target="#laporan-pemasukan" class="btn btn-success"><i class="fas fa-print"></i> Laporan item penjualan</button>
+				<button data-toggle="modal" data-target="#modal-view" class="btn btn-success float-right ml-2"><i class="fas fa-eye"></i> View</button>
+				<a target="_blank" href="<?= base_url("Produk/summary?tgl1=$tgl1&tgl2=$tgl2") ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Summary</a>
+				<a target="_blank" href="<?= base_url("Produk/shift_out?tgl1=$tgl1&tgl2=$tgl2") ?>" class="btn btn-success mr-2 float-right"><i class="fas fa-print"></i> Shift Out</a>
+				<!-- <button data-toggle="modal" data-target="#laporan-pemasukan" class="btn btn-success"><i class="fas fa-print"></i> Laporan item penjualan</button> -->
 			</div>
 		</div>
 	</div>
@@ -82,24 +77,18 @@
 						<table width="100%" id="example1" class="table table-sm">
 							<thead>
 								<tr>
-									<th rowspan="2">#</th>
-									<th rowspan="2">NO NOTA</th>
-									<th rowspan="2">NAMA CUSTOMER</th>
-									<th colspan="2" class="text-center">MANDIRI</th>
-									<th colspan="2" class="text-center">BCA</th>
-									<th rowspan="2">CASH</th>
-									<th rowspan="2">DISKON</th>
-									<th rowspan="2">VOUCHER</th>
-									<th rowspan="2">TOTAL</th>
-									<th rowspan="2">BAYAR</th>
-									<th rowspan="2">TANGGAL</th>
-									<th rowspan="2">AKSES 1</th>
-								</tr>
-								<tr>
-									<th>KREDIT</th>
-									<th>DEBIT</th>
-									<th>KREDIT</th>
-									<th>DEBIT</th>
+									<th>#</th>
+									<th>NO NOTA</th>
+									<th class="text-right">GOPAY</th>
+									<th class="text-right">GRABFOOD</th>
+									<th class="text-right">CASH</th>
+									<th class="text-right">DISKON</th>
+									<th class="text-right">VOUCHER</th>
+									<th class="text-right">BAYAR</th>
+									<th class="text-right">KEMBALIAN</th>
+									<th class="text-right">TOTAL</th>
+									<th>TANGGAL</th>
+									<th>AKSES 1</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -108,16 +97,14 @@
 									<tr class="clickable-row" id="<?= $value->no_nota ?>">
 										<td><?= $i++ ?></td>
 										<td><a href="<?= base_url(); ?>produk/detail_invoice?invoice=<?= $value->no_nota; ?>"><?= $value->no_nota ?></a></td>
-										<td><?= $value->nama ?></td>
-										<td><?= number_format($value->mandiri_kredit, 0) ?></td>
-										<td><?= number_format($value->mandiri_debit, 0) ?></td>
-										<td><?= number_format($value->bca_kredit, 0) ?></td>
-										<td><?= number_format($value->bca_debit, 0) ?></td>
-										<td><?= number_format($value->cash, 0) ?></td>
-										<td><?= number_format($value->diskon, 0) ?></td>
-										<td><?= number_format($value->nominal_voucher, 0) ?></td>
-										<td><?= number_format($value->total, 0) ?></td>
-										<td><?= number_format($value->bayar, 0) ?></td>
+										<td class="text-right"><?= number_format($value->gopay, 0) ?></td>
+										<td class="text-right"><?= number_format($value->bca_debit, 0) ?></td>
+										<td class="text-right"><?= number_format($value->cash, 0) ?></td>
+										<td class="text-right"><?= number_format($value->diskon, 0) ?></td>
+										<td class="text-right"><?= number_format($value->nominal_voucher, 0) ?></td>
+										<td class="text-right"><?= number_format($value->bayar, 0) ?></td>
+										<td class="text-right"><?= number_format($value->kembali, 0) ?></td>
+										<td class="text-right"><?= number_format($value->total, 0) ?></td>
 										<td><?= date('d/m/Y', strtotime($value->tgl_jam)) ?></td>
 
 										<?php if ($this->session->userdata('id_role') == '1') : ?>
@@ -193,7 +180,7 @@
 	</div> <!-- modal-bialog .// -->
 </div> <!-- modal.// -->
 
-<form action="<?= base_url('Match/invoice'); ?>" method="post">
+<form action="<?= base_url('Match/invoice'); ?>" method="get">
 	<div class="modal fade" id="modal-view">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -209,7 +196,7 @@
 							<tr>
 								<td><label for="">Tanggal</label></td>
 								<td>:</td>
-								<td> <input style="width: 350px;" class="form-control" type="input" value="<?= date("Y-m-d"); ?>" name="tanggal" id="picker"></td>
+								<td> <input style="width: 350px;" class="form-control" type="input" value="<?= date("Y-m-d"); ?>" id="picker"></td>
 							</tr>
 						</table>
 
@@ -226,7 +213,7 @@
 	</div>
 </form>
 
-<form action="<?= base_url('Match/laporan_invoice'); ?>" method="post">
+<form action="<?= base_url('Produk/laporan_invoice'); ?>" method="Get">
 	<div class="modal fade" id="modal-summary">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -242,7 +229,7 @@
 							<tr>
 								<td><label for="">Tanggal</label></td>
 								<td>:</td>
-								<td> <input style="width: 350px;" class="form-control" type="input" value="<?= date("Y-m-d"); ?>" name="tanggal" id="global"></td>
+								<td> <input style="width: 350px;" class="form-control" type="input" value="<?= date("Y-m-d"); ?>" id="global"></td>
 							</tr>
 						</table>
 

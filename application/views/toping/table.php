@@ -21,34 +21,46 @@
     </div>
 
     <div class="row">
-        <div class="container">
-            <div class="col-12">
+        <div class="container-fluid">
+            <div class="col-lg-12">
                 <?= $this->session->flashdata('message'); ?><br>
                 <table id="example1" class="table table-bordered" width="100%">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>NAMA Toping</th>
-                            <th>SATUAN</th>
+                            <th>Kategori</th>
                             <th class="text-right">STOK</th>
-                            <th class="text-right">HARGA</th>
+                            <th class="text-right">QTY TOPING</th>
+                            <th>SATUAN</th>
+                            <th class="text-right">HARGA Offline</th>
+                            <th class="text-right">HARGA Online</th>
                             <th>AKSI</th>
                         </tr>
                     </thead>
                     <thead style="background-color: white;">
                         <form action="<?= base_url("Toping/add_toping") ?>" method="POST">
-                            <input type="hidden" name="id_kategori" value="26">
                             <tr>
                                 <td></td>
                                 <td><input style="border:none; border-bottom: solid;" class="form-control" type="text" placeholder="Isi Nama Bahan" name="nm_produk" required></td>
+                                <td>
+                                    <select name="id_kategori" id="" class="select">
+                                        <option value="26">Toping</option>
+                                        <option value="29">Perlengkapan</option>
+                                    </select>
+                                </td>
+
+                                <td></td>
+                                <td><input style="border:none; border-bottom: solid;" class="form-control" type="number" name="qty_toping" required></td>
                                 <td><select style="border:none; border-bottom: solid;" class="form-control" name="id_satuan" required>
                                         <option value="">- Pilih Satuan -</option>
                                         <?php foreach ($satuan as $s) : ?>
                                             <option value="<?= $s->id_satuan ?>"><?= $s->satuan ?></option>
                                         <?php endforeach; ?>
                                     </select></td>
-                                <td><input style="border:none; border-bottom: solid;" class="form-control" type="number" name="stok" required></td>
-                                <td><input style="border:none; border-bottom: solid;" class="form-control" type="number" name="harga" required></td>
+
+                                <td><input style="border:none; border-bottom: solid;" class="form-control" type="number" name="harga_offline" required></td>
+                                <td><input style="border:none; border-bottom: solid;" class="form-control" type="number" name="harga_online" required></td>
                                 <td>
                                     <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
                                 </td>
@@ -58,13 +70,19 @@
                     <tbody>
                         <?php
                         $i = 1;
-                        foreach ($bahan as $k) : ?>
+                        foreach ($bahan as $k) :
+                            $hrga_ofline = $this->db->get_where('harga_toping', ['id_produk' => $k->id_produk, 'id_distibusi' => '1'])->row();
+                            $hrga_online = $this->db->get_where('harga_toping', ['id_produk' => $k->id_produk, 'id_distibusi' => '2'])->row();
+                        ?>
                             <tr>
                                 <td><?= $i; ?></td>
                                 <td><?= $k->nm_produk; ?></td>
-                                <td><?= $k->satuan; ?></td>
+                                <td><?= $k->nm_kategori; ?></td>
                                 <td class="text-right"><?= $k->stok; ?></td>
-                                <td class="text-right"><?= $k->harga; ?></td>
+                                <td class="text-right"><?= $k->qty_toping; ?></td>
+                                <td><?= $k->satuan; ?></td>
+                                <td class="text-right"><?= number_format($hrga_ofline->harga ?? 0, 0); ?></td>
+                                <td class="text-right"><?= number_format($hrga_online->harga ?? 0, 0); ?></td>
                                 <td>
                                     <?php if ($this->session->userdata('id_role') == '1') : ?>
                                         <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#myModal<?= $k->id_produk ?>"><i class="fa fa-edit"></i></button>
@@ -131,19 +149,25 @@
                         <thead>
                             <tr>
                                 <th>NAMA BAHAN</th>
+                                <th>KATEGORI</th>
                                 <th>SATUAN</th>
-                                <th width="20%">STOK</th>
+                                <th width="20%">Qty Toping</th>
                                 <th width="20%">HARGA</th>
                                 <th>AKSI</th>
                             </tr>
                         </thead>
                         <thead style="background-color: white;">
-                            <form action="<?= base_url("Match/edit_bahan") ?>" method="POST">
+                            <form action="<?= base_url("Toping/edit_bahan") ?>" method="POST">
                                 <tr>
                                     <input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->id_produk ?>" type="hidden" name="id_produk" required>
                                     <td><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->nm_produk ?>" type="text" placeholder="Isi Nama Bahan" name="nm_produk" required></td>
+                                    <td>
+                                        <select name="id_kategori" id="" class="select">
+                                            <option value="26" <?= $value->id_kategori == '26' ? 'selected' : '' ?>>Toping</option>
+                                            <option value="29" <?= $value->id_kategori == '29' ? 'selected' : '' ?>>Perlengkapan</option>
+                                        </select>
+                                    </td>
                                     <td><select style="border:none; border-bottom: solid;" class="form-control" name="id_satuan" required>
-
                                             <?php foreach ($satuan as $s) : ?>
                                                 <?php if ($s->id_satuan == $value->id_satuan) : ?>
                                                     <option value="<?= $s->id_satuan ?>" selected><?= $s->satuan ?></option>
@@ -152,7 +176,7 @@
                                                 <?php endif ?>
                                             <?php endforeach; ?>
                                         </select></td>
-                                    <td width="20%"><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->stok ?>" type="number" name="stok" required></td>
+                                    <td width="20%"><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->qty_toping ?>" type="number" name="qty_toping" required></td>
                                     <td width="20%"><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->harga ?>" type="number" name="harga"></td>
                                     <td>
                                         <button type="submit" class="btn btn-primary btn-sm">Simpan</button>

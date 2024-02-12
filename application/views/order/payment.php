@@ -46,8 +46,9 @@
 							?>
 							<div class="col-12">
 								<table width="100%">
-									<?php foreach ($cart as $key => $value) : ?>
-
+									<?php
+									$ttl_toping = 0;
+									foreach ($cart as $key => $value) : ?>
 										<tr>
 											<?php
 											$allCartItems = $this->cart->contents();
@@ -57,8 +58,9 @@
 											});
 											$toping = $productItems;
 
-											$subtotal_produk += $value['price'] * $value['qty'];
+											$subtotal_produk += ($value['price'] * $value['qty']) - $value['diskon'];
 											$jumlah_produk += $value['qty'];
+
 											?>
 
 											<td width="80">
@@ -73,15 +75,16 @@
 												<?= $value['qty'] ?> x Rp.<?= number_format($value['price']) ?>
 											</td>
 											<td class="text-right">
-												<strong>Rp.<?= number_format($value['qty'] * $value['price']) ?>
+												<?php if (empty($value['diskon'])) : ?>
+													<strong>Rp.<?= number_format($value['qty'] * $value['price']) ?></strong>
+												<?php else : ?>
+													<s><strong>Rp.<?= number_format($value['qty'] * $value['price']) ?></strong></s> <br>
+													<strong>Rp.<?= number_format(($value['qty'] * $value['price']) - $value['diskon']) ?></strong>
+												<?php endif ?>
 											</td>
 
 										</tr>
-										<?php
-										$ttl_toping = 0;
-										foreach ($toping as $t) :
-											$ttl_toping += $t['qty'] * $t['price'];
-										?>
+										<?php foreach ($toping as $t) : ?>
 											<tr>
 												<td></td>
 												<td>
@@ -94,7 +97,9 @@
 													<p class="text-right text-sm">Rp.<?= number_format($t['qty'] * $t['price']) ?>
 												</td>
 											</tr>
-										<?php endforeach ?>
+										<?php $ttl_toping += $t['qty'] * $t['price'];
+										endforeach ?>
+
 									<?php endforeach ?>
 
 
@@ -135,41 +140,31 @@
 										</div>
 
 										<div class="col-1 vcr_inv">
-											<button type="butt" class="btn btn-sm mt-1 btn-primary select_vcr_inv">Cek</button>
+											<button type="button" id="cek_voucher" class="btn btn-sm mt-1 btn-primary select_vcr_inv">Cek</button>
 										</div>
 									</div>
 								</form>
 								<div class="form-group row vcr_inv">
 									<label for="staticEmail" class="col-md-4 col-form-label">Voucher </label>
 									<div class="col-md-6">
-										<input type="text" id="nominal_voucher" name="nominal_voucher" class="form-control pembayaran select_vcr_inv" value="0">
+										<input type="text" readonly id="nominal_voucher" name="nominal_voucher" class="form-control pembayaran select_vcr_inv" value="0">
 										<input type="hidden" id="id_voucher" name="id_voucher" class="form-control pembayaran select_vcr_inv">
 									</div>
 								</div>
 
 
-								<?php if (!empty($diskon)) : ?>
-									<?php $total = $subtotal_produk + $ttl_toping  ?>
+
+								<?php $total = $subtotal_produk + $ttl_toping  ?>
 
 
-									<div class="form-group row">
-										<label for="staticEmail" class="col-md-4 col-form-label">Diskon</label>
-										<select id="data_diskon" class="form-control select col-3">
-											<option value="">- Pilih Diskon -</option>
-											<?php foreach ($diskon as $diskon) : ?>
-												<option value="<?= $diskon->id_diskon ?>"><?= $diskon->nm_diskon ?></option>
-											<?php endforeach; ?>
-										</select>
-										<input type="text" name="diskon" class="form-control pembayaran diskon col-3 ml-1" value="0" readonly>
+								<div class="form-group row" style="display: none;">
+									<label for="staticEmail" class="col-md-4 col-form-label">Diskon</label>
+
+									<div class="col-md-6">
+										<input type="text" name="diskon" class="form-control pembayaran diskon  " value="0">
 										<input type="hidden" name="id_diskon" class="form-control col-3 ml-1" id="id_diskon">
 									</div>
-
-
-
-
-								<?php else : ?>
-									<input type="hidden" name="diskon" class="form-control pembayaran diskon" value="0">
-								<?php endif; ?>
+								</div>
 								<div class="form-group row">
 									<label for="staticEmail" class="col-md-4 col-form-label">Total Pembayaran</label>
 									<div class="col-md-6">
@@ -177,60 +172,71 @@
 									</div>
 								</div>
 								<hr>
-								<!-- <div class="form-group row">
-									<label for="staticEmail" class="col-md-4 col-form-label">Customer</label>
-									<div class="col-md-6">
-										<select class="select" name="id_customer">
-											<option value="">-Pilih Customer-</option>
-											<?php foreach ($customer as $c) : ?>
-												<option value="<?= $c->id_customer ?>"><?= $c->nama ?></option>
-											<?php endforeach ?>
-										</select>
-									</div>
-								</div> -->
-								<div class="form-group row">
-									<label for="staticEmail" class="col-md-4 col-form-label">Cash</label>
-									<div class="col-md-6">
-										<input type="number" name="cash" class="form-control pembayaran" value="0" id="cash">
-									</div>
-								</div>
 
-								<div class="form-group row">
+
+								<style>
+									.hilang_row {
+										display: none;
+									}
+								</style>
+								<div class="form-group row hilang_row">
 									<label for="staticEmail" class="col-md-4 col-form-label">Mandiri Kredit</label>
 									<div class="col-md-6">
 										<input type="number" name="mandiri_kredit" value="0" class="form-control pembayaran" id="mandiri_kredit">
 									</div>
 								</div>
 
-								<div class="form-group row">
+								<div class="form-group row hilang_row">
 									<label for="staticEmail" class="col-md-4 col-form-label">Mandiri Debit</label>
 									<div class="col-md-6">
 										<input type="number" name="mandiri_debit" value="0" class="form-control pembayaran" id="mandiri_debit">
 									</div>
 								</div>
 
-								<div class="form-group row">
+								<div class="form-group row hilang_row">
 									<label for="staticEmail" class="col-md-4 col-form-label">BCA Kredit</label>
 									<div class="col-md-6">
 										<input type="number" name="bca_kredit" class="form-control pembayaran" value="0" id="bca_kredit">
 									</div>
 								</div>
 
-								<div class="form-group row">
+								<!-- <div class="form-group row hilang_row">
 									<label for="staticEmail" class="col-md-4 col-form-label">BCA Debit</label>
 									<div class="col-md-6">
 										<input type="number" name="bca_debit" class="form-control pembayaran" value="0" id="bca_debit">
 									</div>
+								</div> -->
+								<div class="form-group row">
+									<label for="staticEmail" class="col-md-4 col-form-label">GOPAY</label>
+									<div class="col-md-6">
+										<input type="number" name="shoope" class="form-control pembayaran pemgopay" tipe_pem="gopay" value="0" id="shoope">
+									</div>
+									<div class="col-md-2">
+										<button class="btn btn-primary btn-sm salin_nominal" tipe_pem="gopay" type="button"><i class="far fa-copy"></i> nominal</button>
+									</div>
 								</div>
 								<div class="form-group row">
-									<label for="staticEmail" class="col-md-4 col-form-label">Gopay</label>
+									<label for="staticEmail" class="col-md-4 col-form-label">GRABFOOD</label>
 									<div class="col-md-6">
-										<input type="number" name="shoope" class="form-control pembayaran" value="0" id="shoope">
+										<input type="number" name="bca_debit" class="form-control pembayaran pemgrab" tipe_pem="grab" value="0" id="bca_debit">
+									</div>
+									<div class="col-md-2">
+										<button class="btn btn-primary btn-sm salin_nominal" tipe_pem="grab" type="button"><i class="far fa-copy"></i> nominal</button>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="staticEmail" class="col-md-4 col-form-label">CASH</label>
+									<div class="col-md-6">
+										<input type="number" name="cash" class="form-control pembayaran pemcash" tipe_pem="cash" value="0" id="cash">
+									</div>
+									<div class="col-md-2">
+										<button class="btn btn-primary btn-sm salin_nominal" tipe_pem="cash" type="button"><i class="far fa-copy"></i> nominal</button>
 									</div>
 								</div>
 
 
 								<input type="hidden" name="total" id="total" value="<?= $total; ?>">
+								<input type="hidden" name="id_distribusi" value="<?= $dis; ?>">
 
 								<button class="btn btn-primary btn-block" style="background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%); border-color: #F7889D; font-weight: bold; color: #fff;" id="btn_bayar" disabled>PROSES BAYAR <i class="fas fa-money-check-alt"></i> <i class="fa fa-chevron-right" style="float: right;"></i></button>
 
@@ -356,24 +362,21 @@
 			bayar_default();
 		});
 
-		$(document).on('submit', '#form_vcr_inv', function(event) {
+		$(document).on('click', '#cek_voucher', function(event) {
 			event.preventDefault();
-			// var no_voucher = $(this).serializeArray();
-			// console.log(no_voucher[0].value);
-			$("#nominal_voucher").val('');
-			$("#id_voucher").val('');
+			var no_voucher = $('#data_vcr_inv').val();
+
 			$.ajax({
+				type: "get",
 				url: "<?php echo base_url('Match/cek_vcr_inv'); ?>",
-				method: 'POST',
-				data: new FormData(this),
-				contentType: false,
-				processData: false,
+				data: {
+					no_voucher: no_voucher
+				},
 				dataType: 'JSON',
 				success: function(data) {
-					// console.log(data.status);
-
 					if (data.status == 'ada') {
 						if (data.jenis == 1) {
+							// Mengatur nilai pada input nominal_voucher dan id_voucher
 							$("#nominal_voucher").val(data.jumlah);
 							$("#id_voucher").val(data.id_voucher);
 							var disc = $(".diskon").val();
@@ -385,12 +388,23 @@
 							} else {
 								$('.total_pembayaran').val(ttl_pembayaran)
 							}
-
 						} else {
 							var jumlah = parseInt($("#total").val()) > 0 ? parseInt($("#total").val()) * parseInt(data.jumlah) / 100 : 0;
+							var ttl = $('#total').val();
+
+							var ttl_pembayaran = parseFloat(ttl) - parseFloat(jumlah);
+
+
+
+							if (ttl_pembayaran < 0) {
+								$('.total_pembayaran').val('0')
+							} else {
+								$('.total_pembayaran').val(ttl_pembayaran)
+							}
 							$("#nominal_voucher").val(jumlah);
 							$("#id_voucher").val(data.id_voucher);
 						}
+						// Menampilkan pesan sukses jika voucher tersedia
 						Swal.fire({
 							toast: true,
 							position: 'top-end',
@@ -399,8 +413,8 @@
 							icon: 'success',
 							title: ' Voucher tersedia'
 						});
-
 					} else if (data.status == 'terpakai') {
+						// Menampilkan pesan error jika voucher sudah terpakai
 						Swal.fire({
 							toast: true,
 							position: 'top-end',
@@ -410,6 +424,7 @@
 							title: ' Voucher sudah terpakai'
 						});
 					} else if (data.status == 'expired') {
+						// Menampilkan pesan error jika voucher telah kedaluwarsa
 						Swal.fire({
 							toast: true,
 							position: 'top-end',
@@ -419,6 +434,7 @@
 							title: ' Voucher expired'
 						});
 					} else if (data.status == 'kosong') {
+						// Menampilkan pesan error jika voucher tidak tersedia
 						Swal.fire({
 							toast: true,
 							position: 'top-end',
@@ -428,11 +444,118 @@
 							title: ' Voucher tidak tersedia'
 						});
 					}
+					// Memanggil fungsi untuk melakukan pembayaran default
 					bayar_default();
 				}
 			});
 
+
+
 		});
+
+
+
+
+		// Mencegah form_vcr_inv melakukan submit secara otomatis
+		// $(document).on('click', '#cek_voucher', function(event) {
+		// 	event.preventDefault();
+
+
+		// 	// Menghapus nilai pada input nominal_voucher dan id_voucher
+		// 	$("#nominal_voucher").val('');
+		// 	$("#id_voucher").val('');
+
+		// 	// Melakukan request AJAX untuk memeriksa voucher
+		// 	$.ajax({
+		// 		url: "<?php echo base_url('Match/cek_vcr_inv'); ?>",
+		// 		method: 'POST',
+		// 		data: new FormData(this),
+		// 		contentType: false,
+		// 		processData: false,
+		// 		dataType: 'JSON',
+		// 		success: function(data) {
+		// 			if (data.status == 'ada') {
+		// 				if (data.jenis == 1) {
+		// 					// Mengatur nilai pada input nominal_voucher dan id_voucher
+		// 					$("#nominal_voucher").val(data.jumlah);
+		// 					$("#id_voucher").val(data.id_voucher);
+		// 					var disc = $(".diskon").val();
+		// 					var ttl = $('#total').val();
+		// 					var ttl_pembayaran = parseFloat(ttl) - parseFloat(disc) - parseFloat(data.jumlah);
+
+		// 					if (ttl_pembayaran < 0) {
+		// 						$('.total_pembayaran').val('0')
+		// 					} else {
+		// 						$('.total_pembayaran').val(ttl_pembayaran)
+		// 					}
+		// 				} else {
+		// 					var jumlah = parseInt($("#total").val()) > 0 ? parseInt($("#total").val()) * parseInt(data.jumlah) / 100 : 0;
+		// 					$("#nominal_voucher").val(jumlah);
+		// 					$("#id_voucher").val(data.id_voucher);
+		// 				}
+		// 				// Menampilkan pesan sukses jika voucher tersedia
+		// 				Swal.fire({
+		// 					toast: true,
+		// 					position: 'top-end',
+		// 					showConfirmButton: false,
+		// 					timer: 3000,
+		// 					icon: 'success',
+		// 					title: ' Voucher tersedia'
+		// 				});
+		// 			} else if (data.status == 'terpakai') {
+		// 				// Menampilkan pesan error jika voucher sudah terpakai
+		// 				Swal.fire({
+		// 					toast: true,
+		// 					position: 'top-end',
+		// 					showConfirmButton: false,
+		// 					timer: 3000,
+		// 					icon: 'error',
+		// 					title: ' Voucher sudah terpakai'
+		// 				});
+		// 			} else if (data.status == 'expired') {
+		// 				// Menampilkan pesan error jika voucher telah kedaluwarsa
+		// 				Swal.fire({
+		// 					toast: true,
+		// 					position: 'top-end',
+		// 					showConfirmButton: false,
+		// 					timer: 3000,
+		// 					icon: 'error',
+		// 					title: ' Voucher expired'
+		// 				});
+		// 			} else if (data.status == 'kosong') {
+		// 				// Menampilkan pesan error jika voucher tidak tersedia
+		// 				Swal.fire({
+		// 					toast: true,
+		// 					position: 'top-end',
+		// 					showConfirmButton: false,
+		// 					timer: 3000,
+		// 					icon: 'error',
+		// 					title: ' Voucher tidak tersedia'
+		// 				});
+		// 			}
+		// 			// Memanggil fungsi untuk melakukan pembayaran default
+		// 			bayar_default();
+		// 		}
+		// 	});
+		// });
+
+
+
+
+		$(".diskon").keyup(function() {
+			var diskon = $(this).val();
+			var ttl = $('#total').val();
+			var voucher = $("#nominal_voucher").val();
+
+			var ttl_pembayaran = parseFloat(ttl) - parseFloat(diskon) - parseFloat(voucher);
+			if (ttl_pembayaran < 0) {
+				$('.total_pembayaran').val('0')
+			} else {
+				$('.total_pembayaran').val(ttl_pembayaran)
+			}
+
+
+		})
 
 
 		$('#data_diskon').change(function() {
@@ -531,6 +654,18 @@
 			} else {
 				$('#btn_bayar').attr('disabled', 'true');
 			}
+
+
+		});
+
+		$('.salin_nominal').click(function(e) {
+			e.preventDefault();
+			var tipe_pem = $(this).attr('tipe_pem');
+			var total_pembayaran = $('.total_pembayaran').val()
+
+			$('.pem' + tipe_pem).val(total_pembayaran);
+			$('#btn_bayar').removeAttr('disabled');
+
 
 
 		});

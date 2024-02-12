@@ -6,6 +6,8 @@
     <span class="brand-text font-weight-light">CREPE</span>
   </a>
 
+
+
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
@@ -47,6 +49,23 @@
             </li>
           <?php endif; ?>
         <?php endforeach; ?>
+
+        <li class="nav-item has-treeview">
+          <a href="<?= base_url('sinkron') ?>" class="nav-link">
+            <i class="nav-icon fas fa-cloud-upload-alt "></i>
+            <p>
+              Upload data
+            </p>
+          </a>
+        </li>
+        <li class="nav-item has-treeview">
+          <a href="<?= base_url('download') ?>" class="nav-link">
+            <i class="nav-icon fas fa-cloud-download-alt"></i>
+            <p>
+              Download data
+            </p>
+          </a>
+        </li>
 
 
 

@@ -29,19 +29,23 @@
                 <table id="" class="table table-bordered" width="100%">
                     <thead>
                         <tr>
-                            <th>Product</th>
-                            <th>Stok Aktual</th>
-                            <th>Harga Jual</th>
+                            <th >Product</th>
+                            <th class="text-center">Stok Program</th>
+                            <th class="text-center">Stok Aktual</th>
+                            <th class="text-center">Satuan</th>
+                            <th class="text-center">Harga Jual</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($opname as $op) : ?>
                             <tr>
-                                <td><?= $op->nm_produk ?></td>
+                                <td ><?= $op->nm_produk ?></td>
+                                <td class="text-center"><?= $op->stok_program ?></td>
                                 <td>
 
                                 </td>
-                                <td><?= number_format($op->harga, 0) ?></td>
+                                <td class="text-center"><?= $op->satuan ?></td>
+                                <td class="text-center"><?= number_format($op->harga, 0) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

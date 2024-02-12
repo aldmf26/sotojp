@@ -694,10 +694,14 @@ public function form_opname(){
         'title'  => "Orchard | Create Opname Produk", 
         'produk'   => $this->db->join('tb_kategori', 'tb_produk.id_kategori = tb_kategori.id_kategori', 'left')->join('tb_satuan','tb_produk.id_satuan = tb_satuan.id_satuan','left')->get('tb_produk')->result(),
         'kategori'    => $this->db->get('tb_kategori')->result(),
-        'opname' => $this->db->join('tb_produk','tb_opname.id_produk = tb_produk.id_produk','left')
-        ->join('tb_kategori','tb_produk.id_kategori = tb_kategori.id_kategori','left')
-        ->join('tb_satuan','tb_produk.id_satuan = tb_satuan.id_satuan','left')
-        ->get_where('tb_opname',['kode_opname'=>$kode_opname])->result(),
+        'opname' => $this->db->query("SELECT a.id_stok_produk as id_opname, a.id_produk, a.stok_program, a.debit as stok_aktual, b.harga, b.sku, b.nm_produk, c.satuan, d.nm_kategori, a.ket as catatan, a.status
+            FROM tb_stok_produk as a 
+            left join tb_produk as b on b.id_produk = a.id_produk
+            left join tb_satuan as c on c.id_satuan = b.id_satuan
+            left join tb_kategori as d on d.id_kategori = b.id_kategori
+            where a.kode_stok_produk = '$kode_opname'
+            group by a.id_stok_produk;
+            ")->result(),
         'kode_opname' => $kode_opname
     );
     $this->load->view('produk/form_opname', $data);
@@ -1198,14 +1202,43 @@ function excel_app_det(){
 public function order()
 {
     $names = ['T1', 'T2', 'T3','T4','T5','T6','T7','T8','T9','T10'];
-    $cek = ['13', '20','26'];
+    $cek = ['13', '20','26','29'];
+    $this->cart->destroy();
     $kry = $this->db->where_not_in('nm_kry', $names)->get('tb_karyawan')->result();
+
+        if (empty($this->input->get('dis'))) {
+            $dis = '1';
+        } else {
+            $dis = $this->input->get('dis');
+        }
+
     $data = array(
         'title'  => "Crepe Order Produk", 
         'produk'   => $this->db->join('tb_kategori', 'tb_servis.id_kategori = tb_kategori.id_kategori', 'left')->get('tb_servis')->result(),
-        'toping'  => $this->db->get_where('tb_produk',['id_kategori' => '26'])->result(),
+        'toping'  => $this->db->query("SELECT a.id_produk, a.nm_produk, a.qty_toping, b.harga
+        FROM tb_produk as a
+        left JOIN(
+        SELECT b.id_produk, b.harga
+            FROM harga_toping as b 
+            where b.id_distibusi ='$dis'
+        ) as b on b.id_produk = a.id_produk
+        where a.id_kategori ='26'
+        order by a.nm_produk ASC
+        ;")->result(),
+
+        'perlengkapan'  => $this->db->query("SELECT a.id_produk, a.nm_produk, a.qty_toping, b.harga
+        FROM tb_produk as a
+        left JOIN(
+        SELECT b.id_produk, b.harga
+            FROM harga_toping as b 
+            where b.id_distibusi ='$dis'
+        ) as b on b.id_produk = a.id_produk
+        where a.id_kategori ='29'
+        order by a.nm_produk ASC
+        ;")->result(),
         'kategori'    => $this->db->where_not_in('id_kategori',$cek)->get('tb_kategori')->result(),
-        'diskon_servis' => $this->db->get('tb_diskon_servis')->result()
+        'diskon_servis' => $this->db->get('tb_diskon_servis')->result(),
+        'dis' => $dis
     );
     $this->load->view('order/tabel', $data);
 }
@@ -2029,162 +2062,25 @@ public function detail_invoice(){
 
 public function edit_pembayaran(){
     $id_invoice = $this->input->post('id_invoice');
-   
+   $no_nota = $this->input->post('no_nota');
     $data = [
-        'bayar' => $this->input->post('cash') +  $this->input->post('mandiri_kredit') +  $this->input->post('mandiri_debit') +  $this->input->post('bca_kredit') + $this->input->post('bca_debit') + $this->input->post('shoope') + $this->input->post('tokped'),
+        'bayar' => $this->input->post('cash')  + $this->input->post('bca_debit') + $this->input->post('gopay'),
         'cash' => $this->input->post('cash'),
         'mandiri_kredit' => $this->input->post('mandiri_kredit'),
         'mandiri_debit' => $this->input->post('mandiri_debit'),
         'bca_kredit' => $this->input->post('bca_kredit'),
         'bca_debit' => $this->input->post('bca_debit'),
-        'shoope' => $this->input->post('shoope'),
-        'tokped' => $this->input->post('tokped'),
+        'gopay' => $this->input->post('gopay'),
+        
     ];
 
     $this->db->where('id', $id_invoice);
     $this->db->update('tb_invoice', $data);
 
 
-    $no_nota = $this->input->post('no_nota');
-    $this->db->where('kd_gabungan',$no_nota);
-    $this->db->delete('tb_jurnal');
-
-    $cash = $this->input->post('cash');
-    $bca_kredit = $this->input->post('bca_kredit');
-    $bca_debit = $this->input->post('bca_debit');
-    $mandiri_kredit = $this->input->post('mandiri_kredit');
-    $mandiri_debit = $this->input->post('mandiri_debit');
-    $shoope = $this->input->post('shoope');
-    $tokped = $this->input->post('tokped');
-    if($this->input->post('debit') != 0){
-        $debit = $this->input->post('debit');
-    }else{
-        $debit = 0;
-    }
-
-    if($this->input->post('diskon') != 0){
-        $diskon = $this->input->post('diskon');
-    }else{
-        $diskon = 0;
-    }
-    
-    $bayar = $cash + $bca_kredit + $bca_debit + $mandiri_kredit + $mandiri_debit + $shoope + $tokped + $debit + $diskon;
-    $total = $this->input->post('total');
-    $tanggal = date('y-m-d' , strtotime($this->input->post('tgl_jam')));
-    $admin = $this->session->userdata('nm_user');
-    
-
-    $month = date('m' , strtotime($tanggal));
-        $year = date('Y' , strtotime($tanggal));
-
-    
-
-
-    if($cash != 0){
-        $get_kd_akun = $this->db->get_where('tb_akun',['id_akun' => 1])->result()[0];
-        $kode_akun = $this->db->where('id_akun', 1)->where('MONTH(tgl)', $month)->where('YEAR(tgl)',$year)->get('tb_jurnal')->num_rows();
-        if($kode_akun == 0){
-            $kode_akun = 1;
-        }else{
-            $kode_akun += 1;
-        }
-
-        $kembali = $bayar - $total;
-            $data_cash = [
-                'id_buku' => 1,
-                'kd_gabungan' => $no_nota,
-                'no_nota' => $get_kd_akun->kd_akun.date('my' , strtotime($tanggal)).'-'.$kode_akun,
-                'id_akun' => 1,
-                'debit' => $cash - $kembali,
-                'kredit' => 0,
-                'tgl' => $tanggal,
-                'tgl_input' => $this->input->post('tgl_jam'),
-                'admin' => $admin,
-                'ket' => 'Penjualan'
-            ];
-
-            $this->db->insert('tb_jurnal',$data_cash);
-    }
-
-    if($bca_kredit != 0 || $bca_debit != 0){
-        $get_kd_akun = $this->db->get_where('tb_akun',['id_akun' => 2])->result()[0];
-        $kode_akun = $this->db->where('id_akun', 2)->where('MONTH(tgl)', $month)->where('YEAR(tgl)',$year)->get('tb_jurnal')->num_rows();
-        if($kode_akun == 0){
-            $kode_akun = 1;
-        }else{
-            $kode_akun += 1;
-        }
-
-        $data_piutang_bca = [
-            'id_buku' => 1,
-            'id_akun' => 2,
-            'kd_gabungan' => $no_nota,
-            'no_nota' => $get_kd_akun->kd_akun.date('my' , strtotime($tanggal)).'-'.$kode_akun,
-            'debit' => $bca_kredit + $bca_debit,
-            'kredit' => 0,
-            'tgl' => $tanggal,
-            'tgl_input' => $this->input->post('tgl_jam'),
-            'admin' => $admin,
-            'ket' => 'Penjualan'
-        ];
-                
-        $this->db->insert('tb_jurnal',$data_piutang_bca);
-    }
-
-    if($mandiri_debit != 0 || $mandiri_kredit != 0){
-        $get_kd_akun = $this->db->get_where('tb_akun',['id_akun' => 3])->result()[0];
-        $kode_akun = $this->db->where('id_akun', 3)->where('MONTH(tgl)', $month)->where('YEAR(tgl)',$year)->get('tb_jurnal')->num_rows();
-        if($kode_akun == 0){
-            $kode_akun = 1;
-        }else{
-            $kode_akun += 1;
-        }
-
-        $data_piutang_mandiri = [
-                                'id_buku' => 1,
-                                'id_akun' => 3,
-                                'kd_gabungan' => $no_nota,
-                                'no_nota' => $get_kd_akun->kd_akun.date('my' , strtotime($tanggal)).'-'.$kode_akun,
-                                'debit' => $mandiri_kredit + $mandiri_debit,
-                                'kredit' => 0,
-                                'tgl' => $tanggal,
-                                'tgl_input' => $this->input->post('tgl_jam'),
-                                'admin' => $admin,
-                                'ket' => 'Penjualan'
-                            ];
-                
-            $this->db->insert('tb_jurnal',$data_piutang_mandiri);
-    }
-
-    $get_kd_akun = $this->db->get_where('tb_akun',['id_akun' => 4])->result()[0];
-        $kode_akun = $this->db->where('id_akun', 4)->where('MONTH(tgl)', $month)->where('YEAR(tgl)',$year)->get('tb_jurnal')->num_rows();
-        if($kode_akun == 0){
-            $kode_akun = 1;
-        }else{
-            $kode_akun += 1;
-        }
-
-    $kembali = $bayar - $total;
-        $data_penjualan = [
-            'id_buku' => 1,
-            'id_akun' => 4,
-            'kd_gabungan' => $no_nota,
-            'no_nota' => $get_kd_akun->kd_akun.date('my' , strtotime($tanggal)).'-'.$kode_akun,
-            'kredit' => $mandiri_debit + $mandiri_kredit + $bca_debit + $bca_kredit + $cash - $kembali,
-            'debit' => 0,
-            'tgl' => $tanggal,
-            'tgl_input' => $this->input->post('tgl_jam'),
-            'admin' => $admin,
-        ];
-                
-        $this->db->insert('tb_jurnal',$data_penjualan);
-
-
-
-
-
+   
     $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">Pembayaran berhasil diubah!<div class="ml-5 btn btn-sm"></div></div>');
-    redirect(base_url("match/detail_invoice?invoice=$no_nota"),'refresh');
+    redirect(base_url("produk/detail_invoice?invoice=$no_nota"),'refresh');
 }
 
 public function nota(){
@@ -7124,23 +7020,24 @@ function laporan_diagram_test()
 //==================================INVOICE======================================
 
 public function invoice(){
-    if (empty($this->input->post('tgl1'))) {
-        // $bulan = date('m');
-        // $year = date('Y');
-        $tanggal = date('Y-m-d');        
+    if (empty($this->input->get('tgl1'))) {
+        $dt_a = date('Y-m-d');
+        $dt_b   = date('Y-m-d');        
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Invoice",
-            // 'invoice' => $this->M_salon->daftar_invoice(" where MONTH(tb_invoice.tgl_jam) = '$bulan' AND YEAR(tb_invoice.tgl_jam) = $year AND status = 0"),
-            'invoice' => $this->M_salon->daftar_invoice(" where tgl_jam = '$tanggal' AND status = 0")  
-            
+            'title'  => "Crepe Signature | Daftar Invoice",
+            'invoice' => $this->M_salon->daftar_invoice(" where tgl_jam = '$dt_a' AND status = 0"),
+            'tgl1' => $dt_a,
+            'tgl2' => $dt_b
         );
     }else{
-        $dt_a   = $this->input->post('tgl1');
-        $dt_b   = $this->input->post('tgl2');
+        $dt_a   = $this->input->get('tgl1');
+        $dt_b   = $this->input->get('tgl2');
         // $dt_b = date('Y-m-d', strtotime('+1 days', strtotime($this->input->post('tgl2'))));
         $data = array(
-            'title'  => "Crepe Beauty | Daftar Invoice", 
-            'invoice' => $this->M_salon->daftar_invoice(" where tb_invoice.tgl_jam >= '$dt_a' AND tb_invoice.tgl_jam <= '$dt_b' AND status = 0")
+            'title'  => "Crepe Signature | Daftar Invoice", 
+            'invoice' => $this->M_salon->daftar_invoice(" where tb_invoice.tgl_jam >= '$dt_a' AND tb_invoice.tgl_jam <= '$dt_b' AND status = 0"),
+            'tgl1' => $dt_a,
+            'tgl2' => $dt_b
         );
     }
     $this->load->view('invoice/tabel', $data);
@@ -7239,6 +7136,18 @@ public function void(){
     $this->db->where('no_nota', $no_nota);
 	$this->db->update('tb_invoice', $data_void);
 
+    $data_void = [
+        'void' => '1',
+    ];
+    $this->db->where('no_nota', $no_nota);
+	$this->db->update('tb_pembelian', $data_void);
+
+    $data_void = [
+        'opname' => 'T',
+    ];
+    $this->db->where('no_nota', $no_nota);
+	$this->db->update('tb_stok_produk', $data_void);
+
     $detail_invoice = $this->db->get_where('tb_invoice',['no_nota' => $no_nota])->result()[0];
 
     $tanggal = date('Y-m-d', strtotime($detail_invoice->tgl_jam));
@@ -7253,114 +7162,18 @@ public function void(){
         $this->db->where('kd_dp', $detail_invoice->kd_dp);
 	    $this->db->update('tb_dp', $data_dp);
     }      
-    // foreach($dt_jurnal as $j){
-    //     if($j->id_akun == 1){
-    //         $kembali = $detail_invoice->bayar - $detail_invoice->total;
-    //         $cash = $detail_invoice->cash - $kembali;
-            
-    //         $debit = [
-    //             'debit' => $j->debit - $cash
-    //         ];
-    //         $this->db->where([
-    //             'tgl' => $tanggal,
-    //             'id_buku' => 1,
-    //             'id_akun' => 1
-    //             ]);
-    //         $this->db->update('tb_jurnal',$debit);    
-    //     }elseif($j->id_akun == 2){
-    //         $debit = [
-    //             'debit' => $j->debit - $detail_invoice->bca_debit - $detail_invoice->bca_kredit
-    //         ];
-    //         $this->db->where([
-    //             'tgl' => $tanggal,
-    //             'id_buku' => 1,
-    //             'id_akun' => 2
-    //             ]);
-    //         $this->db->update('tb_jurnal',$debit);
-    //     }elseif($j->id_akun == 3){
-    //         $debit = [
-    //             'debit' => $j->debit - $detail_invoice->mandiri_debit - $detail_invoice->mandiri_kredit
-    //         ];
-    //         $this->db->where([
-    //             'tgl' => $tanggal,
-    //             'id_buku' => 1,
-    //             'id_akun' => 3
-    //             ]);
-    //         $this->db->update('tb_jurnal',$debit);
-    //     }elseif($j->id_akun == 4){
-    //         $kembalian = $detail_invoice->bayar - $detail_invoice->total;
-    //         $cash = $detail_invoice->cash - $kembalian;
-
-    //         $kredit = [
-    //             'kredit' => $j->kredit - $detail_invoice->mandiri_debit - $detail_invoice->mandiri_kredit - $detail_invoice->bca_debit - $detail_invoice->bca_kredit - $cash
-    //         ];
-    //         $this->db->where([
-    //             'tgl' => $tanggal,
-    //             'id_buku' => 1,
-    //             'id_akun' => 4
-    //             ]);
-    //         $this->db->update('tb_jurnal',$kredit);
-    //     }
-    // }
 
 
-    
-    $detail_app=$this->db->get_where('tb_app',[
-        'no_nota' => $no_nota
-    ])->result();
-
-    $detail_pembelian=$this->db->get_where('tb_pembelian',[
-        'no_nota' => $no_nota
-    ])->result();
+   
 
 
     
     
     //hapus komisi app dan kembalian stok bahan
-    foreach($detail_app as $dapp){
-        $get_resep = $this->db->get_where('tb_resep',['id_servis' => $dapp->id_servis])->result();
-        if(!empty($get_resep)){
-            foreach($get_resep as $r){
-                $jml_takaran = $r->takaran * $dapp->qty;
-                $get_bahan = $this->db->get_where('tb_produk',['id_produk' => $r->id_produk])->result()[0];
-                $data_kembali = [
-                    'stok' => $get_bahan->stok + $jml_takaran
-                ];
-
-                $this->db->where('id_produk',$r->id_produk);
-                $this->db->update('tb_produk',$data_kembali);
-            } 
-        }
-        
-        $this->db->where('id_app',$dapp->id_app);
-        $this->db->delete('tb_komisi_app');
-    }  
+    
+    
     
 
-    //hapus komisi pembelian dan kembalikan stok produk
-    foreach($detail_pembelian as $dp){
-        $produk = $this->db->get_where('tb_produk', ['id_produk' => $dp->id_produk])->result()[0];
-
-        $data_stok_produk = [
-            'stok' => $produk->stok + $dp->jumlah
-        ];
-        $this->db->where('id_produk', $dp->id_produk);
-	    $this->db->update('tb_produk', $data_stok_produk);
-
-
-        $this->db->where('id_pembelian',$dp->id_pembelian);
-        $this->db->delete('komisi');
-    }
-    
-
-    //hapus di table app
-    $this->db->where('no_nota',$no_nota);
-    $this->db->delete('tb_app');
-
-
-    //hapus di table pembelian
-    $this->db->where('no_nota',$no_nota);
-    $this->db->delete('tb_pembelian');
     
     //data paid
     $data_paid = [
@@ -7902,7 +7715,7 @@ public function drop_voucher_invoice($id_voucher){
 
 public function cek_vcr_inv()
 {
-    $no_voucher = $this->input->post('no_voucher');
+    $no_voucher = $this->input->get('no_voucher');
     $cek = $this->db->get_where('tb_voucher_invoice',['no_voucher' => $no_voucher])->row();
 
     if($cek){
@@ -8295,8 +8108,8 @@ public function dt_servis()
 {
   $data = array(
       'title'  => "Crepe Signature", 
-      'kasbon' => $this->db->query("SELECT * FROM tb_servis as a left join tb_kategori as b on b.id_kategori = a.id_kategori")->result(),
-      'bahan' => $this->db->where('id_kategori','20')->get('tb_produk')->result(),
+      'kasbon' => $this->db->query("SELECT * FROM tb_servis as a left join tb_kategori as b on b.id_kategori = a.id_kategori order by a.id_servis DESC")->result(),
+      'bahan' => $this->db->get('tb_produk')->result(),
       'kategori' => $this->db->get_where('tb_kategori',['id_kategori !=' => '20'])->result()
   );
   $this->load->view('servis/tabel', $data);
@@ -8304,12 +8117,27 @@ public function dt_servis()
 
 public function add_servis()
 {
-   $data_input = array(
+   $data = array(
     'nm_servis'   => $this->input->post('servis'),
     'id_kategori'  => $this->input->post('id_kategori'),
-    'biaya'  => $this->input->post('biaya'),
-);
-   $res  = $this->M_salon->InputData('tb_servis', $data_input);
+    );
+   $this->db->insert('tb_servis',$data);
+   $inserted_id = $this->db->insert_id();
+
+   $data = [
+        'id_servis' => $inserted_id,
+        'distirbusi' => '1',
+        'harga' => $this->input->post('biaya_offline')
+   ];
+   $this->db->insert('tb_harga',$data);
+   $data = [
+        'id_servis' => $inserted_id,
+        'distirbusi' => '2',
+        'harga' => $this->input->post('biaya_online')
+   ];
+   $this->db->insert('tb_harga',$data);
+
+
    $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Data Berhasil Di Input !! <div class="ml-5 btn btn-sm"><i class="fas fa-cloud-download-alt fa-2x"></i></div></div>');
    redirect("Match/dt_servis");
 }
@@ -8459,7 +8287,7 @@ public function add_resep()
 
 public function get_input_resep(){
     $id_servis = $this->input->post('id_servis');
-    $bahan = $this->db->where('id_kategori','20')->get('tb_produk')->result();
+    $bahan = $this->db->get('tb_produk')->result();
 
     echo '
     
@@ -8493,13 +8321,13 @@ public function get_resep(){
     // $id = $_POST['id'];
     $id_servis = $this->input->post('id_servis');
     $resep = $this->db->join('tb_produk','tb_resep.id_produk = tb_produk.id_produk','left')->join('tb_satuan','tb_produk.id_satuan = tb_satuan.id_satuan')->get_where('tb_resep',['id_servis' => $id_servis])->result();
-    $bahan = $this->db->where('id_kategori','20')->get('tb_produk')->result();
+    $bahan = $this->db->where_in('id_kategori',['20','26'])->get('tb_produk')->result();
     foreach ($resep as $d) {
       
-      echo "<input type='text' value='".$d->id_resep."' name='id_resep' hidden>
+      echo "<input type='hidden' value='".$d->id_resep."' name='id_resep[]' >
       <tr>
       <td>
-      <select name='id_produk' class='form-control select' required>";
+      <select name='id_produk[]' class='form-control select' required>";
       foreach($bahan as $b){
           if($b->id_produk == $d->id_produk){
             echo "<option value='". $b->id_produk ."' selected>". $b->nm_produk ."</option>";
@@ -8510,7 +8338,7 @@ public function get_resep(){
   echo "</select>
       </td>
       <td width='15%'>
-      <input type='text' class='form-control' value='".$d->takaran."' name='takaran' required>
+      <input type='text' class='form-control' value='".$d->takaran."' name='takaran[]' required>
       </td>
       <td>
       <input type='text' class='form-control' value='".$d->satuan."' name='satuan' disabled>
@@ -8562,12 +8390,18 @@ public function get_btn_resep(){
 public function edit_resep()
 {
     $id_resep  = $this->input->post('id_resep');
-    $data_input = array(
-        'id_produk'   => $this->input->post('id_produk'),
-        'takaran'  => $this->input->post('takaran')
-    );
-    $where = array('id_resep' => $id_resep);
-    $res  = $this->M_salon->UpdateData('tb_resep', $data_input, $where);
+    $id_produk = $this->input->post('id_produk');
+    $takaran = $this->input->post('takaran');
+    
+    for ($x=0; $x <count($id_resep) ; $x++) { 
+        $data_input = array(
+            'id_produk'   => $id_produk[$x],
+            'takaran'  => $takaran[$x]
+        );
+        $where = array('id_resep' => $id_resep[$x]);
+        $res  = $this->M_salon->UpdateData('tb_resep', $data_input, $where);
+    }
+    
     echo "berhasil";
 }
 

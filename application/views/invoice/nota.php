@@ -26,8 +26,9 @@
 	</center>
 	<p align="center" class="huruf">Crepe Signature Banjarmasin</p>
 	<p style=" margin-top: -10px;" align="center" class="huruf">0811-518-870</p>
-	<p style=" margin-top: -10px;" align="center" class="huruf">Dutamall Banjarmasin</p>
-	<p style=" margin-top: -10px;" align="center" class="huruf">Kota Banjarmasin</p>
+	<p style=" margin-top: -10px;" align="center" class="huruf">ig:crepesignature.bjm</p>
+	<p style=" margin-top: -10px;" align="center" class="huruf">Dutamall</p>
+	<!-- <p style=" margin-top: -10px;" align="center" class="huruf">Kota Banjarmasin</p> -->
 
 
 	<table width="100%">
@@ -56,33 +57,31 @@
 		$qty_produk = 0;
 		?>
 		<?php if (!empty($produk)) : ?>
-			<?php foreach ($produk as $p) :
+			<?php $total_toping = 0;
+			foreach ($produk as $p) :
 				$toping = $this->db->query("SELECT a.*, b.nm_produk
 				FROM tb_pembelian as a 
 				left join tb_produk as b on b.id_produk = a.id_produk
-				where a.id_produk_toping = '$p->id_produk'
+				where a.id_produk_toping = '$p->id_produk' and a.no_nota = '$no_nota'
 				")->result();
 			?>
 				<?php
-				$total_produk += $p->jumlah * $p->harga;
+				$total_produk += ($p->jumlah * $p->harga) - $p->diskon;
 				$qty_produk += $p->jumlah;
 				$nm_servis = strtolower($p->nm_servis);
 				$hrg_produk = $p->jumlah * $p->harga;
 				$hrg_asli = $p->jumlah * $p->harga_asli;
+
 				?>
 				<tr class="huruf" style="margin-bottom: 2px;">
 					<td width="10%"><?= $p->jumlah; ?></td>
-					<td width="50%"><?= ucwords($nm_servis); ?> <br>
-						<?php if ($hrg_asli > $hrg_produk) : ?>
-							Discount (- <?= number_format($hrg_asli - $hrg_produk, 0) ?>)
-						<?php endif; ?>
-					</td>
+					<td width="50%"><?= ucwords($nm_servis); ?></td>
 
 					<td width="40%" style="text-align: right;">
-						<?php if ($hrg_asli > $hrg_produk) : ?>
+						<?php if (!empty($p->diskon)) : ?>
 
-							<strike><?= number_format($hrg_asli, 0); ?></strike><br>
-							<?= number_format($hrg_produk, 0); ?>
+							<strike><?= number_format($hrg_produk, 0); ?></strike><br>
+							<?= number_format($hrg_produk - $p->diskon, 0); ?>
 
 						<?php else : ?>
 							<?= number_format($hrg_produk, 0); ?>
@@ -90,9 +89,9 @@
 					</td>
 				</tr>
 				<?php
-				$total_toping = 0;
+
 				foreach ($toping as $t) :
-					$total_toping += $t->harga;
+
 				?>
 					<tr class="huruf" style="margin-bottom: 2px;">
 						<td width="10%">
@@ -103,39 +102,39 @@
 							<?= number_format($t->harga, 0); ?>
 						</td>
 					</tr>
-				<?php endforeach; ?>
-			<?php endforeach; ?>
+				<?php $total_toping += $t->harga;
+				endforeach; ?>
+			<?php
+			endforeach; ?>
 		<?php endif; ?>
 	</table>
 	<hr>
 	<table width="100%">
-		<!-- <?php if ($qty_produk != 0) : ?>
+		<?php if ($qty_produk != 0) : ?>
 			<tr class="huruf">
 				<td>Subtotal <?= $qty_produk; ?> Product</td>
-				<td style="text-align: right;"><?= number_format($total_produk, 0) ?></td>
+				<td style="text-align: right;"><?= number_format($total_produk + $total_toping, 0) ?></td>
 			</tr>
-		<?php endif; ?> -->
-		<tr class="huruf">
-			<td><strong>Total Tagihan</strong></td>
-			<td style="text-align: right;"><strong><?= number_format($total_produk + $total_toping, 0); ?></strong></td>
-		</tr>
-	</table>
-	<hr>
-	<table width="100%">
-
+		<?php endif; ?>
+		<?php if ($invoice->diskon != 0) : ?>
+			<tr class="huruf">
+				<td>Diskon</td>
+				<td style="text-align: right;color: red; ">-<?= number_format($invoice->diskon, 0); ?></td>
+			</tr>
+		<?php endif; ?>
 		<?php if ($invoice->nominal_voucher > 0) : ?>
 			<tr class="huruf">
 				<td>Voucher</td>
 				<td style="text-align: right;"><?= number_format($invoice->nominal_voucher, 0); ?></td>
 			</tr>
 		<?php endif; ?>
-
-		<?php if ($invoice->diskon != 0) : ?>
-			<tr class="huruf">
-				<td>Diskon</td>
-				<td style="text-align: right;"><?= number_format($invoice->diskon, 0); ?></td>
-			</tr>
-		<?php endif; ?>
+		<tr class="huruf">
+			<td><strong>Grand Total</strong></td>
+			<td style="text-align: right;"><strong><?= number_format($total_produk + $total_toping - $invoice->diskon - $invoice->nominal_voucher, 0); ?></strong></td>
+		</tr>
+	</table>
+	<hr>
+	<table width="100%">
 
 
 		<?php if ($invoice->bca_kredit != 0) : ?>
@@ -146,7 +145,7 @@
 		<?php endif; ?>
 		<?php if ($invoice->bca_debit != 0) : ?>
 			<tr class="huruf">
-				<td>Debit BCA</td>
+				<td>GRABFOOD</td>
 				<td style="text-align: right;"><?= number_format($invoice->bca_debit, 0); ?></td>
 			</tr>
 		<?php endif; ?>
@@ -168,9 +167,15 @@
 				<td style="text-align: right;"><?= number_format($invoice->cash, 0); ?></td>
 			</tr>
 		<?php endif; ?>
+		<?php if ($invoice->gopay != 0) : ?>
+			<tr class="huruf">
+				<td>GOPAY</td>
+				<td style="text-align: right;"><?= number_format($invoice->gopay, 0); ?></td>
+			</tr>
+		<?php endif; ?>
 		<tr class="huruf">
 			<td><strong>Total Pembayaran</strong></td>
-			<td style="text-align: right;"><strong><?= number_format($invoice->bayar, 0); ?></strong></td>
+			<td style="text-align: right;"><strong><?= number_format($invoice->total, 0); ?></strong></td>
 		</tr>
 		<tr class="huruf">
 			<td>Kembalian</td>
@@ -180,10 +185,17 @@
 	<hr>
 	<hr>
 	<p class="huruf" align="center">Thank You For Next Order !</p>
-	<p class="huruf" align="center" style="margin-top: -10px;">Call 0811-518-870</p>
-	<p class="huruf" align="center">Instagram : crepesignature.bjm</p>
-	<p class="huruf" align="center">Terbayar</p>
-	<p class="huruf" align="center" style="margin-top: -10px;"><-------- <?= date('d M Y h:i'); ?> --------></p>
+	<!-- <p class="huruf" align="center" style="margin-top: -10px;">Call 0811-518-870</p> -->
+	<!-- <p class="huruf" align="center">Instagram : crepesignature.bjm</p> -->
+	<!-- <p class="huruf" align="center">Terbayar</p>
+	<p class="huruf" align="center" style="margin-top: -10px;"><-------- <?= date('d M Y h:i'); ?> -------->
+	<h4 class="huruf" align="center">NOMOR ANTRIAN</h4>
+	<h4 align="center"><?= $invoice->antrian ?></h4>
+	<p class="huruf" align="center">Tunggu nomor kamu dipanggil</p>
+	<br>
+	<br>
+	<br>
+	<br>
 
 
 	<!-- <script>

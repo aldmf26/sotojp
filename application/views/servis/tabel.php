@@ -34,7 +34,8 @@
 					<tr>
 						<th>NAMA SERVIS</th>
 						<th>KATEGORI</th>
-						<th>HARGA</th>
+						<th>HARGA OFFLINE</th>
+						<th>HARGA ONLINE</th>
 						<th>AKSI</th>
 					</tr>
 				</thead>
@@ -51,7 +52,8 @@
 									<?php endforeach ?>
 								</select>
 							</td>
-							<td><input style="border:none; border-bottom: solid;" class="form-control" type="number" placeholder="Cth : 100000" name="biaya" required></td>
+							<td><input style="border:none; border-bottom: solid;" class="form-control" type="number" placeholder="Cth : 100000" name="biaya_offline" required></td>
+							<td><input style="border:none; border-bottom: solid;" class="form-control" type="number" placeholder="Cth : 100000" name="biaya_online" required></td>
 							<td>
 								<button type="submit" class="btn btn-primary btn-sm">Simpan</button>
 							</td>
@@ -79,13 +81,19 @@
 				<tbody>
 					<?php
 					$i = 1;
-					foreach ($kasbon as $k) : ?>
+					foreach ($kasbon as $k) :
+						$biaya = $this->db->get_where('tb_harga', ['id_servis' => $k->id_servis])->result()
+					?>
 						<tr>
 							<td><?= $i; ?></td>
 							<td><?= $k->nm_servis; ?> </td>
 							<td><?= $k->nm_kategori; ?></td>
-							<td><?= number_format($k->biaya, 0); ?></td>
-							<!-- <td><?= $k->komisi; ?>%</td> -->
+							<td>
+								<?php foreach ($biaya as $b) : ?>
+									<?= $b->distirbusi == '1' ? 'Offline:' : 'Online:' ?> <?= number_format($b->harga, 0) ?> <br>
+								<?php endforeach ?>
+
+							</td>
 							<td class="get_btn_resep" id="td_btn<?= $k->id_servis ?>"></td>
 							<td>
 								<?php if ($this->session->userdata('id_role') != "3") : ?>
@@ -208,26 +216,6 @@
 							</tr>
 						</thead>
 						<tbody id="input_resep">
-							<!-- <form method="post" class="input_resep">
-		<input type="text" id="id_servis_bahan" value="" name="id_servis" hidden>
-			<tr>
-				<td width="50%">
-					<select name="id_produk" id="id_produk" class="form-control select" required>
-						<option value="">Pilih Bahan</option>
-						<?php foreach ($bahan as $b) : ?>
-						<option value="<?= $b->id_produk ?>"><?= $b->nm_produk ?></option>
-						<?php endforeach; ?>
-					</select>
-				</td>
-				<td width="30%">
-					<input type="number" class="form-control" name="takaran" id="takaran" required>
-				</td>
-				<td>
-					<input type="text" class="form-control" name="satuan" id="satuan" disabled>		
-				</td>
-				<td width="20%"><button type="submit" class="btn btn-sm btn-info">Tambah</button></td>
-			</tr>
-		</form>	 -->
 						</tbody>
 					</table>
 				</form>

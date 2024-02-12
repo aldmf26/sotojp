@@ -24,7 +24,7 @@ class Bahan extends CI_Controller
                 group by b.id_produk
             ) as b on b.id_produk = a.id_produk
             left join tb_satuan as c on c.id_satuan = a.id_satuan
-            where a.id_kategori = '20'
+            where a.id_kategori in('20')
             ")->result(),
             'satuan' => $this->db->get('tb_satuan')->result()
         );

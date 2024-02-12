@@ -143,28 +143,37 @@ class M_salon extends CI_model
 		return $data->result();
 	}
 
-	public function search_produk($search_keyword, $kategori)
+	public function search_produk($search_keyword, $kategori, $id_distribusi)
 	{
-		$this->db->select('*');
-		$this->db->from('tb_servis');
+		// $this->db->select('*');
+		// $this->db->from('tb_servis');
 
-		$this->db->where('id_kategori', $kategori);
-		$this->db->like('nm_servis', $search_keyword);
+		// $this->db->where('id_kategori', $kategori);
+		// $this->db->like('nm_servis', $search_keyword);
 
-		$this->db->order_by('nm_servis', 'asc');
-		$query = $this->db->get();
+		// $this->db->order_by('nm_servis', 'asc');
+		// $query = $this->db->get();
 
-		return $query->result();
+		$produk = $this->db->query("SELECT a.id_servis, a.nm_servis, b.harga as biaya, a.foto
+		FROM tb_servis as a
+		left join tb_harga as b on b.id_servis = a.id_servis
+		where a.nm_servis like '%$search_keyword%' and a.id_kategori ='$kategori' and b.distirbusi = '$id_distribusi'
+		order by a.nm_servis ASC;
+ 		")->result();
+
+		return $produk;
 	}
-	public function search_produk_2($search_keyword)
+	public function search_produk_2($search_keyword, $id_distribusi)
 	{
-		$this->db->select('*');
-		$this->db->from('tb_servis');
-		$this->db->like('nm_servis', $search_keyword);
-		$this->db->order_by('nm_servis', 'asc');
-		$query = $this->db->get();
 
-		return $query->result();
+		$produk = $this->db->query("SELECT a.id_servis, a.nm_servis, b.harga as biaya , a.foto
+		FROM tb_servis as a
+		left join tb_harga as b on b.id_servis = a.id_servis
+		where a.nm_servis like '%$search_keyword%' and b.distirbusi = '$id_distribusi'
+		order by a.nm_servis ASC;
+ 		")->result();
+
+		return $produk;
 	}
 
 	public function get_opname($search_keyword, $kategori)
