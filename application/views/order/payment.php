@@ -157,7 +157,7 @@
 								<?php $total = $subtotal_produk + $ttl_toping  ?>
 
 
-								<div class="form-group row" style="display: none;">
+								<div class="form-group row">
 									<label for="staticEmail" class="col-md-4 col-form-label">Diskon</label>
 
 									<div class="col-md-6">
