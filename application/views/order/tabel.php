@@ -653,6 +653,7 @@
 		$(document).on('click', '.klikdetail', function(e) {
 			e.preventDefault();
 			$('.qty_toping').val(0);
+			$('.btn-simpan').prop('disabled', true);
 			var id_produk = $(this).attr('id_produk');
 			var id_distribusi = $("#id_distribusi").val();
 			$.ajax({

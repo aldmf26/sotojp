@@ -108,7 +108,7 @@ class Produk extends CI_Controller
 
 
 
-        $detail = $this->db->query("SELECT a.id_servis, a.nm_servis, b.harga as biaya, a.foto, c.diskon
+        $detail = $this->db->query("SELECT a.id_servis, a.nm_servis, b.harga as biaya, a.foto, c.diskon, a.id_kategori
         FROM tb_servis as a 
         left join tb_harga as b on b.id_servis = a.id_servis
         LEFT JOIN diskon_item as c ON c.id_servis = a.id_servis AND c.start_date <= '$tgl' AND c.finish_date >= '$tgl' and c.id_distribusi = '$distribusi'
@@ -127,13 +127,14 @@ class Produk extends CI_Controller
             'satuan'  => 'Pcs',
             'catatan' => $catatan,
             'kategori' => 'product',
-            'diskon' => $detail->diskon
+            'diskon' => $detail->diskon,
+            'kategori_produk' => $detail->id_kategori
         );
         $this->cart->insert($data);
 
         for ($x = 0; $x < count($id_toping); $x++) {
             $random = random_string('alnum', 8);
-            $toping = $this->db->query("SELECT a.id_produk, a.nm_produk, a.qty_toping, b.harga, a.foto
+            $toping = $this->db->query("SELECT a.id_produk, a.nm_produk, a.qty_toping, b.harga, a.foto, a.id_kategori
             FROM tb_produk as a
             left JOIN(
             SELECT b.id_produk, b.harga
@@ -156,7 +157,8 @@ class Produk extends CI_Controller
                     'satuan'  => 'Pcs',
                     'kategori' => 'toping',
                     'ibu' => $id_produk,
-                    'diskon' => 0
+                    'diskon' => 0,
+                    'kategori_produk' => $toping->id_kategori
                 );
                 $this->cart->insert($data);
             }
@@ -499,7 +501,7 @@ class Produk extends CI_Controller
         $tgl2 = $this->input->get('tgl2');
 
         $summary = $this->db->query("SELECT 'CASH' AS payment_method, 
-        SUM(CASE WHEN cash > 0 THEN cash - kembali - diskon ELSE 0 END) AS total_amount, 
+        SUM(CASE WHEN cash > 0 THEN cash - kembali  ELSE 0 END) AS total_amount, 
         COUNT(CASE WHEN cash > 0 THEN no_nota END) AS transaction_count
         FROM tb_invoice
         WHERE tgl_jam BETWEEN '$tgl1' AND '$tgl2' and status = 0
@@ -507,7 +509,7 @@ class Produk extends CI_Controller
         UNION
         
         SELECT 'GOPAY' AS payment_method, 
-                SUM(CASE WHEN gopay > 0 THEN gopay - kembali - diskon ELSE 0 END) AS total_amount, 
+                SUM(CASE WHEN gopay > 0 THEN gopay - kembali  ELSE 0 END) AS total_amount, 
                 COUNT(CASE WHEN gopay > 0 THEN no_nota END) AS transaction_count
         FROM tb_invoice
         WHERE tgl_jam BETWEEN '$tgl1' AND '$tgl2' and status = 0
@@ -516,7 +518,7 @@ class Produk extends CI_Controller
         UNION
         
         SELECT 'GRABFOOD' AS payment_method, 
-                SUM(CASE WHEN bca_debit > 0 THEN bca_debit - kembali - diskon  ELSE 0 END) AS total_amount, 
+                SUM(CASE WHEN bca_debit > 0 THEN bca_debit - kembali   ELSE 0 END) AS total_amount, 
                 COUNT(CASE WHEN bca_debit > 0 THEN no_nota END) AS transaction_count
         FROM tb_invoice
         WHERE tgl_jam BETWEEN '$tgl1' AND '$tgl2' and status = 0;")->result();

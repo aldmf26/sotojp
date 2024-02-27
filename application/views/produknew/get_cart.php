@@ -73,7 +73,11 @@
                             <p class=" text-sm float-right">+ Rp. <?= number_format($t['qty'] * $t['price'], 0) ?></p>
                         </div>
                         <div class="col-1">
-                            <a class=" text-sm delete_cart mr-2" id="<?= $t['rowid'] ?>" href="javascript:void(0)" style="margin-top: 50px;"><i class="fa fa-times"></i></a>
+                            <?php if ($t['kategori_produk'] == '29') : ?>
+                            <?php else : ?>
+                                <a class=" text-sm delete_cart mr-2" id="<?= $t['rowid'] ?>" href="javascript:void(0)" style="margin-top: 50px;"><i class="fa fa-times"></i></a>
+                            <?php endif ?>
+
                         </div>
                     </div>
                 <?php $total_toping += $t['qty'] * $t['price'];
