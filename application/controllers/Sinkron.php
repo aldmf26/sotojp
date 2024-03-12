@@ -45,6 +45,11 @@ class Sinkron extends CI_Controller
         // Siapkan data yang akan dikirim ke API
         $data1 = [];
         foreach ($tb_order as $t) {
+            $data = [
+                'import' => 'Y'
+            ];
+            $this->db->where('id', $t->id);
+            $this->db->update('tb_invoice', $data);
             $data1[] = [
                 'no_nota' => $t->no_nota,
                 'total' => $t->total,
@@ -81,11 +86,7 @@ class Sinkron extends CI_Controller
         $responseBody = $response->getBody()->getContents();
 
         // Tampilkan respons dari server
-        $data = [
-            'import' => 'Y'
-        ];
-        $this->db->where('import', 'T');
-        $this->db->update('tb_invoice', $data);
+
 
         $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">Pembayaran berhasil diubah!<div class="ml-5 btn btn-sm"></div></div>');
 
@@ -99,6 +100,11 @@ class Sinkron extends CI_Controller
         // Siapkan data yang akan dikirim ke API
         $data1 = [];
         foreach ($tb_pembelian as $t) {
+            $data = [
+                'import' => 'Y'
+            ];
+            $this->db->where('id_pembelian', $t->id_pembelian);
+            $this->db->update('tb_pembelian', $data);
             $data1[] = [
                 'no_nota' => $t->no_nota,
                 'id_karyawan' => $t->id_karyawan,
@@ -127,11 +133,7 @@ class Sinkron extends CI_Controller
         $responseBody = $response->getBody()->getContents();
 
         // Tampilkan respons dari server
-        $data = [
-            'import' => 'Y'
-        ];
-        $this->db->where('import', 'T');
-        $this->db->update('tb_pembelian', $data);
+
 
         $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">Pembayaran berhasil diubah!<div class="ml-5 btn btn-sm"></div></div>');
 

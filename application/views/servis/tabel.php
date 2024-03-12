@@ -162,11 +162,10 @@
 						<thead>
 							<tr>
 								<th>NAMA SERVIS</th>
-								<th width="15%">JAM</th>
-								<th width="15%">MENIT</th>
-								<th width="20%">BIAYA</th>
-								<!-- <th width="15%">KOMISI</th> -->
-								<th width="10%">AKSI</th>
+								<th>KATEGORI</th>
+								<th>HARGA OFFLINE</th>
+								<th>HARGA ONLINE</th>
+								<th>Aksi</th>
 							</tr>
 						</thead>
 						<thead style="background-color: white;">
@@ -174,9 +173,18 @@
 								<tr>
 									<input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->id_servis ?>" type="hidden" name="id_servis" required>
 									<td><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->nm_servis ?>" type="text" placeholder="Isi Nama Servis" name="servis" required></td>
-									<td><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->durasi ?>" type="number" placeholder="Cth : 1" name="jam" required></td>
-									<td><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->menit ?>" type="number" placeholder="Cth : 30" name="menit" required></td>
-									<td><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->biaya ?>" type="number" placeholder="Cth : 30" name="biaya" required></td>
+
+									<td>
+										<select name="id_kategori" id="" class="select">
+											<option value="">Pilih Kategori</option>
+											<?php foreach ($kategori as $k) : ?>
+												<option value="<?= $k->id_kategori ?>" <?= $k->id_kategori == $value->id_kategori ? 'selected' : '' ?>><?= $k->nm_kategori ?></option>
+											<?php endforeach ?>
+										</select>
+									</td>
+
+									<td><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->harga_offline ?>" type="number" name="biaya_offline" required></td>
+									<td><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->hrga_online ?>" type="number" name="biaya_online" required></td>
 									<!-- <td><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->komisi ?>" type="text" placeholder="Cth : 30" name="komisi" required></td> -->
 									<td>
 										<button type="submit" class="btn btn-primary btn-sm">Simpan</button>

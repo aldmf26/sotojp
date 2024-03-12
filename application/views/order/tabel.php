@@ -253,6 +253,7 @@
 				<h5 style="font-size: 1rem;">ADD PERLENGKAPAN</h5>
 				<div class="buying-selling-group" id="buying-selling-group" data-toggle="buttons">
 					<input type="hidden" id="distribusi" value="<?= $dis ?>">
+
 					<div class="row">
 						<?php foreach ($perlengkapan as $key => $t) : ?>
 							<div class="col-lg-3">
@@ -653,9 +654,16 @@
 		$(document).on('click', '.klikdetail', function(e) {
 			e.preventDefault();
 			$('.qty_toping').val(0);
-			$('.btn-simpan').prop('disabled', true);
+			var id_kategori = $(this).attr('id_kategori');
+			if (id_kategori == 28 || id_kategori == 26) {
+				$('.btn-simpan').prop('disabled', false);
+			} else {
+				$('.btn-simpan').prop('disabled', true);
+			}
 			var id_produk = $(this).attr('id_produk');
 			var id_distribusi = $("#id_distribusi").val();
+
+
 			$.ajax({
 				type: "get",
 				url: "<?= base_url('Produk/detail_order') ?>",
@@ -665,6 +673,7 @@
 				},
 				success: function(response) {
 					$('.load_detail').html(response);
+
 				}
 			});
 
@@ -679,16 +688,23 @@
 			var total = parseFloat(qty) - 1;
 			$('.qty_toping' + id_toping).val(total);
 
+			var id_kategori = $("#kategori").val();
+
 			var totalSum = 0;
 			$('.qty_perlengkapan').each(function() {
 				totalSum += parseFloat($(this).val()) || 0;
 			});
 
-			if (parseFloat(totalSum) > 0) {
-				$('.btn-simpan').prop('disabled', false);
+			if (id_kategori == 28 || id_kategori == 26) {
+
 			} else {
-				$('.btn-simpan').prop('disabled', true);
+				if (parseFloat(totalSum) > 0) {
+					$('.btn-simpan').prop('disabled', false);
+				} else {
+					$('.btn-simpan').prop('disabled', true);
+				}
 			}
+
 
 
 
@@ -701,17 +717,22 @@
 			var qty = $('.qty_toping' + id_toping).val();
 			var total = parseFloat(qty) + 1;
 			$('.qty_toping' + id_toping).val(total);
+			var id_kategori = $("#kategori").val();
 
 			var totalSum = 0;
 			$('.qty_perlengkapan').each(function() {
 				totalSum += parseFloat($(this).val()) || 0;
 			});
+			if (id_kategori == 28 || id_kategori == 26) {
 
-			if (parseFloat(totalSum) > 0) {
-				$('.btn-simpan').prop('disabled', false);
 			} else {
-				$('.btn-simpan').prop('disabled', true);
+				if (parseFloat(totalSum) > 0) {
+					$('.btn-simpan').prop('disabled', false);
+				} else {
+					$('.btn-simpan').prop('disabled', true);
+				}
 			}
+
 
 		});
 	});

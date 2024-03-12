@@ -40,7 +40,7 @@ class Produk extends CI_Controller
 
         if ($kategori == '0') {
 
-            $load = $this->db->query("SELECT a.id_servis, a.nm_servis, b.harga as biaya, a.foto, c.diskon
+            $load = $this->db->query("SELECT a.id_servis, a.nm_servis, b.harga as biaya, a.foto, c.diskon, a.id_kategori
             FROM tb_servis as a
             LEFT JOIN tb_harga as b ON b.id_servis = a.id_servis
             LEFT JOIN diskon_item as c ON c.id_servis = a.id_servis AND c.start_date <= '$tgl' AND c.finish_date >= '$tgl' and c.id_distribusi ='$id_distribusi'
@@ -50,7 +50,7 @@ class Produk extends CI_Controller
              ")->result();
         } else {
 
-            $load = $this->db->query("SELECT a.id_servis, a.nm_servis, b.harga as biaya, a.foto, c.diskon
+            $load = $this->db->query("SELECT a.id_servis, a.nm_servis, b.harga as biaya, a.foto, c.diskon,a.id_kategori
             FROM tb_servis as a
             LEFT JOIN tb_harga as b ON b.id_servis = a.id_servis
             LEFT JOIN diskon_item as c ON c.id_servis = a.id_servis AND c.start_date <= '$tgl' AND c.finish_date >= '$tgl' and c.id_distribusi ='$id_distribusi'
@@ -70,7 +70,7 @@ class Produk extends CI_Controller
 
     function kategori()
     {
-        $cek = ['13', '20', '26', '29'];
+        $cek = ['13', '20', '29'];
         $data = [
             'kategori' => $this->db->where_not_in('id_kategori', $cek)->get('tb_kategori')->result(),
         ];

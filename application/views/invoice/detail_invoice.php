@@ -110,190 +110,103 @@
 
 
 
-					<?php if (date('Y-m-d') !=  $invoice->tgl_jam && $this->session->userdata('id_role') != '1') : ?>
 
 
+
+
+					<input type="hidden" name="total" id="total" value="<?= $total_produk + $total_toping; ?>">
+					<hr>
+					<form action="<?= base_url(); ?>/match/edit_pembayaran" method="POST">
 						<?php if ($invoice->nominal_voucher > 0) : ?>
 							<div class="form-group row">
 								<label for="nominal_voucher" class="col-md-4 col-form-label">Voucher</label>
 								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->nominal_voucher, 0); ?></p>
+									<input type="number" class="form-control pembayaran" id="nominal_voucher" value="<?= $invoice->nominal_voucher; ?>" name="nominal_voucher" readonly>
 								</div>
 							</div>
+						<?php else : ?>
+							<input type="hidden" class="form-control pembayaran" id="nominal_voucher" value="0" name="nominal_voucher" readonly>
 						<?php endif; ?>
 
 						<?php if ($invoice->diskon != 0) : ?>
 							<div class="form-group row">
-								<label for="diskon" class="col-md-6 col-form-label">Diskon</label>
+								<label for="diskon" class="col-md-4 col-form-label">Diskon</label>
 								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->diskon, 0); ?></p>
+									<input type="number" class="form-control pembayaran" id="diskon" value="<?= $invoice->diskon; ?>" name="diskon" readonly>
 								</div>
 							</div>
+						<?php else : ?>
+							<input type="hidden" class="form-control pembayaran" id="diskon" value="0" name="diskon" readonly>
 						<?php endif; ?>
 
-						<?php if ($invoice->cash > 0) : ?>
-							<div class="form-group row">
-								<label for="cash" class="col-md-6 col-form-label">Cash</label>
-								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->cash, 0); ?></p>
-								</div>
-							</div>
-						<?php endif; ?>
-						<?php if ($invoice->mandiri_kredit > 0) : ?>
-							<div class="form-group row">
-								<label for="mandiri_kredit" class="col-md-6 col-form-label">Mandiri Kredit</label>
-								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->mandiri_kredit, 0); ?></p>
-								</div>
-							</div>
-						<?php endif; ?>
-						<?php if ($invoice->mandiri_debit > 0) : ?>
-							<div class="form-group row">
-								<label for="mandiri_debit" class="col-md-6 col-form-label">Mandiri Debit</label>
-								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->mandiri_debit, 0); ?></p>
-								</div>
-							</div>
-						<?php endif; ?>
-						<?php if ($invoice->bca_kredit > 0) : ?>
-							<div class="form-group row">
-								<label for="bca_kredit" class="col-md-6 col-form-label">BCA Kredit</label>
-								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->bca_kredit, 0); ?></p>
-								</div>
-							</div>
-						<?php endif; ?>
-						<?php if ($invoice->bca_debit > 0) : ?>
-							<div class="form-group row">
-								<label for="bca_debit" class="col-md-6 col-form-label">BCA Debit</label>
-								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->bca_debit, 0); ?></p>
-								</div>
-							</div>
-						<?php endif; ?>
-						<?php if ($invoice->shoope > 0) : ?>
-							<div class="form-group row">
-								<label for="bca_debit" class="col-md-6 col-form-label">Shoope</label>
-								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->shoope, 0); ?></p>
-								</div>
-							</div>
-						<?php endif; ?>
-						<?php if ($invoice->tokped > 0) : ?>
-							<div class="form-group row">
-								<label for="bca_debit" class="col-md-6 col-form-label">Tokopedia</label>
-								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->tokped, 0); ?></p>
-								</div>
-							</div>
-						<?php endif; ?>
-						<?php if ($invoice->bayar + $invoice->diskon + $invoice->total > 0) : ?>
-							<div class="form-group row">
-								<label for="kembalian" class="col-md-6 col-form-label">Kembalian</label>
-								<div class="col-md-6">
-									<p class="float-right"><?= number_format($invoice->bayar + $invoice->diskon + $invoice->dp - $invoice->total, 0); ?></p>
-								</div>
-							</div>
-						<?php endif; ?>
 
-						<hr>
-
-						<a href="<?= base_url(); ?>match/nota?invoice=<?= $no_nota; ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Print</a>
-
-					<?php else : ?>
-						<input type="hidden" name="total" id="total" value="<?= $total_produk + $total_toping; ?>">
-						<hr>
-						<form action="<?= base_url(); ?>/match/edit_pembayaran" method="POST">
-							<?php if ($invoice->nominal_voucher > 0) : ?>
-								<div class="form-group row">
-									<label for="nominal_voucher" class="col-md-4 col-form-label">Voucher</label>
-									<div class="col-md-6">
-										<input type="number" class="form-control pembayaran" id="nominal_voucher" value="<?= $invoice->nominal_voucher; ?>" name="nominal_voucher" readonly>
-									</div>
-								</div>
-							<?php else : ?>
-								<input type="hidden" class="form-control pembayaran" id="nominal_voucher" value="0" name="nominal_voucher" readonly>
-							<?php endif; ?>
-
-							<?php if ($invoice->diskon != 0) : ?>
-								<div class="form-group row">
-									<label for="diskon" class="col-md-4 col-form-label">Diskon</label>
-									<div class="col-md-6">
-										<input type="number" class="form-control pembayaran" id="diskon" value="<?= $invoice->diskon; ?>" name="diskon" readonly>
-									</div>
-								</div>
-							<?php else : ?>
-								<input type="hidden" class="form-control pembayaran" id="diskon" value="0" name="diskon" readonly>
-							<?php endif; ?>
-
-
-							<style>
-								.hilang_row {
-									display: none;
-								}
-							</style>
-							<div class="form-group row hilang_row">
-								<label for="mandiri_kredit" class="col-md-4 col-form-label">Mandiri Kredit</label>
-								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="mandiri_kredit" value="<?= $invoice->mandiri_kredit; ?>" name="mandiri_kredit">
-								</div>
+						<style>
+							.hilang_row {
+								display: none;
+							}
+						</style>
+						<div class="form-group row hilang_row">
+							<label for="mandiri_kredit" class="col-md-4 col-form-label">Mandiri Kredit</label>
+							<div class="col-md-6">
+								<input type="number" class="form-control pembayaran" id="mandiri_kredit" value="<?= $invoice->mandiri_kredit; ?>" name="mandiri_kredit">
 							</div>
-							<div class="form-group row hilang_row">
-								<label for="mandiri_debit" class="col-md-4 col-form-label">Mandiri Debit</label>
-								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="mandiri_debit" value="<?= $invoice->mandiri_debit; ?>" name="mandiri_debit">
-								</div>
+						</div>
+						<div class="form-group row hilang_row">
+							<label for="mandiri_debit" class="col-md-4 col-form-label">Mandiri Debit</label>
+							<div class="col-md-6">
+								<input type="number" class="form-control pembayaran" id="mandiri_debit" value="<?= $invoice->mandiri_debit; ?>" name="mandiri_debit">
 							</div>
-							<div class="form-group row hilang_row">
-								<label for="bca_kredit" class="col-md-4 col-form-label">BCA Kredit</label>
-								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="bca_kredit" value="<?= $invoice->bca_kredit; ?>" name="bca_kredit">
-								</div>
+						</div>
+						<div class="form-group row hilang_row">
+							<label for="bca_kredit" class="col-md-4 col-form-label">BCA Kredit</label>
+							<div class="col-md-6">
+								<input type="number" class="form-control pembayaran" id="bca_kredit" value="<?= $invoice->bca_kredit; ?>" name="bca_kredit">
 							</div>
-							<!-- <div class="form-group row hilang_row">
+						</div>
+						<!-- <div class="form-group row hilang_row">
 								<label for="bca_debit" class="col-md-4 col-form-label">BCA Debit</label>
 								<div class="col-md-6">
 									<input type="number" class="form-control pembayaran" id="bca_debit" value="<?= $invoice->bca_debit; ?>" name="bca_debit">
 								</div>
 							</div> -->
-							<div class="form-group row ">
-								<label for="bca_debit" class="col-md-4 col-form-label">GOPAY</label>
-								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="shoope" value="<?= $invoice->gopay; ?>" name="gopay">
-								</div>
+						<div class="form-group row ">
+							<label for="bca_debit" class="col-md-4 col-form-label">GOPAY</label>
+							<div class="col-md-6">
+								<input type="number" class="form-control pembayaran" id="shoope" value="<?= $invoice->gopay; ?>" name="gopay">
 							</div>
-							<div class="form-group row ">
-								<label for="bca_debit" class="col-md-4 col-form-label">GRABFOOD</label>
-								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="bca_debit" value="<?= $invoice->bca_debit; ?>" name="bca_debit">
-								</div>
+						</div>
+						<div class="form-group row ">
+							<label for="bca_debit" class="col-md-4 col-form-label">GRABFOOD</label>
+							<div class="col-md-6">
+								<input type="number" class="form-control pembayaran" id="bca_debit" value="<?= $invoice->bca_debit; ?>" name="bca_debit">
 							</div>
-							<div class="form-group row">
-								<input type="hidden" name="id_invoice" value="<?= $invoice->id; ?>">
-								<input type="hidden" name="no_nota" value="<?= $invoice->no_nota; ?>">
-								<label for="cash" class="col-md-4 col-form-label">CASH </label>
-								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="cash" value="<?= $invoice->cash; ?>" name="cash">
-								</div>
+						</div>
+						<div class="form-group row">
+							<input type="hidden" name="id_invoice" value="<?= $invoice->id; ?>">
+							<input type="hidden" name="no_nota" value="<?= $invoice->no_nota; ?>">
+							<label for="cash" class="col-md-4 col-form-label">CASH </label>
+							<div class="col-md-6">
+								<input type="number" class="form-control pembayaran" id="cash" value="<?= $invoice->cash; ?>" name="cash">
 							</div>
-							<div class="form-group row">
-								<label for="kembalian" class="col-md-4 col-form-label">Kembalian</label>
-								<div class="col-md-6">
-									<input type="number" class="form-control" id="kembalian" value="<?= $invoice->bayar - $invoice->total ?>" disabled>
-								</div>
+						</div>
+						<div class="form-group row">
+							<label for="kembalian" class="col-md-4 col-form-label">Kembalian</label>
+							<div class="col-md-6">
+								<input type="number" class="form-control" id="kembalian" value="<?= $invoice->bayar - $invoice->total ?>" disabled>
 							</div>
+						</div>
 
-							<input type="hidden" name="total" id="total" value="<?= $invoice->total; ?>">
+						<input type="hidden" name="total" id="total" value="<?= $invoice->total; ?>">
 
-							<input type="hidden" name="tgl_jam" id="tgl_jam" value="<?= $invoice->tgl_jam; ?>">
+						<input type="hidden" name="tgl_jam" id="tgl_jam" value="<?= $invoice->tgl_jam; ?>">
 
-							<hr>
+						<hr>
 
-							<a target="_blank" href="<?= base_url(); ?>produk/save_nota?invoice=<?= $no_nota; ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Invoice</a>
-							<a target="_blank" href="<?= base_url(); ?>produk/save_checker?invoice=<?= $no_nota; ?>" class="btn mr-2 btn-success float-right"><i class="fas fa-print"></i> Checker</a>
-							<button class="btn btn-info float-right mr-2" id="edit_pembayaran" disabled type="submit"><i class="fas fa-edit"></i> Edit</button>
-						</form>
-					<?php endif; ?>
+						<a target="_blank" href="<?= base_url(); ?>produk/save_nota?invoice=<?= $no_nota; ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Invoice</a>
+						<a target="_blank" href="<?= base_url(); ?>produk/save_checker?invoice=<?= $no_nota; ?>" class="btn mr-2 btn-success float-right"><i class="fas fa-print"></i> Checker</a>
+						<button class="btn btn-info float-right mr-2" id="edit_pembayaran" disabled type="submit"><i class="fas fa-edit"></i> Edit</button>
+					</form>
+
 
 
 

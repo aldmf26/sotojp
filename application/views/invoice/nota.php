@@ -99,10 +99,10 @@
 						<td width="50%" style="font-size: smaller;">
 							<?= $t->jumlah; ?> &nbsp; <?= ucwords(strtolower($t->nm_produk)); ?></td>
 						<td width="40%" style="text-align: right; font-size: smaller;">
-							<?= number_format($t->harga, 0); ?>
+							<?= number_format($t->harga * $t->jumlah, 0); ?>
 						</td>
 					</tr>
-				<?php $total_toping += $t->harga;
+				<?php $total_toping += $t->harga * $t->jumlah;
 				endforeach; ?>
 			<?php
 			endforeach; ?>

@@ -8108,7 +8108,11 @@ public function dt_servis()
 {
   $data = array(
       'title'  => "Crepe Signature", 
-      'kasbon' => $this->db->query("SELECT * FROM tb_servis as a left join tb_kategori as b on b.id_kategori = a.id_kategori order by a.id_servis DESC")->result(),
+      'kasbon' => $this->db->query("SELECT a.*, b.id_kategori, b.nm_kategori, c.harga as harga_offline, d.harga as hrga_online FROM tb_servis as a 
+      left join tb_kategori as b on b.id_kategori = a.id_kategori
+      left join tb_harga as c on c.id_servis = a.id_servis and c.distirbusi = '1' 
+      left join tb_harga as d on d.id_servis = a.id_servis and d.distirbusi = '2' 
+      order by a.id_servis DESC;")->result(),
       'bahan' => $this->db->get('tb_produk')->result(),
       'kategori' => $this->db->get_where('tb_kategori',['id_kategori !=' => '20'])->result()
   );
@@ -8147,13 +8151,26 @@ public function edit_servis()
     $id_servis  = $this->input->post('id_servis');
     $data_input = array(
         'nm_servis'   => $this->input->post('servis'),
-        'durasi'  => $this->input->post('jam'),
-        'menit'   => $this->input->post('menit'),
-        'biaya'   => $this->input->post('biaya'),
-        'komisi'   => $this->input->post('komisi')
+        'id_kategori'  => $this->input->post('id_kategori'),
     );
-    $where = array('id_servis' => $id_servis);
-    $res  = $this->M_salon->UpdateData('tb_servis', $data_input, $where);
+    $this->db->where('id_servis', $this->input->post('id_servis'));
+    $this->db->update('tb_servis',$data_input);
+
+    $this->db->where('id_servis', $this->input->post('id_servis'));
+    $this->db->delete('tb_harga');
+
+    $data = [
+        'id_servis' => $this->input->post('id_servis'),
+        'distirbusi' => '1',
+        'harga' => $this->input->post('biaya_offline')
+   ];
+   $this->db->insert('tb_harga',$data);
+   $data = [
+        'id_servis' => $this->input->post('id_servis'),
+        'distirbusi' => '2',
+        'harga' => $this->input->post('biaya_online')
+   ];
+   $this->db->insert('tb_harga',$data);
     $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Data Berhasil Di Update !!  <div class="ml-5 btn btn-sm"><i class="fas fa-sync-alt fa-2x"></i></div></div>');
     redirect("Match/dt_servis");
 }

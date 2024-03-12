@@ -1,7 +1,7 @@
 <div class="row">
     <?php foreach ($data as $key => $value) : ?>
         <div class="col-lg-3">
-            <a type="button" class="klikdetail" id_produk="<?= $value->id_servis ?>" data-toggle="modal" data-target="#myModal" style="width: 100%;height: 100%;">
+            <a type="button" class="klikdetail" id_produk="<?= $value->id_servis ?>" id_kategori="<?= $value->id_kategori ?>" data-toggle="modal" data-target="#myModal" style="width: 100%;height: 100%;">
                 <div class="card">
                     <div class="card-body">
                         <?php if (empty($value->foto)) : ?>
