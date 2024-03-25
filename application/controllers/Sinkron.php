@@ -45,11 +45,7 @@ class Sinkron extends CI_Controller
         // Siapkan data yang akan dikirim ke API
         $data1 = [];
         foreach ($tb_order as $t) {
-            $data = [
-                'import' => 'Y'
-            ];
-            $this->db->where('id', $t->id);
-            $this->db->update('tb_invoice', $data);
+
             $data1[] = [
                 'no_nota' => $t->no_nota,
                 'total' => $t->total,
@@ -74,6 +70,12 @@ class Sinkron extends CI_Controller
                 'antrian' => $t->antrian,
                 // 'import' => $t->import,
             ];
+
+            $data = [
+                'import' => 'Y'
+            ];
+            $this->db->where('id', $t->id);
+            $this->db->update('tb_invoice', $data);
         }
 
         // Konfigurasi opsi untuk permintaan HTTP dengan Guzzle
