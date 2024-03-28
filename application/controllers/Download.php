@@ -141,4 +141,165 @@ class Download extends CI_Controller
             echo "Error: " . $e->getMessage();
         }
     }
+
+    public function download_resep()
+    {
+        $client = new Client();
+        $url = 'https://crepeapi.ptagafood.com/api/tb_resep_crepe';
+
+        try {
+            // Mengirimkan permintaan GET ke API
+            $response = $client->request('GET', $url);
+
+            // Mendapatkan kode status respons
+            $statusCode = $response->getStatusCode();
+
+            // Jika respons sukses (kode status 200)
+            if ($statusCode == 200) {
+                $this->db->truncate('tb_resep');
+                // Mendapatkan konten respons dalam bentuk string
+                $body = $response->getBody()->getContents();
+
+                // Mengubah konten respons menjadi array
+                $data = json_decode($body, true);
+                if (isset($data['resep']) && is_array($data['resep'])) {
+                    // Loop setiap elemen dalam array 'resep'
+                    foreach ($data['resep'] as $item) {
+                        $data2 = [
+                            'id_resep' => $item['id_resep'],
+                            'id_servis' => $item['id_servis'],
+                            'id_produk' => $item['id_produk'],
+                            'takaran' => $item['takaran']
+                        ];
+                        $this->db->insert('tb_resep', $data2);
+                    }
+                    redirect('download');
+                } else {
+                    echo "Data menu tidak tersedia.";
+                }
+            } else {
+                echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
+            }
+        } catch (\Exception $e) {
+            // Tangani jika terjadi kesalahan
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    public function download_stok_opname()
+    {
+        $client = new Client();
+        $url = 'https://crepeapi.ptagafood.com/api/tb_stok_opname';
+
+        try {
+            $response = $client->request('GET', $url);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode == 200) {
+                $this->db->update('tb_stok_produk', ['opname' => 'Y']);
+                $body = $response->getBody()->getContents();
+                $data = json_decode($body, true);
+                if (isset($data['stok']) && is_array($data['stok'])) {
+                    foreach ($data['stok'] as $item) {
+                        $data2 = [
+                            'id_stok_produk' => $item['id_stok_produk'],
+                            'kode_stok_produk' => $item['kode_stok_produk'],
+                            'id_produk' => $item['id_produk'],
+                            'stok_program' => $item['stok_program'],
+                            'debit' => $item['debit'],
+                            'kredit' => $item['kredit'],
+                            'tgl' => $item['tgl'],
+                            'tgl_input' => $item['tgl_input'],
+                            'admin' => $item['admin'],
+                            'jenis' => $item['jenis'],
+                            'ttl_stok' => $item['ttl_stok'],
+                            'harga' => $item['harga'],
+                            'status' => $item['status'],
+                            'ket' => $item['ket'],
+                            'opname' => $item['opname'],
+                            'import' => 'Y',
+                        ];
+                        $this->db->insert('tb_stok_produk', $data2);
+                    }
+
+                    $data1 = [];
+                    foreach ($data['stok'] as $item) {
+                        $data1[] = [
+                            'id_stok_produk' => $item['id_stok_produk'],
+                        ];
+                    }
+                    $client = new \GuzzleHttp\Client();
+                    $response = $client->request('POST', 'https://crepeapi.ptagafood.com/api/stok_update_tarik', [
+                        'form_params' => $data1
+                    ]);
+
+                    // Mendapatkan respons dari server
+                    $responseBody = $response->getBody()->getContents();
+                    redirect('download');
+                } else {
+                    echo "Data menu tidak tersedia.";
+                }
+            } else {
+                echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
+            }
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    public function download_stok_masuk()
+    {
+        $client = new Client();
+        $url = 'https://crepeapi.ptagafood.com/api/tb_stok_masuk';
+
+        try {
+            $response = $client->request('GET', $url);
+            $statusCode = $response->getStatusCode();
+            if ($statusCode == 200) {
+                $body = $response->getBody()->getContents();
+                $data = json_decode($body, true);
+                if (isset($data['stok']) && is_array($data['stok'])) {
+                    foreach ($data['stok'] as $item) {
+                        $data2 = [
+                            'id_stok_produk' => $item['id_stok_produk'],
+                            'kode_stok_produk' => $item['kode_stok_produk'],
+                            'id_produk' => $item['id_produk'],
+                            'stok_program' => $item['stok_program'],
+                            'debit' => $item['debit'],
+                            'kredit' => $item['kredit'],
+                            'tgl' => $item['tgl'],
+                            'tgl_input' => $item['tgl_input'],
+                            'admin' => $item['admin'],
+                            'jenis' => $item['jenis'],
+                            'ttl_stok' => $item['ttl_stok'],
+                            'harga' => $item['harga'],
+                            'status' => $item['status'],
+                            'ket' => $item['ket'],
+                            'opname' => $item['opname'],
+                            'import' => 'Y',
+                        ];
+                        $this->db->insert('tb_stok_produk', $data2);
+                    }
+
+                    $data1 = [];
+                    foreach ($data['stok'] as $item) {
+                        $data1[] = [
+                            'id_stok_produk' => $item['id_stok_produk'],
+                        ];
+                    }
+                    $client = new \GuzzleHttp\Client();
+                    $response = $client->request('POST', 'https://crepeapi.ptagafood.com/api/stok_update_tarik', [
+                        'form_params' => $data1
+                    ]);
+
+                    // Mendapatkan respons dari server
+                    $responseBody = $response->getBody()->getContents();
+                    redirect('download');
+                } else {
+                    echo "Data menu tidak tersedia.";
+                }
+            } else {
+                echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
+            }
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
 }

@@ -77,7 +77,7 @@
                 </a>
             </div>
             <div class="col-lg-3">
-                <a href="#" class="loading">
+                <a href="<?= base_url('download/download_resep') ?>" class="loading">
                     <div class="card">
                         <div class="card-body text-center">
                             <img src="<?= base_url('asset/img/download-computing.png') ?>" alt="" width="120px">
@@ -87,11 +87,21 @@
                 </a>
             </div>
             <div class="col-lg-3">
-                <a href="#" class="loading">
+                <a href="<?= base_url('download/download_stok_masuk') ?>" class="loading">
                     <div class="card">
                         <div class="card-body text-center">
                             <img src="<?= base_url('asset/img/download-computing.png') ?>" alt="" width="120px">
-                            <h6 class="mt-2">Stok</h6>
+                            <h6 class="mt-2">Stok Masuk</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-3">
+                <a href="<?= base_url('download/download_stok_opname') ?>" class="loading">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <img src="<?= base_url('asset/img/download-computing.png') ?>" alt="" width="120px">
+                            <h6 class="mt-2">Stok Opname</h6>
                         </div>
                     </div>
                 </a>

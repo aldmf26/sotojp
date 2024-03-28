@@ -102,11 +102,7 @@ class Sinkron extends CI_Controller
         // Siapkan data yang akan dikirim ke API
         $data1 = [];
         foreach ($tb_pembelian as $t) {
-            $data = [
-                'import' => 'Y'
-            ];
-            $this->db->where('id_pembelian', $t->id_pembelian);
-            $this->db->update('tb_pembelian', $data);
+
             $data1[] = [
                 'no_nota' => $t->no_nota,
                 'id_karyawan' => $t->id_karyawan,
@@ -123,6 +119,12 @@ class Sinkron extends CI_Controller
                 'id_distribusi' => $t->id_distribusi,
                 'void' => $t->void,
             ];
+
+            $data = [
+                'import' => 'Y'
+            ];
+            $this->db->where('id_pembelian', $t->id_pembelian);
+            $this->db->update('tb_pembelian', $data);
         }
 
         // Konfigurasi opsi untuk permintaan HTTP dengan Guzzle
@@ -144,7 +146,7 @@ class Sinkron extends CI_Controller
     public function import_stok()
     {
         // Ambil data dari tabel 'tb_invoice'
-        $tb_pembelian = $this->db->get_where('tb_stok_produk', ['import' => 'T'])->result();
+        $tb_pembelian = $this->db->get_where('tb_stok_produk', ['import' => 'T', 'kredit !=' => '0'])->result();
 
         // Siapkan data yang akan dikirim ke API
         $data1 = [];
