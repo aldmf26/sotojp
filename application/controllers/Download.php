@@ -194,10 +194,10 @@ class Download extends CI_Controller
             $response = $client->request('GET', $url);
             $statusCode = $response->getStatusCode();
             if ($statusCode == 200) {
-                $this->db->update('tb_stok_produk', ['opname' => 'Y']);
                 $body = $response->getBody()->getContents();
                 $data = json_decode($body, true);
                 if (isset($data['stok']) && is_array($data['stok'])) {
+                    $this->db->update('tb_stok_produk', ['opname' => 'Y']);
                     foreach ($data['stok'] as $item) {
                         $data2 = [
                             'id_stok_produk' => $item['id_stok_produk'],

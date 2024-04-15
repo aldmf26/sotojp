@@ -253,14 +253,23 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Keterangan Void</h5>
+						<h5 class="modal-title" id="exampleModalLabel">Void</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-6">
+								<label for="">Voucher</label>
+								<input class="form-control" type="text" name="voucher" required>
+							</div>
+							<div class="col-lg-6">
+								<label for="">Keterangan</label>
+								<input class="form-control" type="text" name="ket_void" required>
+							</div>
+						</div>
 						<input type="hidden" name="no_nota" value="<?= $value->no_nota ?>">
-						<input class="form-control" type="text" name="ket_void" required>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

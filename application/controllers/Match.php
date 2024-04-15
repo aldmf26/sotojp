@@ -7124,9 +7124,11 @@ public function summary_laporan_pemasukan(){
 }
 
 public function void(){
+    $voucher = $this->input->post('voucher');
     $no_nota = $this->input->post('no_nota');
     $nm_void = $this->session->userdata('nm_user');
 
+$get_voucher = $this->db->get_where('voucher_void',[''])->row();
     $data_void = [
         'status' => '1',
         'nm_void' => $nm_void,
@@ -7143,9 +7145,9 @@ public function void(){
 	$this->db->update('tb_pembelian', $data_void);
 
     $data_void = [
-        'opname' => 'T',
+        'void' => 'T',
     ];
-    $this->db->where('no_nota', $no_nota);
+    $this->db->where('kode_stok_produk', $no_nota);
 	$this->db->update('tb_stok_produk', $data_void);
 
     $detail_invoice = $this->db->get_where('tb_invoice',['no_nota' => $no_nota])->result()[0];
@@ -7162,27 +7164,6 @@ public function void(){
         $this->db->where('kd_dp', $detail_invoice->kd_dp);
 	    $this->db->update('tb_dp', $data_dp);
     }      
-
-
-   
-
-
-    
-    
-    //hapus komisi app dan kembalian stok bahan
-    
-    
-    
-
-    
-    //data paid
-    $data_paid = [
-        'no_nota' => null,
-        'bayar' => 'T'
-    ];
-
-    $this->db->where('no_nota',$no_nota);
-    $this->db->update('tb_order',$data_paid);
     
     $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil Void<div class="ml-5 btn btn-sm"></div></div>');
         redirect("Match/invoice");   
