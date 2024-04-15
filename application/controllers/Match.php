@@ -7130,7 +7130,7 @@ public function void(){
 
     $get_voucher = $this->db->get_where('voucher_void',['voucher' => $voucher ])->row();
 
-    if ($get_voucher->terpakai != 'Y' || !empty($get_voucher)) {
+    if ($get_voucher->terpakai != 'Y' && !empty($get_voucher)) {
         # code...
 
 
@@ -7168,7 +7168,11 @@ public function void(){
         ];
         $this->db->where('kd_dp', $detail_invoice->kd_dp);
 	    $this->db->update('tb_dp', $data_dp);
-    }      
+    }
+
+    $this->db->where('voucher',$voucher);
+    $this->db->update('voucher_void',['terpakai' => 'Y']);
+    
     $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil Void<div class="ml-5 btn btn-sm"></div></div>');
         redirect("Match/invoice");   
 }else{
