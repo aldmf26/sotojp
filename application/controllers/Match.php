@@ -7128,7 +7128,12 @@ public function void(){
     $no_nota = $this->input->post('no_nota');
     $nm_void = $this->session->userdata('nm_user');
 
-$get_voucher = $this->db->get_where('voucher_void',[''])->row();
+    $get_voucher = $this->db->get_where('voucher_void',['voucher' => $voucher ])->row();
+
+    if ($get_voucher->terpakai != 'Y' || !empty($get_voucher)) {
+        # code...
+
+
     $data_void = [
         'status' => '1',
         'nm_void' => $nm_void,
@@ -7164,9 +7169,13 @@ $get_voucher = $this->db->get_where('voucher_void',[''])->row();
         $this->db->where('kd_dp', $detail_invoice->kd_dp);
 	    $this->db->update('tb_dp', $data_dp);
     }      
-    
     $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil Void<div class="ml-5 btn btn-sm"></div></div>');
         redirect("Match/invoice");   
+}else{
+    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Voucher sudah terpakai / tidak ditemukan<div class="ml-5 btn btn-sm"></div></div>');
+    redirect("Match/invoice");   
+}
+    
 
 }
 
