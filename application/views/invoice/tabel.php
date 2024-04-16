@@ -107,11 +107,11 @@
 										<td class="text-right"><?= number_format($value->total, 0) ?></td>
 										<td><?= date('d/m/Y', strtotime($value->tgl_jam)) ?></td>
 
-										<?php if ($this->session->userdata('id_role') == '1') : ?>
-											<td><button type="button" class="btn btn-danger btn-sm void" data-toggle="modal" data-target="#modalvoid<?= $value->id ?>">
-													<i class="fas fa-exclamation"></i> Void
-												</button></td>
-										<?php endif; ?>
+
+										<td><button type="button" class="btn btn-danger btn-sm void" data-toggle="modal" data-target="#modalvoid<?= $value->id ?>">
+												<i class="fas fa-exclamation"></i> Void
+											</button></td>
+
 									</tr>
 								<?php endforeach ?>
 							</tbody>
