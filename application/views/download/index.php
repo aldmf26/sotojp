@@ -107,6 +107,16 @@
                 </a>
             </div>
             <div class="col-lg-3">
+                <a href="<?= base_url('download/download_voucher_void') ?>" class="loading">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <img src="<?= base_url('asset/img/download-computing.png') ?>" alt="" width="120px">
+                            <h6 class="mt-2">Voucher Void</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-3">
                 <a href="#" class="loading">
                     <div class="card">
                         <div class="card-body text-center">

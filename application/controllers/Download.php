@@ -304,4 +304,48 @@ class Download extends CI_Controller
             echo "Error: " . $e->getMessage();
         }
     }
+
+
+    public function download_voucher_void()
+    {
+        $client = new Client();
+        $url = 'https://crepeapi.ptagafood.com/api/voucher_void';
+
+        try {
+            // Mengirimkan permintaan GET ke API
+            $response = $client->request('GET', $url);
+
+            // Mendapatkan kode status respons
+            $statusCode = $response->getStatusCode();
+
+            // Jika respons sukses (kode status 200)
+            if ($statusCode == 200) {
+                $this->db->truncate('voucher_void');
+                // Mendapatkan konten respons dalam bentuk string
+                $body = $response->getBody()->getContents();
+
+                // Mengubah konten respons menjadi array
+                $data = json_decode($body, true);
+                if (isset($data['voucher']) && is_array($data['voucher'])) {
+                    // Loop setiap elemen dalam array 'resep'
+                    foreach ($data['voucher'] as $item) {
+                        $data2 = [
+                            'id_voucher' => $item['id_voucher'],
+                            'voucher' => $item['voucher'],
+                            'terpakai' => $item['terpakai']
+                        ];
+                        $this->db->insert('voucher_void', $data2);
+                    }
+                    redirect('download');
+                } else {
+                    echo "Data menu tidak tersedia.";
+                }
+            } else {
+                echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
+            }
+        } catch (\Exception $e) {
+            // Tangani jika terjadi kesalahan
+            echo "Error: " . $e->getMessage();
+        }
+    }
 }
