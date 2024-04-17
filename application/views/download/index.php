@@ -111,7 +111,7 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <img src="<?= base_url('asset/img/download-computing.png') ?>" alt="" width="120px">
-                            <h6 class="mt-2">Voucher Void</h6>
+                            <h6 class="mt-2">Voucher</h6>
                         </div>
                     </div>
                 </a>

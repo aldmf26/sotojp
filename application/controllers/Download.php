@@ -336,9 +336,60 @@ class Download extends CI_Controller
                         ];
                         $this->db->insert('voucher_void', $data2);
                     }
-                    redirect('download');
                 } else {
                     echo "Data menu tidak tersedia.";
+                }
+            } else {
+                echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
+            }
+        } catch (\Exception $e) {
+            // Tangani jika terjadi kesalahan
+            echo "Error: " . $e->getMessage();
+        }
+
+        $client = new Client();
+        $url = 'https://crepeapi.ptagafood.com/api/voucher_invoice';
+
+        try {
+            // Mengirimkan permintaan GET ke API
+            $response = $client->request('GET', $url);
+
+            // Mendapatkan kode status respons
+            $statusCode = $response->getStatusCode();
+
+            // Jika respons sukses (kode status 200)
+            if ($statusCode == 200) {
+
+                // Mendapatkan konten respons dalam bentuk string
+                $body = $response->getBody()->getContents();
+
+                // Mengubah konten respons menjadi array
+                $data = json_decode($body, true);
+                if (isset($data['voucher_invoice']) && is_array($data['voucher_invoice'])) {
+                    // Loop setiap elemen dalam array 'resep'
+                    foreach ($data['voucher_invoice'] as $item) {
+                        $voucher = $this->db->get_where('tb_voucher_invoice', ['id_voucher' => $item['id_voucher']])->row();
+                        if (!empty($voucher->id_voucher)) {
+                            # code...
+                        } else {
+                            $data2 = [
+                                'id_voucher' => $item['id_voucher'],
+                                'no_voucher' => $item['no_voucher'],
+                                'jenis' => $item['jenis'],
+                                'jumlah' => $item['jumlah'],
+                                'tgl_input' => $item['tgl_input'],
+                                'tgl_akhir' => $item['tgl_akhir'],
+                                'tgl_pakai' => $item['tgl_pakai'],
+                                'admin' => $item['admin'],
+                                'ket' => $item['ket'],
+                                'status' => $item['status'],
+                            ];
+                            $this->db->insert('tb_voucher_invoice', $data2);
+                        }
+                    }
+                } else {
+                    echo "Data menu tidak tersedia.";
+                    redirect('download');
                 }
             } else {
                 echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
