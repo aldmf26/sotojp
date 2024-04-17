@@ -8238,7 +8238,27 @@ public function bahan()
   );
   $this->load->view('bahan/table', $data);
 }
+public function Export_bahan()
+{
+    $produk = $this->db->query("SELECT a.*, if(b.stok is null,0,b.stok) as stok_program, c.nm_kategori, d.satuan
+        FROM tb_produk as a
+        left join (
+            SELECT b.id_produk , sum(b.debit - b.kredit) stok
+            FROM tb_stok_produk as b 
+            where b.opname = 'T'
+            group by b.id_produk
+        ) as b on b.id_produk = a.id_produk
+        left join tb_kategori as c on c.id_kategori = a.id_kategori
+        left join tb_satuan as d on d.id_satuan = a.id_satuan
+        ")->result();
 
+    $data = array(
+        'title'  => "Orchard Beauty", 
+        'produk' => $produk,
+    );
+  $this->load->view('bahan/export', $data);
+    
+}
 public function add_bahan()
 {
    $data = array(
