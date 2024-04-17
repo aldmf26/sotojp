@@ -12,7 +12,8 @@
 			<div class="col-sm-6">
 				<h1 class="m-0 text-dark">Data Bahan</h1>
 			</div>
-			<div class="col-sm-6">
+			<div class="col-sm-6 ">
+				<a href="<?= base_url('Match/Export_bahan'); ?>" target="_blank" class="btn btn-sm btn-primary float-right"><i class="mr-2 fas fa-file-excel"></i>Export</a>
 				<?php if ($this->session->userdata('edit_hapus') == '1') : ?>
 
 				<?php endif ?>
