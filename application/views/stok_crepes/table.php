@@ -10,7 +10,7 @@
     <div class="container">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Stok Bahan tes tes</h1>
+                <h1 class="m-0 text-dark">Stok Bahan</h1>
             </div>
             <div class="col-sm-6">
                 <?php if ($this->session->userdata('edit_hapus') == '1') : ?>
