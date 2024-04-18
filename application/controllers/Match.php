@@ -1562,7 +1562,27 @@ public function stok()
         'produk' => $produk,
     );
         $this->load->view('stok_crepes/table', $data);
-    }
+}
+
+public function list_pemotongan_resep()
+{
+    $tgl1   = $this->input->get('tgl1') ?? date('Y-m-1');
+    $tgl2   = $this->input->get('tgl2') ?? date('Y-m-t');
+
+    $produk = $this->db->query("SELECT a.kode_stok_produk as invoice,c.satuan,b.nm_produk,a.id_produk, sum(a.kredit) as ttl FROM `tb_stok_produk` as a
+    JOIN tb_produk as b on a.id_produk = b.id_produk
+    JOIN tb_satuan as c on b.id_satuan = c.id_satuan
+    WHERE a.jenis = 'Penjualan' AND a.tgl BETWEEN '$tgl1' AND '$tgl2'
+    GROUP by a.id_produk;")->result();
+
+    $data = array(
+        'title'  => "Orchard Beauty | list penjualan", 
+        'produk' => $produk,
+        'tgl1' => $tgl1,
+        'tgl2' => $tgl2,
+    );
+    $this->load->view('stok_crepes/pemotongan_stok', $data);
+}
 
 public function checkout()
 {
@@ -2062,7 +2082,11 @@ public function detail_invoice(){
     $invoice = $this->db->join('tb_customer','tb_invoice.id_customer = tb_customer.id_customer','left')->get_where('tb_invoice', [
         'no_nota' => $no_nota
     ])->result()[0];
-    $produk = $this->db->select('tb_pembelian.harga as harga, tb_pembelian.jumlah as jumlah, tb_produk.nm_produk')->join('tb_invoice','tb_invoice.no_nota = tb_pembelian.no_nota','left')->join('tb_produk','tb_pembelian.id_produk = tb_produk.id_produk','left')->get_where('tb_pembelian',[
+    $produk = $this->db->select('tb_servis.nm_servis as nm_servis, tb_pembelian.diskon as diskon, tb_pembelian.id_produk as id_produk, tb_pembelian.harga as harga, tb_pembelian.jumlah as jumlah, tb_produk.nm_produk')
+                ->join('tb_invoice','tb_invoice.no_nota = tb_pembelian.no_nota','left')
+                ->join('tb_produk','tb_pembelian.id_produk = tb_produk.id_produk','left')
+                ->join('tb_servis','tb_pembelian.id_produk = tb_servis.id_servis','left')
+                ->get_where('tb_pembelian',[
         'tb_pembelian.no_nota' => $no_nota
     ])->result();
     

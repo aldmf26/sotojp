@@ -18,6 +18,10 @@
                 <?php endif ?>
             </div>
         </div>
+        <nav class="nav nav-pills">
+			<a class="nav-link <?php echo (current_url() == base_url('Match/stok')) ? 'active' : ''; ?>" href="<?= base_url('Match/stok'); ?>">Stok Sekarang</a>
+			<a class="nav-link <?php echo (current_url() == base_url('Match/list_pemotongan_resep')) ? 'active' : ''; ?>" href="<?= base_url('Match/list_pemotongan_resep'); ?>">List Pemotongan Resep</a>
+		</nav>
     </div>
 
     <div class="row">

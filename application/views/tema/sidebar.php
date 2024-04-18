@@ -51,7 +51,7 @@
         <?php endforeach; ?>
 
         <li class="nav-item has-treeview">
-          <a href="<?= base_url('match/stok') ?>" class="nav-link">
+          <a href="<?= base_url('Match/stok') ?>" class="nav-link">
             <i class="nav-icon fas fa-list"></i>
             <p>
               Stok
