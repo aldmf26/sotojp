@@ -133,7 +133,7 @@
             var id = $(this).attr('id_produk')
             var tgl1 = "<?= $tgl1 ?>"
             var tgl2 = "<?= $tgl2 ?>"
-            
+
             $("#detailnya").modal('show')
             $.ajax({
                 type: "GET",
