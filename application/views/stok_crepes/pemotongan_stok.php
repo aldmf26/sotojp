@@ -47,10 +47,11 @@
                         <table class="table" id="tb_servis">
                             <thead>
                                 <tr>
-                                    <th>no</th>
-                                    <th>nama bahan</th>
-                                    <th>qty</th>
-                                    <th>satuan</th>
+                                    <th>No</th>
+                                    <th>Nama Bahan</th>
+                                    <th>Qty</th>
+                                    <th>Satuan</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="myTable">
@@ -62,6 +63,7 @@
                                         <td><?= $p->nm_produk ?></td>
                                         <td><?= number_format($p->ttl, 1) ?></td>
                                         <td><?= $p->satuan ?></td>
+                                        <td><a href="#" class="btn btn-sm btn-primary detail" id_produk="<?= $p->id_produk; ?>"><i class="fas fa-eye"></i></a></td>
                                     </tr>
                                 <?php endforeach ?>
                             </tbody>
@@ -90,7 +92,7 @@
                             <input type="date" name="tgl1" class="form-control">
                         </div>
                         <div class="col-lg-6">
-                        <input type="date" name="tgl2" class="form-control">
+                            <input type="date" name="tgl2" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -103,6 +105,59 @@
     </div>
 </form>
 
+<div class="modal fade" id="detailnya">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#FFA07A;">
+                <h4 class="modal-title">Detail</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="load_detail"></div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <?php $this->load->view('tema/Footer'); ?>
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '.detail', function(e) {
+            e.preventDefault()
+            var id = $(this).attr('id_produk')
+            var tgl1 = "<?= $tgl1 ?>"
+            var tgl2 = "<?= $tgl2 ?>"
+            
+            $("#detailnya").modal('show')
+            $.ajax({
+                type: "GET",
+                url: "<?= base_url('Match/load_detail_stok') ?>",
+                data: {
+                    id_produk:id,
+                    tgl1:tgl1,
+                    tgl2:tgl2,
+                },
+                success: function (r) {
+                    $('#tb_servis2').DataTable({
+                        "paging": false,
+                        "pageLength": 100,
+                        "scrollY": "350px",
+                        "lengthChange": false,
+                        "ordering": false,
+                        "info": false,
+                        "stateSave": true,
+                        "autoWidth": true,
+                        
+                    });
+                    $("#load_detail").html(r);
+                }
+            });
+        })
+    });
+</script>

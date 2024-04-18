@@ -1583,6 +1583,23 @@ public function list_pemotongan_resep()
     );
     $this->load->view('stok_crepes/pemotongan_stok', $data);
 }
+public function load_detail_stok()
+{
+    $tgl1   = $this->input->get('tgl1');
+    $tgl2   = $this->input->get('tgl2');
+    $id_produk   = $this->input->get('id_produk');
+
+    $produk = $this->db->query("SELECT a.kode_stok_produk as invoice FROM `tb_stok_produk` as a 
+    WHERE a.id_produk = $id_produk AND a.jenis = 'Penjualan' AND a.tgl BETWEEN '$tgl1' AND '$tgl2';")->result();
+
+    $data = array(
+        'title'  => "Orchard Beauty | list penjualan", 
+        'produk' => $produk,
+        'tgl1' => $tgl1,
+        'tgl2' => $tgl2,
+    );
+    $this->load->view('stok_crepes/load_detail', $data);
+}
 
 public function checkout()
 {
