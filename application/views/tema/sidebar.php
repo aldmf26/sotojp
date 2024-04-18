@@ -51,6 +51,14 @@
         <?php endforeach; ?>
 
         <li class="nav-item has-treeview">
+          <a href="<?= base_url('match/stok') ?>" class="nav-link">
+            <i class="nav-icon fas fa-list"></i>
+            <p>
+              Stok
+            </p>
+          </a>
+        </li>
+        <li class="nav-item has-treeview">
           <a href="<?= base_url('sinkron') ?>" class="nav-link">
             <i class="nav-icon fas fa-cloud-upload-alt "></i>
             <p>

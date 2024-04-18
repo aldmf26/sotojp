@@ -1543,6 +1543,27 @@ public function payment()
    $this->load->view('order/payment', $data);
 }
 
+public function stok()
+    {
+        $produk = $this->db->query("SELECT a.*, if(b.stok is null,0,b.stok) as stok_program, c.nm_kategori, d.satuan
+        FROM tb_produk as a
+        left join (
+            SELECT b.id_produk , sum(b.debit - b.kredit) stok
+            FROM tb_stok_produk as b 
+            where b.opname = 'T'
+            group by b.id_produk
+        ) as b on b.id_produk = a.id_produk
+        left join tb_kategori as c on c.id_kategori = a.id_kategori
+        left join tb_satuan as d on d.id_satuan = a.id_satuan
+        ")->result();
+
+    $data = array(
+        'title'  => "Orchard Beauty", 
+        'produk' => $produk,
+    );
+        $this->load->view('stok_crepes/table', $data);
+    }
+
 public function checkout()
 {
     $no_invoice=$this->M_invoice->get_no_invoice();
@@ -8111,6 +8132,47 @@ public function dt_servis()
       'kategori' => $this->db->get_where('tb_kategori',['id_kategori !=' => '20'])->result()
   );
   $this->load->view('servis/tabel', $data);
+}
+public function dt_resep()
+{
+  $data = array(
+      'title'  => "Crepe Signature", 
+      'kasbon' => $this->db->query("SELECT a.id_produk,b.nm_produk, GROUP_CONCAT(c.nm_servis SEPARATOR ', ') AS nm_menu FROM `tb_resep` as a
+      JOIN tb_produk as b on a.id_produk = b.id_produk
+      JOIN tb_servis as c on a.id_servis = c.id_servis
+      GROUP BY a.id_produk;")->result(),
+  );
+  $this->load->view('servis/resep', $data);
+}
+
+public function load_edit_resep()
+{
+    $id_produk = $this->input->get('id_produk');
+    $produkOne = $this->db->query("SELECT a.nm_produk,b.satuan FROM `tb_produk` as a
+    JOIN tb_satuan as b on a.id_satuan =b.id_satuan
+    WHERE a.id_produk = $id_produk")->row();
+    $data = [
+        'title'  => "Crepe Signature", 
+        'produk' => $this->db->query("SELECT a.id_resep,a.id_servis,a.id_produk,b.nm_servis,a.takaran FROM `tb_resep` as a
+        JOIN tb_servis as b on a.id_servis = b.id_servis
+        WHERE a.id_produk = $id_produk;")->result(),
+        'produkOne' => $produkOne
+    ];
+  $this->load->view('servis/edit_resep', $data);
+}
+
+public function save_edit_resep()
+{
+    $takaran = $this->input->post('takaran');
+    $id_produk = $this->input->post('id_produk');
+    $id_servis = $this->input->post('id_servis');
+    for ($i=0; $i < count($takaran); $i++) { 
+        $this->db->where('id_servis', $id_servis[$i]);
+        $this->db->where('id_produk', $id_produk[$i]);
+        $this->db->update('tb_resep', ['takaran' => $takaran[$i]]);
+    }
+   $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Data Berhasil Di Ubah !! <div class="ml-5 btn btn-sm"><i class="fas fa-cloud-download-alt fa-2x"></i></div></div>');
+    redirect("Match/dt_resep");
 }
 
 public function add_servis()

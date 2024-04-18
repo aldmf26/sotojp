@@ -23,6 +23,10 @@
 				<?php endif ?>
 			</div>
 		</div>
+		<nav class="nav nav-pills">
+			<a class="nav-link <?php echo (current_url() == base_url('Match/dt_servis')) ? 'active' : ''; ?>" href="<?= base_url('Match/dt_servis'); ?>">Data Menu</a>
+			<a class="nav-link <?php echo (current_url() == base_url('Match/dt_resep')) ? 'active' : ''; ?>" href="<?= base_url('Match/dt_resep'); ?>">Data Resep</a>
+		</nav>
 	</div>
 
 	<div class="row">
@@ -32,7 +36,7 @@
 			<table class="table" width="100%">
 				<thead>
 					<tr>
-						<th>NAMA SERVIS</th>
+						<th>NAMA PRODUK</th>
 						<th>KATEGORI</th>
 						<th>HARGA OFFLINE</th>
 						<th>HARGA ONLINE</th>
@@ -71,7 +75,7 @@
 				<thead>
 					<tr>
 						<th width="6%">No</th>
-						<th>NAMA SERVIS</th>
+						<th>NAMA PRODUK</th>
 						<th width="15%">KATEGORI</th>
 						<th width="15%">BIAYA</th>
 						<th>RESEP</th>
