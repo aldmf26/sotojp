@@ -58,7 +58,7 @@
             </p>
           </a>
         </li>
-        <?php if(base_url() != 'https://crepesignature.putrirembulan.com'){ ?>
+        <?php if(base_url() != 'https://crepesignature.putrirembulan.com/'){ ?>
         <li class="nav-item has-treeview">
           <a href="<?= base_url('sinkron') ?>" class="nav-link">
             <i class="nav-icon fas fa-cloud-upload-alt "></i>
