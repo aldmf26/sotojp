@@ -440,6 +440,7 @@ class Download extends CI_Controller
             if ($statusCode == 200) {
                 $this->db->truncate('tb_user');
                 $this->db->truncate('tb_role');
+                $this->db->truncate('tb_permission');
                 // Mendapatkan konten respons dalam bentuk string
                 $body = $response->getBody()->getContents();
 
@@ -473,6 +474,13 @@ class Download extends CI_Controller
                             'gudang' => $item['gudang'],
                         ];
                         $this->db->insert('tb_role', $data2);
+                    }
+                    foreach ($data['tb_permission'] as $item) {
+                        $data2 = [
+                            'id_user' => $item['id_user'],
+                            'permission' => $item['permission'],
+                        ];
+                        $this->db->insert('tb_permission', $data2);
                     }
 
                     
