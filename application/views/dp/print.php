@@ -24,7 +24,7 @@
   <center>
    <img width="150" src="<?= base_url('asset/');  ?>orchard_small.png" alt="">
  </center>
- <p align="center" class="huruf">Orchard Beauty Studio</p>
+ <p align="center" class="huruf">Crepese Signature Studio</p>
  <p align="center" style="margin-top: -10px;" class="huruf">Orchard Nail</p>
  <p style=" margin-top: -10px;" align="center" class="huruf">081151-88778</p>
  <p style=" margin-top: -10px;" align="center" class="huruf">Jalan KS Tubun 28 B-D RT 20 RW 02 Kelurahan Kelayan</p>

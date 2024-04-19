@@ -501,7 +501,7 @@ public function opname(){
         $bulan = date('m');
         $year = date('Y');        
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Opname",
+            'title'  => "Crepese Signature | Daftar Opname",
             'opname' => $this->M_salon->daftar_opname(" where MONTH(tgl) = '$bulan' AND YEAR(tgl) = $year ") 
             
         );
@@ -510,7 +510,7 @@ public function opname(){
         // $dt_b   = $this->input->post('tgl2');
         $dt_b = date('Y-m-d', strtotime('+1 days', strtotime($this->input->post('tgl2'))));
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Opname", 
+            'title'  => "Crepese Signature | Daftar Opname", 
             'opname' => $this->M_salon->daftar_opname(" where tgl BETWEEN '$dt_a' AND '$dt_b' ")
         );
     }
@@ -799,7 +799,7 @@ public function produk_masuk(){
         $bulan = date('m');
         $year = date('Y');        
         $data = array(
-            'title'  => "Orchard Beauty | list penjualan",
+            'title'  => "Crepese Signature | list penjualan",
             'produk_masuk' => $this->M_salon->get_list_produk_masuk(" where MONTH( tbl_produk_masuk.tgl) = '$bulan' AND YEAR(tbl_produk_masuk.tgl) = '$year'"), 
             'kategori' => $this->db->get('tb_kategori')->result(),
         );
@@ -807,7 +807,7 @@ public function produk_masuk(){
         $dt_a   = $this->input->post('tgl1');
         $dt_b   = $this->input->post('tgl2');
         $data = array(
-            'title'  => "Orchard Beauty | list penjualan", 
+            'title'  => "Crepese Signature | list penjualan", 
             'produk_masuk' => $this->M_salon->get_list_produk_masuk(" where tbl_produk_masuk.tgl BETWEEN '$dt_a' AND '$dt_b' "),
             'kategori' => $this->db->get('tb_kategori')->result(),
         );
@@ -815,7 +815,7 @@ public function produk_masuk(){
     }
 
     // $data = array(
-    //     'title'  => "Orchard Beauty | Produk Masuk", 
+    //     'title'  => "Crepese Signature | Produk Masuk", 
     //     'produk_masuk' => $this->db->join('tb_produk', 'tbl_produk_masuk.id_produk = tb_produk.id_produk')->get('tbl_produk_masuk')->result(),
     //     'produk' => $this->db->get('tb_produk')->result(),
     // );
@@ -851,7 +851,7 @@ function excel_produk_masuk(){
 public function tambah_produk_masuk(){
 
     $data = [
-        'title' => 'Orchard Beauty | Produk Masuk',
+        'title' => 'Crepese Signature | Produk Masuk',
         'kategori' => $this->db->get('tb_kategori')->result(),
     ];
     $this->load->view('produk/tambah_produk_masuk',$data);
@@ -861,7 +861,7 @@ public function tambah_produk_masuk(){
 public function tambah_produk(){
 
     $data = [
-        'title' => 'Orchard Beauty | Tambah Produk',
+        'title' => 'Crepese Signature | Tambah Produk',
         'kategori' => $this->db->where('id_kategori !=','13')->get('tb_kategori')->result(),
         'satuan'    => $this->db->get('tb_satuan')->result(),
     ];
@@ -871,7 +871,7 @@ public function tambah_produk(){
 public function tambah_produk2(){
 
     $data = [
-        'title' => 'Orchard Beauty | Tambah Produk',
+        'title' => 'Crepese Signature | Tambah Produk',
         'kategori' => $this->db->where('id_kategori !=','13')->get('tb_kategori')->result(),
         'satuan'    => $this->db->get('tb_satuan')->result(),
     ];
@@ -1558,7 +1558,7 @@ public function stok()
         ")->result();
 
     $data = array(
-        'title'  => "Orchard Beauty", 
+        'title'  => "Crepese Signature", 
         'produk' => $produk,
     );
         $this->load->view('stok_crepes/table', $data);
@@ -1576,7 +1576,7 @@ public function list_pemotongan_resep()
     GROUP by a.id_produk;")->result();
 
     $data = array(
-        'title'  => "Orchard Beauty | list penjualan", 
+        'title'  => "Crepese Signature | list penjualan", 
         'produk' => $produk,
         'tgl1' => $tgl1,
         'tgl2' => $tgl2,
@@ -1599,7 +1599,7 @@ GROUP BY a.no_nota
     WHERE a.id_produk = $id_produk AND a.jenis = 'Penjualan' AND a.tgl BETWEEN '$tgl1' AND '$tgl2';")->result();
 
     $data = array(
-        'title'  => "Orchard Beauty | list penjualan", 
+        'title'  => "Crepese Signature | list penjualan", 
         'produk' => $produk,
         'tgl1' => $tgl1,
         'tgl2' => $tgl2,
@@ -2117,7 +2117,7 @@ public function detail_invoice(){
         'tb_app.no_nota' => $no_nota
     ])->result(); 
         $data = [
-            'title'  => "Orchard Beauty | Detail Invoice", 
+            'title'  => "Crepese Signature | Detail Invoice", 
             'invoice' => $invoice,
             'servis' => $servis,
             'produk' => $produk,
@@ -2164,7 +2164,7 @@ public function nota(){
         'tb_app.no_nota' => $no_nota
     ])->result(); 
         $data = [
-            'title'  => "Orchard Beauty | Detail Invoice", 
+            'title'  => "Crepese Signature | Detail Invoice", 
             'invoice' => $invoice,
             'servis' => $servis,
             'produk' => $produk
@@ -2178,7 +2178,7 @@ public function daftar_komisi(){
         $bulan = date('m');
         $year = date('Y');         
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Komisi",
+            'title'  => "Crepese Signature | Daftar Komisi",
             'komisi' => $this->M_salon->daftar_komisi(" where MONTH(komisi.tgl) = '$bulan' AND YEAR(komisi.tgl) = '$year'") 
             
         );
@@ -2186,7 +2186,7 @@ public function daftar_komisi(){
         $dt_a   = $this->input->post('tgl1');
         $dt_b   = $this->input->post('tgl2');
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Komisi", 
+            'title'  => "Crepese Signature | Daftar Komisi", 
             'komisi' => $this->M_salon->daftar_komisi(" where komisi.tgl BETWEEN '$dt_a' AND '$dt_b' ")
         );
     }
@@ -2198,7 +2198,7 @@ public function daftar_komisi_app(){
         $bulan = date('m');
         $year = date('Y');        
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Komisi Appointment",
+            'title'  => "Crepese Signature | Daftar Komisi Appointment",
             'komisi' => $this->M_salon->daftar_komisi_app(" where MONTH(tb_komisi_app.tgl) = '$bulan' AND YEAR(tb_komisi_app.tgl) = $year ") 
             
         );
@@ -2206,7 +2206,7 @@ public function daftar_komisi_app(){
         $dt_a   = $this->input->post('tgl1');
         $dt_b   = $this->input->post('tgl2');
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Komisi Appointment", 
+            'title'  => "Crepese Signature | Daftar Komisi Appointment", 
             'komisi' => $this->M_salon->daftar_komisi_app(" where tb_komisi_app.tgl BETWEEN '$dt_a' AND '$dt_b' ")
         );
     }
@@ -2220,7 +2220,7 @@ public function list_penjualan()
         $bulan = date('m');
         $year = date('Y');        
         $data = array(
-            'title'  => "Orchard Beauty | list penjualan",
+            'title'  => "Crepese Signature | list penjualan",
             'list' => $this->M_salon->get_list_penjualan(" where MONTH(tb_pembelian.tanggal) = '$bulan' AND YEAR(tb_pembelian.tanggal) = '$year'") 
             
         );
@@ -2228,7 +2228,7 @@ public function list_penjualan()
         $dt_a   = $this->input->post('tgl1');
         $dt_b   = $this->input->post('tgl2');
         $data = array(
-            'title'  => "Orchard Beauty | list penjualan", 
+            'title'  => "Crepese Signature | list penjualan", 
             'list' => $this->M_salon->get_list_penjualan(" where tb_pembelian.tanggal BETWEEN '$dt_a' AND '$dt_b' ")
         );
     }
@@ -5513,7 +5513,7 @@ public function app()
 
     $now = date('Y-m-d');
     $data = array(
-        'title'  => "Appointment | Orchard Beauty", 
+        'title'  => "Appointment | Crepese Signature", 
         'anak'   => $this->db->get('tb_karyawan')->result(),
         'terapis'   => $this->db->get_where('tb_terapis', ['tanggal' => $now])->result(),
         'servis'   => $this->db->get('tb_servis')->result(),
@@ -5531,7 +5531,7 @@ public function daftar_app(){
         $bulan = date('m');
         $year = date('Y');        
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Appointment",
+            'title'  => "Crepese Signature | Daftar Appointment",
             'appointment' => $this->M_salon->daftar_app(" where MONTH(tb_app.tgl) = '$bulan' AND YEAR(tb_app.tgl) = '$year'") 
             
         );
@@ -5539,7 +5539,7 @@ public function daftar_app(){
         $dt_a   = $this->input->post('tgl1');
         $dt_b   = $this->input->post('tgl2');
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Appointment", 
+            'title'  => "Crepese Signature | Daftar Appointment", 
             'appointment' => $this->M_salon->daftar_app(" where tb_app.tgl BETWEEN '$dt_a' AND '$dt_b' ")
         );
     }
@@ -5551,7 +5551,7 @@ public function check_app(){
     $app = $this->db->join('tb_servis','tb_app.id_servis = tb_servis.id_servis')->join('tb_customer','tb_app.id_customer = tb_customer.id_customer')->get_where('tb_app',['id_app' => $id_app])->result()[0];
     $terapis = $this->db->join('tb_karyawan','tb_komisi_app.id_kry = tb_karyawan.id_kry')->get_where('tb_komisi_app', ['id_app' => $id_app])->result();        
     $data = array(
-        'title'  => "Orchard Beauty | Cek Appointment",
+        'title'  => "Crepese Signature | Cek Appointment",
         'app' => $app,
         'terapis' => $terapis        
     );
@@ -5563,7 +5563,7 @@ public function check_penjualan(){
     $penjualan = $this->db->select('tb_pembelian.tanggal as tanggal, tb_produk.nm_produk as nm_produk, tb_pembelian.jumlah as jumlah, tb_pembelian.harga as harga, tb_pembelian.total as total')->join('tb_produk','tb_pembelian.id_produk = tb_produk.id_produk')->get_where('tb_pembelian',['id_pembelian' => $id_penjualan])->result()[0];
     $karyawan = $this->db->join('tb_karyawan','komisi.id_kry = tb_karyawan.id_kry')->get_where('komisi', ['id_pembelian' => $id_penjualan])->result();        
     $data = array(
-        'title'  => "Orchard Beauty | Cek Appointment",
+        'title'  => "Crepese Signature | Cek Appointment",
         'penjualan' => $penjualan,
         'karyawan' => $karyawan        
     );
@@ -6096,7 +6096,7 @@ function app_order(){
     'tb_order.id_customer' => $id_customer))->result();
 
     $data = array(
-        'title'  => "Appointment | Orchard Beauty", 
+        'title'  => "Appointment | Crepese Signature", 
         'tgl' => $tgl,
         'id_customer' => $id_customer,
         'd_order_all' => $d_order_all,
@@ -6132,7 +6132,7 @@ function detail_order(){
     }
 
     $data = array(
-        'title'  => "Appointment | Orchard Beauty", 
+        'title'  => "Appointment | Crepese Signature", 
         'tgl' => $tgl,
         'id_customer' => $id_customer,
         'service' => $service,
@@ -6404,7 +6404,7 @@ function app_priode()
 
     
     $data = array(
-        'title'  => "Appointment | Orchard Beauty", 
+        'title'  => "Appointment | Crepese Signature", 
         'anak'   => $this->db->get('tb_karyawan')->result(),
         'terapis'   => $this->db->get_where('tb_terapis', array('tanggal' => $tgl))->result(),
         'servis'   => $this->db->get('tb_servis')->result(),
@@ -6742,7 +6742,7 @@ function laporan_diagram()
 
     
     $data = array(
-        'title'  => "Appointment | Orchard Beauty", 
+        'title'  => "Appointment | Crepese Signature", 
         'anak'   => $this->db->get('tb_karyawan')->result(),
         'terapis'   => $this->db->get_where('tb_terapis', array('tanggal' => $tgl))->result(),
         'servis'   => $this->db->get('tb_servis')->result(),
@@ -7063,7 +7063,7 @@ function laporan_diagram_test()
 
     
     $data = array(
-        'title'  => "Appointment | Orchard Beauty", 
+        'title'  => "Appointment | Crepese Signature", 
         'anak'   => $this->db->get('tb_karyawan')->result(),
         'terapis'   => $this->db->get_where('tb_terapis', array('tanggal' => $tgl))->result(),
         'servis'   => $this->db->get('tb_servis')->result(),
@@ -7133,7 +7133,7 @@ public function laporan_pemasukan(){
         // $year = date('Y');
         $tanggal = date('Y-m-d');        
         $data = array(
-            'title'  => "Orchard Beauty | Laporan Pemasukan",
+            'title'  => "Crepese Signature | Laporan Pemasukan",
             // 'invoice' => $this->M_salon->daftar_invoice(" where MONTH(tb_invoice.tgl_jam) = '$bulan' AND YEAR(tb_invoice.tgl_jam) = $year AND status = 0"),
             'servis' => $this->M_salon->summary_servis($tanggal, $tanggal),  
             'penjualan'     => $this->M_salon->summary_penjualan_produk($tanggal, $tanggal), 
@@ -7143,7 +7143,7 @@ public function laporan_pemasukan(){
         $dt_b   = $this->input->post('tgl2');
         // $dt_b = date('Y-m-d', strtotime('+1 days', strtotime($this->input->post('tgl2'))));
         $data = array(
-            'title'  => "Orchard Beauty | Laporan Pemasukan", 
+            'title'  => "Crepese Signature | Laporan Pemasukan", 
             'servis' => $this->M_salon->summary_servis($dt_a, $dt_b),  
             'penjualan'     => $this->M_salon->summary_penjualan_produk($dt_a, $dt_b),
         );
@@ -7157,7 +7157,7 @@ public function summary_laporan_pemasukan(){
         // $year = date('Y');
         $tanggal = date('Y-m-d');        
         $data = array(
-            'title'  => "Orchard Beauty | Laporan Pemasukan",
+            'title'  => "Crepese Signature | Laporan Pemasukan",
             // 'invoice' => $this->M_salon->daftar_invoice(" where MONTH(tb_invoice.tgl_jam) = '$bulan' AND YEAR(tb_invoice.tgl_jam) = $year AND status = 0"),
             'servis' => $this->M_salon->summary_servis($tanggal, $tanggal),  
             'penjualan'     => $this->M_salon->summary_penjualan_produk($tanggal, $tanggal),
@@ -7173,7 +7173,7 @@ public function summary_laporan_pemasukan(){
         $dt_b   = $this->input->get('tgl2');
         // $dt_b = date('Y-m-d', strtotime('+1 days', strtotime($this->input->post('tgl2'))));
         $data = array(
-            'title'  => "Orchard Beauty | Laporan Pemasukan", 
+            'title'  => "Crepese Signature | Laporan Pemasukan", 
             'servis' => $this->M_salon->summary_servis($dt_a, $dt_b),  
             'penjualan'     => $this->M_salon->summary_penjualan_produk($dt_a, $dt_b),
             'invoice' => $this->db->select_sum('total')->select_sum('diskon')->select_sum('nominal_voucher')->get_where('tb_invoice',['tgl_jam >=' => $dt_a, 'tgl_jam <=' => $dt_b , 'status' => '0'])->row(),
@@ -7256,7 +7256,7 @@ public function data_void(){
         $bulan = date('m');
         $year = date('Y');        
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Void",
+            'title'  => "Crepese Signature | Daftar Void",
             'invoice' => $this->M_salon->daftar_invoice(" where MONTH(tb_invoice.tgl_jam) = '$bulan' AND YEAR(tb_invoice.tgl_jam) = $year AND status = 1") 
             
         );
@@ -7265,7 +7265,7 @@ public function data_void(){
         // $dt_b   = $this->input->post('tgl2');
         $dt_b = date('Y-m-d', strtotime('+1 days', strtotime($this->input->post('tgl2'))));
         $data = array(
-            'title'  => "Orchard Beauty | Daftar Void", 
+            'title'  => "Crepese Signature | Daftar Void", 
             'invoice' => $this->M_salon->daftar_invoice(" where tb_invoice.tgl_jam BETWEEN '$dt_a' AND '$dt_b' AND status = 1")
         );
     }
@@ -7422,7 +7422,7 @@ public function dp(){
     ORDER BY tb_dp.id_dp DESC
     ")->result();
     $data = array(
-        'title'  => "Orchard Beauty | Data DP",
+        'title'  => "Crepese Signature | Data DP",
         'customer' => $this->db->get('tb_customer')->result(),
         // 'dp' => $this->db->select('*, tb_dp.status as status, tb_dp.admin as admin')->join('tb_customer','tb_dp.id_customer = tb_customer.id_customer')->join('tb_invoice','tb_dp.kd_dp = tb_invoice.kd_dp')->get('tb_dp')->result(),
         'dp' => $dt_dp,
@@ -7627,7 +7627,7 @@ public function get_diskon(){
 
 public function diskon(){
     $data = array(
-        'title'  => "Orchard Beauty | Data Diskon",
+        'title'  => "Crepese Signature | Data Diskon",
 
         'diskon' => $this->db->order_by('id_diskon','DESC')->get('tb_diskon')->result(),
 
@@ -7906,7 +7906,7 @@ if(empty($this->input->get('tgl'))){
     $today = $this->input->get('tgl');
 }
  $data = array(
-    'title'  => "Orchard Beauty", 
+    'title'  => "Crepese Signature", 
     'anak'   => $this->db->where_not_in('nm_kry', $names)->get('tb_karyawan')->result(),
     'komisi'    => $this->M_salon->dt_kom(),
     'today' => $today
@@ -7920,7 +7920,7 @@ public function absen2()
  $dt_b = date('Y-m-26');
  $dt_c = date('Y-m-d', strtotime($dt_b.'-1 month'));
  $data  = array(
-    'title'     => "Orchard Beauty - Absen",
+    'title'     => "Crepese Signature - Absen",
     'absen'     => $this->M_salon->absen(" where tgl BETWEEN '$dt_c' AND '$dt_a'"), 
     'd_nama'    => $this->M_salon->d_nama(),
     'komisi'    => $this->M_salon->dt_kom()
@@ -8051,14 +8051,14 @@ public function denda(){
         $dt_a   = $this->session->userdata('tgl1');
         $dt_b   = $this->session->userdata('tgl2');
         $data = array(
-            'title'  => "Orchard Beauty", 
+            'title'  => "Crepese Signature", 
             'anak'   => $this->M_salon->ambil_anak(),
             'denda'  => $this->M_salon->dt_denda(" where tanggal BETWEEN '$dt_a' AND '$dt_b' "),
         );
     }else{
         $dt   = date('Y-m-d');
         $data = array(
-            'title'  => "Orchard Beauty", 
+            'title'  => "Crepese Signature", 
             'anak'   => $this->M_salon->ambil_anak(),
             'denda'  => $this->M_salon->dt_denda(" where tgl_input = '$dt' "),
         );
@@ -8076,7 +8076,7 @@ public function denda2(){
     );
     $this->session->set_userdata($sesi);
     $data = array(
-        'title'  => "Orchard Beauty", 
+        'title'  => "Crepese Signature", 
         'anak'   => $this->M_salon->ambil_anak(),
         'denda'  => $this->M_salon->dt_denda(" where tanggal BETWEEN '$dt_a' AND '$dt_b' "),
     );
@@ -8291,7 +8291,7 @@ function drop_servis($id_servis){
 
 public function diskon_servis(){
     $data = array(
-        'title'  => "Diskon Service | Orchard Beauty", 
+        'title'  => "Diskon Service | Crepese Signature", 
         'diskon' => $this->db->order_by('id_diskon','DESC')->get('tb_diskon_servis')->result()
     );
     $this->load->view('diskon/diskon_servis', $data);
@@ -8341,7 +8341,7 @@ function drop_diskon_servis($id_diskon){
 public function bahan()
 {
   $data = array(
-      'title'  => "Orchard Beauty", 
+      'title'  => "Crepese Signature", 
       'bahan' => $this->db->join('tb_satuan','tb_produk.id_satuan = tb_satuan.id_satuan','left')->get_where('tb_produk',['id_kategori' => '20'])->result(),
       'satuan' => $this->db->get('tb_satuan')->result()
   );
@@ -8362,7 +8362,7 @@ public function Export_bahan()
         ")->result();
 
     $data = array(
-        'title'  => "Orchard Beauty", 
+        'title'  => "Crepese Signature", 
         'produk' => $produk,
     );
   $this->load->view('bahan/export', $data);
@@ -8569,14 +8569,14 @@ public function kasbon(){
         $dt_a   = $this->session->userdata('tgl1');
         $dt_b   = $this->session->userdata('tgl2');
         $data = array(
-            'title'  => "Orchard Beauty", 
+            'title'  => "Crepese Signature", 
             'anak'   => $this->M_salon->ambil_anak(),
             'kasbon' => $this->M_salon->dt_kasbon(" where tanggal BETWEEN '$dt_a' AND '$dt_b' "),
         );
     }else{
         $dt   = date('Y-m-d');
         $data = array(
-            'title'  => "Orchard Beauty", 
+            'title'  => "Crepese Signature", 
             'anak'   => $this->M_salon->ambil_anak(),
             'kasbon' => $this->M_salon->dt_kasbon(" where tgl_input = '$dt' "),
         );
@@ -8594,7 +8594,7 @@ public function kasbon2(){
     );
     $this->session->set_userdata($sesi);
     $data = array(
-        'title'  => "Orchard Beauty", 
+        'title'  => "Crepese Signature", 
         'anak'   => $this->M_salon->ambil_anak(),
         'kasbon' => $this->M_salon->dt_kasbon(" where tanggal BETWEEN '$dt_a' AND '$dt_b' "),
     );
@@ -8706,14 +8706,14 @@ public function tips(){
         $dt_a   = $this->session->userdata('tgl1');
         $dt_b   = $this->session->userdata('tgl2');
         $data = array(
-            'title'  => "Orchard Beauty", 
+            'title'  => "Crepese Signature", 
             'anak'   => $this->M_salon->ambil_anak(),
             'tips'   => $this->M_salon->dt_tips(" where tanggal BETWEEN '$dt_a' AND '$dt_b' "),
         );
     }else{
         $dt   = date('Y-m-d');
         $data = array(
-            'title'  => "Orchard Beauty", 
+            'title'  => "Crepese Signature", 
             'anak'   => $this->M_salon->ambil_anak(),
             'tips'   => $this->M_salon->dt_tips(" where tgl_input = '$dt' "),
         );
@@ -8731,7 +8731,7 @@ public function tips2(){
     );
     $this->session->set_userdata($sesi);
     $data = array(
-        'title'  => "Orchard Beauty", 
+        'title'  => "Crepese Signature", 
         'anak'   => $this->M_salon->ambil_anak(),
         'tips'   => $this->M_salon->dt_tips(" where tanggal BETWEEN '$dt_a' AND '$dt_b' "),
     );
@@ -8837,7 +8837,7 @@ public function cancel()
      $bulan = date('m');
      $year = date('Y');
      $data = array(
-        'title'  => "Cancel | Orchard Beauty", 
+        'title'  => "Cancel | Crepese Signature", 
         'cancel'   => $this->M_salon->dt_cancel(" where MONTH(tb_cancel.tgl) = '$bulan' AND YEAR(tb_cancel.tgl) = '$year'"),
         // 'summary'   => $this->M_salon->dt_cancel_sum(),
     );
@@ -8847,7 +8847,7 @@ public function cancel()
     $dt_a   = $this->input->post('tgl1');
     $dt_b   = $this->input->post('tgl2');
     $data = array(
-       'title'  => "Cancel | Orchard Beauty", 
+       'title'  => "Cancel | Crepese Signature", 
        'cancel'   => $this->M_salon->dt_cancel(" where tb_cancel.tgl BETWEEN '$dt_a' AND '$dt_b' "),
        // 'summary'   => $this->M_salon->dt_cancel_sum(),
    );
@@ -8855,7 +8855,7 @@ public function cancel()
 
  }   
 //  $data = array(
-//     'title'  => "Cancel | Orchard Beauty", 
+//     'title'  => "Cancel | Crepese Signature", 
 //     'cancel'   => $this->M_salon->dt_cancel(),
 //     // 'summary'   => $this->M_salon->dt_cancel_sum(),
 // );
@@ -8878,7 +8878,7 @@ function add_cancel()
 function edit_c($id_cancel)
 {
    $data = array(
-    'title'  => "Edit Cancel | Orchard Beauty", 
+    'title'  => "Edit Cancel | Crepese Signature", 
     'detail'   => $this->db->get_where('tb_cancel', array('id_cancel' => $id_cancel))->row(),
     'summary'   => $this->M_salon->dt_cancel_sum(),
 );
@@ -8925,7 +8925,7 @@ function summary_cancel()
 public function customer()
 {
  $data = array(
-    'title'  => "Customer | Orchard Beauty", 
+    'title'  => "Customer | Crepese Signature", 
     'data'   => $this->M_salon->dt_customer(),
     'summary'   => $this->M_salon->dt_customer_sum(),
 );
@@ -8949,7 +8949,7 @@ function add_customer()
 function edit_cus($id_customer)
 {
    $data = array(
-    'title'  => "Edit Customer | Orchard Beauty", 
+    'title'  => "Edit Customer | Crepese Signature", 
     'detail'   => $this->db->get_where('tb_customer', array('id_customer' => $id_customer))->row(),
     'summary'   => $this->M_salon->dt_customer_sum(),
 );
@@ -8991,7 +8991,7 @@ else
   $app    = "SELECT * FROM tb_customer WHERE nama LIKE '$f%'";
   $res1   = $this->db->query($app);
   $data = array(
-    'title'  => "Customer | Orchard Beauty", 
+    'title'  => "Customer | Crepese Signature", 
     'data'   => $res1->result(),
     'summary'   => $this->M_salon->dt_customer_sum(),
 );

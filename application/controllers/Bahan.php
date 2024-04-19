@@ -14,7 +14,7 @@ class Bahan extends CI_Controller
     public function index()
     {
         $data = array(
-            'title'  => "Orchard Beauty",
+            'title'  => "Crepese Signature",
             'bahan' => $this->db->query("SELECT a.id_produk, a.nm_produk, b.stok , c.satuan, a.harga
             FROM tb_produk as a 
             left join (

@@ -407,7 +407,7 @@ class Produk extends CI_Controller
         }
 
         $data = [
-            'title'  => "Orchard Beauty | Detail Invoice",
+            'title'  => "Crepese Signature | Detail Invoice",
             'invoice' => $invoice,
             'produk' => $produk,
             'no_nota' => $no_nota,
@@ -452,7 +452,7 @@ class Produk extends CI_Controller
 
 
         $data = [
-            'title'  => "Orchard Beauty | Detail Invoice",
+            'title'  => "Crepese Signature | Detail Invoice",
             'invoice' => $invoice,
             'produk' => $produk,
             'no_nota' => $no_nota,
