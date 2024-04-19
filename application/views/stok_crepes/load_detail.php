@@ -1,6 +1,6 @@
 <div class="row mt-4">
     <div class="col-lg-12">
-        <table id="tb_servis2" class="table table-hover" width="100%">
+        <table id="tb_detail_stok" class="table table-hover">
             <thead>
                 <tr>
                     <th>No</th>
@@ -17,7 +17,6 @@
                         <td><?= $i; ?></td>
                         <td><a href="<?= base_url(); ?>match/detail_invoice?invoice=<?= $k->invoice; ?>"><?= $k->invoice; ?></a> </td>
                         <td><?= ucwords(strtolower($k->nm_servis)); ?></td>
-                   
                     </tr>
                 <?php $i++;
                 endforeach ?>

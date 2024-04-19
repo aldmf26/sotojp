@@ -107,7 +107,7 @@
 
 <div class="modal fade" id="detailnya">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content ">
             <div class="modal-header" style="background:#FFA07A;">
                 <h4 class="modal-title">Detail</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -130,21 +130,21 @@
     $(document).ready(function() {
         $(document).on('click', '.detail', function(e) {
             e.preventDefault()
-            var id = $(this).attr('id_produk')
-            var tgl1 = "<?= $tgl1 ?>"
-            var tgl2 = "<?= $tgl2 ?>"
+            const id = $(this).attr('id_produk')
+            const tgl1 = "<?= $tgl1 ?>"
+            const tgl2 = "<?= $tgl2 ?>"
 
             $("#detailnya").modal('show')
             $.ajax({
                 type: "GET",
                 url: "<?= base_url('Match/load_detail_stok') ?>",
                 data: {
-                    id_produk:id,
-                    tgl1:tgl1,
-                    tgl2:tgl2,
+                    id_produk: id,
+                    tgl1: tgl1,
+                    tgl2: tgl2
                 },
-                success: function (r) {
-                    $('#tb_servis2').DataTable({
+                success: function(r) {
+                    $('#tb_detail_stok').DataTable({
                         "paging": false,
                         "pageLength": 100,
                         "scrollY": "350px",
