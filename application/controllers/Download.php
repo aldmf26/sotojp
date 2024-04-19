@@ -103,6 +103,8 @@ class Download extends CI_Controller
             // Jika respons sukses (kode status 200)
             if ($statusCode == 200) {
                 $this->db->truncate('tb_produk');
+                $this->db->truncate('tb_satuan');
+                $this->db->truncate('harga_toping');
                 // Mendapatkan konten respons dalam bentuk string
                 $body = $response->getBody()->getContents();
 
@@ -110,6 +112,7 @@ class Download extends CI_Controller
                 $data = json_decode($body, true);
                 if (isset($data['bahan']) && is_array($data['bahan'])) {
                     // Loop setiap elemen dalam array 'bahan'
+                    
                     foreach ($data['bahan'] as $item) {
                         $data2 = [
                             'id_produk' => $item['id_produk'],
@@ -128,6 +131,24 @@ class Download extends CI_Controller
                             'qty_toping' => $item['qty_toping'],
                         ];
                         $this->db->insert('tb_produk', $data2);
+                    }
+
+                    foreach ($data['harga_toping'] as $ht) {
+                        $data3 = [
+                            'id_harga_toping' => $ht['id_harga_toping'],
+                            'id_produk' => $ht['id_produk'],
+                            'id_distibusi' => $ht['id_distibusi'],
+                            'harga' => $ht['harga'],
+                        ];
+                        $this->db->insert('harga_toping', $data3);
+                    }
+
+                    foreach ($data['tb_satuan'] as $ht) {
+                        $data3 = [
+                            'id_satuan' => $ht['id_satuan'],
+                            'satuan' => $ht['satuan'],
+                        ];
+                        $this->db->insert('tb_satuan', $data3);
                     }
                     redirect('download');
                 } else {
@@ -390,6 +411,74 @@ class Download extends CI_Controller
                 } else {
                     echo "Data menu tidak tersedia.";
                     redirect('download');
+                }
+            } else {
+                echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
+            }
+        } catch (\Exception $e) {
+            // Tangani jika terjadi kesalahan
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    public function download_user()
+    {
+        // Inisialisasi objek client GuzzleHttp
+        $client = new Client();
+
+        // URL API
+        $url = 'https://crepeapi.ptagafood.com/api/tb_user_crepe';
+
+        try {
+            // Mengirimkan permintaan GET ke API
+            $response = $client->request('GET', $url);
+
+            // Mendapatkan kode status respons
+            $statusCode = $response->getStatusCode();
+
+            // Jika respons sukses (kode status 200)
+            if ($statusCode == 200) {
+                $this->db->truncate('tb_user');
+                $this->db->truncate('tb_role');
+                // Mendapatkan konten respons dalam bentuk string
+                $body = $response->getBody()->getContents();
+
+                // Mengubah konten respons menjadi array
+                $data = json_decode($body, true);
+                if (isset($data['tb_user']) && is_array($data['tb_user'])) {
+                    // Loop setiap elemen dalam array 'tb_user'
+                    
+                    foreach ($data['tb_user'] as $item) {
+                        $data2 = [
+                            'kd_user' => $item['kd_user'],
+                            'nm_user' => $item['nm_user'],
+                            'username' => $item['username'],
+                            'password' => $item['password'],
+                            'email' => $item['email'],
+                            'id_role' => $item['id_role'],
+                            'aktif' => $item['aktif'],
+                            'tgl_masuk' => $item['tgl_masuk'],
+                            'warna' => $item['warna'],
+                        ];
+                        $this->db->insert('tb_user', $data2);
+                    }
+                    foreach ($data['tb_role'] as $item) {
+                        $data2 = [
+                            'id_role' => $item['id_role'],
+                            'nm_role' => $item['nm_role'],
+                            'input' => $item['input'],
+                            'edit_hapus' => $item['edit_hapus'],
+                            'i_grade' => $item['i_grade'],
+                            'e_grade' => $item['e_grade'],
+                            'gudang' => $item['gudang'],
+                        ];
+                        $this->db->insert('tb_role', $data2);
+                    }
+
+                    
+                    redirect('download');
+                } else {
+                    echo "Data menu tidak tersedia.";
                 }
             } else {
                 echo "Gagal mengambil data dari API. Kode status: " . $statusCode;

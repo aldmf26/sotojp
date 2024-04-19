@@ -86,7 +86,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-lg-3">
+           <!-- <div class="col-lg-3">
                 <a href="<?= base_url('download/download_stok_masuk') ?>" class="loading">
                     <div class="card">
                         <div class="card-body text-center">
@@ -96,7 +96,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-lg-3">
+             <div class="col-lg-3">
                 <a href="<?= base_url('download/download_stok_opname') ?>" class="loading">
                     <div class="card">
                         <div class="card-body text-center">
@@ -105,7 +105,7 @@
                         </div>
                     </div>
                 </a>
-            </div>
+            </div> -->
             <div class="col-lg-3">
                 <a href="<?= base_url('download/download_voucher_void') ?>" class="loading">
                     <div class="card">
@@ -117,7 +117,7 @@
                 </a>
             </div>
             <div class="col-lg-3">
-                <a href="#" class="loading">
+                <a href="<?= base_url('download/download_user') ?>" class="loading">
                     <div class="card">
                         <div class="card-body text-center">
                             <img src="<?= base_url('asset/img/download-computing.png') ?>" alt="" width="120px">
