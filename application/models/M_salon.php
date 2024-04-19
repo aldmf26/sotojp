@@ -28,13 +28,17 @@ class M_salon extends CI_model
 	public function get_list_penjualan($where = "")
 	{
 		return $this->db->query("Select tb_pembelian.no_nota, tb_pembelian.nm_karyawan, tb_pembelian.tanggal,
+		tb_servis.nm_servis,
 		tb_produk.nm_produk,
 		tb_pembelian.jumlah,
 		tb_satuan.satuan,
 		tb_pembelian.harga,
 		tb_pembelian.diskon,
 		tb_pembelian.total,
-		tb_pembelian.admin FROM tb_pembelian LEFT JOIN tb_produk ON tb_pembelian.id_produk = tb_produk.id_produk LEFT JOIN tb_satuan ON tb_produk.id_satuan = tb_satuan.id_satuan" . $where . " order by id_pembelian DESC ")->result();
+		tb_pembelian.admin FROM tb_pembelian 
+		LEFT JOIN tb_servis ON tb_pembelian.id_produk = tb_servis.id_servis 
+		LEFT JOIN tb_produk ON tb_pembelian.id_produk = tb_produk.id_produk 
+		LEFT JOIN tb_satuan ON tb_produk.id_satuan = tb_satuan.id_satuan" . $where . " order by id_pembelian DESC ")->result();
 	}
 
 	public function daftar_komisi($where = "")
