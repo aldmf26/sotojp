@@ -15,13 +15,9 @@
                 ?>
                     <tr>
                         <td><?= $i; ?></td>
-                        <td><?= $k->invoice; ?> </td>
-                        <td>-</td>
-                        <!-- <td>
-                            <input name="takaran[]" onfocus="this.select()" type="text" value="<?= $k->takaran; ?>" class="form-control text-right">
-                            <input name="id_servis[]" type="hidden" value="<?= $k->id_servis; ?>">
-                            <input name="id_produk[]" type="hidden" value="<?= $k->id_produk; ?>">
-                        </td> -->
+                        <td><a href="<?= base_url(); ?>match/detail_invoice?invoice=<?= $k->invoice; ?>"><?= $k->invoice; ?></a> </td>
+                        <td><?= ucwords(strtolower($k->nm_servis)); ?></td>
+                   
                     </tr>
                 <?php $i++;
                 endforeach ?>
