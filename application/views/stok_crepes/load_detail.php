@@ -6,6 +6,7 @@
                     <th>No</th>
                     <th>Invoice</th>
                     <th>Nama Produk</th>
+                    <th>Nama Bahan</th>
                     <th class="text-right">Qty</th>
                 </tr>
             </thead>
@@ -18,6 +19,7 @@
                         <td><?= $i; ?></td>
                         <td><a href="<?= base_url(); ?>match/detail_invoice?invoice=<?= $k->invoice; ?>"><?= $k->invoice; ?></a> </td>
                         <td><?= ucwords(strtolower($k->nm_servis)); ?></td>
+                        <td><?= ucwords(strtolower($k->nm_produk)); ?></td>
                         <td align="right"><?= $k->ttl; ?></td>
                     </tr>
                 <?php $i++;
