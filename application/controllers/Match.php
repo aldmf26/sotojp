@@ -1602,8 +1602,8 @@ public function load_detail_stok()
         WHERE a.tanggal BETWEEN '$tgl1' AND '$tgl2'
         GROUP BY a.no_nota
     ) as b on b.no_nota = a.kode_stok_produk
-    JOIN tb_produk as c on a.id_produk = c.id_produk
-    JOIN tb_resep as d on a.id_produk = d.id_produk AND b.id_servis = d.id_servis
+    LEFT JOIN tb_produk as c on a.id_produk = c.id_produk
+    LEFT JOIN tb_resep as d on a.id_produk = d.id_produk AND b.id_servis = d.id_servis
     WHERE a.id_produk = $id_produk AND a.jenis = 'Penjualan' AND a.tgl BETWEEN '$tgl1' AND '$tgl2' GROUP BY a.kode_stok_produk;;")->result();
 
     $data = array(
