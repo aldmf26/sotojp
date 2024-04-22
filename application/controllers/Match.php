@@ -1595,14 +1595,14 @@ public function load_detail_stok()
     $tgl2   = $this->input->get('tgl2');
     $id_produk   = $this->input->get('id_produk');
 
-    $produk = $this->db->query("SELECT a.kode_stok_produk as invoice,b.nm_servis FROM `tb_stok_produk` as a 
+    $produk = $this->db->query("SELECT a.kode_stok_produk as invoice,b.nm_servis, COUNT(*) as ttl FROM `tb_stok_produk` as a 
     LEFT JOIN (
         SELECT a.no_nota,b.nm_servis FROM `tb_pembelian` as a
 JOIN tb_servis as b on a.id_produk = b.id_servis
 WHERE a.tanggal BETWEEN '$tgl1' AND '$tgl2'
 GROUP BY a.no_nota
     ) as b on b.no_nota = a.kode_stok_produk
-    WHERE a.id_produk = $id_produk AND a.jenis = 'Penjualan' AND a.tgl BETWEEN '$tgl1' AND '$tgl2';")->result();
+    WHERE a.id_produk = $id_produk AND a.jenis = 'Penjualan' AND a.tgl BETWEEN '$tgl1' AND '$tgl2' GROUP BY a.kode_stok_produk;")->result();
 
     $data = array(
         'title'  => "Crepese Signature | list penjualan", 
