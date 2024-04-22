@@ -22,7 +22,7 @@
                         <td><?= ucwords(strtolower($k->nm_servis)); ?></td>
                         <td><?= ucwords(strtolower($k->nm_produk)); ?></td>
                         <td align="right"><?= $k->ttl; ?></td>
-                        <td align="right"><?= $k->resep_dipakai; ?></td>
+                        <td align="right"><?= $k->resep_dipakai; ?> <?= $k->satuan; ?></td>
                     </tr>
                 <?php $i++;
                 endforeach ?>
