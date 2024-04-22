@@ -61,7 +61,7 @@
                                     <tr>
                                         <td><?= $n++ ?></td>
                                         <td><?= $p->nm_produk ?></td>
-                                        <td><?= number_format($p->ttl, 1) ?></td>
+                                        <td><?= number_format($p->ttl, 2) ?></td>
                                         <td><?= $p->satuan ?></td>
                                         <td><a href="#" class="btn btn-sm btn-primary detail" id_produk="<?= $p->id_produk; ?>"><i class="fas fa-eye"></i></a></td>
                                     </tr>
