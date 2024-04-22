@@ -18,7 +18,7 @@
                         <td><?= $i; ?></td>
                         <td><a href="<?= base_url(); ?>match/detail_invoice?invoice=<?= $k->invoice; ?>"><?= $k->invoice; ?></a> </td>
                         <td><?= ucwords(strtolower($k->nm_servis)); ?></td>
-                        <td align="right"><?= $k->tt; ?></td>
+                        <td align="right"><?= $k->ttl; ?></td>
                     </tr>
                 <?php $i++;
                 endforeach ?>
