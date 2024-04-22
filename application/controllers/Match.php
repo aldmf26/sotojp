@@ -1597,7 +1597,7 @@ public function load_detail_stok()
 
     $produk = $this->db->query("SELECT c.nm_produk,a.kode_stok_produk as invoice,b.nm_servis, COUNT(*) as ttl,(COUNT(*) * d.takaran) as resep_dipakai FROM `tb_stok_produk` as a 
     LEFT JOIN (
-        SELECT a.no_nota,b.nm_servis FROM `tb_pembelian` as a
+        SELECT a.no_nota,b.nm_servis,b.id_servis FROM `tb_pembelian` as a
         JOIN tb_servis as b on a.id_produk = b.id_servis
         WHERE a.tanggal BETWEEN '$tgl1' AND '$tgl2'
         GROUP BY a.no_nota
