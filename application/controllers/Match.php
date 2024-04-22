@@ -1,5 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+require 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 class Match extends CI_Controller {
 
     public function __construct()
@@ -8347,6 +8353,175 @@ public function bahan()
   );
   $this->load->view('bahan/table', $data);
 }
+ 
+public function export_template_resep()
+{
+    $style_atas = array(
+        'font' => [
+            'bold' => true, // Mengatur teks menjadi tebal
+        ],
+        'alignment' => [
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+        ],
+        'borders' => [
+            'allBorders' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+            ]
+        ],
+    );
+
+    $style = [
+        'borders' => [
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'allBorders' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+            ],
+        ],
+    ];
+    $spreadsheet = new Spreadsheet();
+
+    $spreadsheet->setActiveSheetIndex(0);
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Resep');
+
+
+    $kolom = [
+        'A' => 'id resep',
+        'B' => 'id menu',
+        'C' => 'nama menu',
+        'D' => 'id bahan',
+        'E' => 'nama bahan',
+        'F' => 'takaran',
+        'G' => 'satuan',
+
+        'J' => 'id bahan',
+        'K' => 'nama bahan',
+        'L' => 'satuan',
+    ];
+    // looping kolom
+    foreach($kolom as $d => $i) {
+        $sheet->setCellValue($d . '1', $i);
+    }
+    // looping bg warna merah
+    foreach(['A1', 'B1', 'D1', 'F1'] as $d) {
+        $sheet->getStyle($d)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('FF0000');
+    }
+    // border
+    $sheet->getStyle("A1:G1")->applyFromArray($style_atas);
+    $sheet->getStyle("J1:L1")->applyFromArray($style_atas);
+
+    $resep = $this->db->query("SELECT a.id_resep,a.id_servis,a.id_produk,a.takaran,b.nm_servis,c.nm_produk,d.satuan FROM tb_resep as a
+    JOIN tb_servis as b on a.id_servis = b.id_servis
+    JOIN tb_produk as c on a.id_produk = c.id_produk
+    JOIN tb_satuan as d on c.id_satuan = d.id_satuan")->result();
+    $kolom = 2;
+    foreach ($resep as $p) {
+        $sheet->setCellValue('A' . $kolom, $p->id_resep);
+        $sheet->setCellValue('B' . $kolom, $p->id_servis);
+        $sheet->setCellValue('C' . $kolom, $p->nm_servis);
+        $sheet->setCellValue('D' . $kolom, $p->id_produk);
+        $sheet->setCellValue('E' . $kolom, $p->nm_produk);
+        $sheet->setCellValue('F' . $kolom, $p->takaran);
+        $sheet->setCellValue('G' . $kolom, $p->satuan);
+        $kolom++;
+    }
+    $baris = count($resep) + 1;
+    $sheet->getStyle('A2:G' . $baris)->applyFromArray($style);
+
+    $produk = $this->db->query("SELECT a.id_produk,a.nm_produk,b.satuan FROM tb_produk as a
+            JOIN tb_satuan as b on a.id_satuan = b.id_satuan
+            WHERE a.id_kategori in (20,26);")->result();
+    $kolom = 2;
+    foreach ($produk as $p) {
+        $sheet->setCellValue('J' . $kolom, $p->id_produk);
+        $sheet->setCellValue('K' . $kolom, $p->nm_produk);
+        $sheet->setCellValue('L' . $kolom, $p->satuan);
+        $kolom++;
+    }
+    $baris = count($produk) + 1;
+    $sheet->getStyle('J2:L' . $baris)->applyFromArray($style);
+
+
+    $namafile = "Resep Bahan.xlsx";
+
+    $writer = new Xlsx($spreadsheet);
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename=' . $namafile);
+    header('Cache-Control: max-age=0');
+
+
+    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+    $writer->save('php://output');
+    exit();
+}
+public function import_resep()
+{
+    if (!empty($_FILES['file']['name'])) {
+        $file = $_FILES['file']['tmp_name'];
+        $spreadsheet = IOFactory::load($file);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        $admin = $this->session->userdata('nm_user');
+        $tgl= date('Y-m-d');
+        $this->db->query("UPDATE tb_resep SET hapus = 'Y', tgl_hapus = '$tgl', admin_hapus = '$admin'");
+
+        try {
+            foreach(array_slice($sheetData,1) as $row) {
+                if (empty(array_filter($row))) {
+                    continue;
+                }
+
+                $id_resep = $row['A'];
+                $id_servis = $row['B'];
+                $nm_menu = $row['C'];
+                $id_produk = $row['D'];
+                $takaran = $row['F'];
+
+                // if(empty($id_resep)){
+                //     $data = [
+                //         'id_servis' => $id_servis,
+                //         'id_produk' => $id_produk,
+                //         'takaran' => $takaran,
+                //         'hapus' => 'T',
+                //         'tgl_hapus' => '',
+                //         'admin_hapus' => ''
+                //     ];
+                //     $this->db->insert('tb_resep',$data);
+                // } else {
+                //     $this->db->where('id_servis', $id_servis);
+                //     $this->db->where('id_produk', $id_produk);
+                //     $this->db->update('tb_resep', [
+                //         'takaran' => $takaran,
+                //         'hapus' => 'T',
+                //         'tgl_hapus' => '',
+                //         'admin_hapus' => ''
+                //     ]);
+                // }
+            }
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $pesan = "Gagal menyimpan data";
+                throw new Exception($pesan);
+            } else {
+                $this->db->trans_commit();
+                $pesan = "Data berhasil diimpor";
+                $this->session->set_flashdata('message', $pesan);
+                redirect('Match/dt_resep');
+            }
+        } catch (\Exception  $th) {
+            $this->db->trans_rollback();
+            $pesan_error = $e->getMessage();
+            $this->session->set_flashdata('message', $pesan_error);
+            redirect('Match/dt_resep');
+        }
+    } else {
+        echo 'error';
+    }
+}
+
 public function Export_bahan()
 {
     $produk = $this->db->query("SELECT a.*, if(b.stok is null,0,b.stok) as stok_program, c.nm_kategori, d.satuan

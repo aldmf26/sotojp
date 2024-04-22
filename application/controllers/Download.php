@@ -190,7 +190,7 @@ class Download extends CI_Controller
                             'id_resep' => $item['id_resep'],
                             'id_servis' => $item['id_servis'],
                             'id_produk' => $item['id_produk'],
-                            'takaran' => $item['takaran']
+                            'takaran' => $item['takaran'],
                         ];
                         $this->db->insert('tb_resep', $data2);
                     }
