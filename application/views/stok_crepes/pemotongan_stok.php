@@ -106,7 +106,7 @@
 </form>
 
 <div class="modal fade" id="detailnya">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content ">
             <div class="modal-header" style="background:#FFA07A;">
                 <h4 class="modal-title">Detail</h4>

@@ -8,6 +8,7 @@
                     <th>Nama Produk</th>
                     <th>Nama Bahan</th>
                     <th class="text-right">Qty</th>
+                    <th class="text-right">Resep Terpakai</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,6 +22,7 @@
                         <td><?= ucwords(strtolower($k->nm_servis)); ?></td>
                         <td><?= ucwords(strtolower($k->nm_produk)); ?></td>
                         <td align="right"><?= $k->ttl; ?></td>
+                        <td align="right"><?= $k->resep_dipakai; ?></td>
                     </tr>
                 <?php $i++;
                 endforeach ?>
