@@ -408,9 +408,9 @@ class Download extends CI_Controller
                             $this->db->insert('tb_voucher_invoice', $data2);
                         }
                     }
+                    redirect('download');
                 } else {
                     echo "Data menu tidak tersedia.";
-                    redirect('download');
                 }
             } else {
                 echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
