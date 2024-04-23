@@ -256,9 +256,7 @@
 
 					<div class="row">
 						<?php foreach ($perlengkapan as $key => $t) : ?>
-							<?php if($dis == 2){ ?>
-								
-							<?php } ?>
+							
 							<div class="col-lg-3">
 								<div class="card">
 									<div class="card-body">
