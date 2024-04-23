@@ -53,30 +53,35 @@ class Download extends CI_Controller
             // Jika respons sukses (kode status 200)
             if ($statusCode == 200) {
                 $this->db->truncate('tb_servis');
+                $this->db->truncate('tb_harga');
                 // Mendapatkan konten respons dalam bentuk string
                 $body = $response->getBody()->getContents();
 
                 // Mengubah konten respons menjadi array
                 $data = json_decode($body, true);
-                if (isset($data['menu']) && is_array($data['menu'])) {
-                    // Loop setiap elemen dalam array 'menu'
-                    foreach ($data['menu'] as $item) {
-                        $data2 = [
-                            'id_servis' => $item['id_servis'],
-                            'nm_servis' => $item['nm_servis'],
-                            'id_kategori' => $item['id_kategori'],
-                            'durasi' => $item['durasi'],
-                            'menit' => $item['menit'],
-                            'biaya' => $item['biaya'],
-                            'komisi' => $item['komisi'],
-                            'foto' => $item['foto'],
-                        ];
-                        $this->db->insert('tb_servis', $data2);
-                    }
-                    redirect('download');
-                } else {
-                    echo "Data menu tidak tersedia.";
+                foreach ($data['menu'] as $item) {
+                    $data2 = [
+                        'id_servis' => $item['id_servis'],
+                        'nm_servis' => $item['nm_servis'],
+                        'id_kategori' => $item['id_kategori'],
+                        'durasi' => $item['durasi'],
+                        'menit' => $item['menit'],
+                        'biaya' => $item['biaya'],
+                        'komisi' => $item['komisi'],
+                        'foto' => $item['foto'],
+                    ];
+                    $this->db->insert('tb_servis', $data2);
                 }
+                foreach ($data['harga'] as $item) {
+                    $data2 = [
+                        'id_harga' => $item['id_harga'],
+                        'id_servis' => $item['id_servis'],
+                        'distirbusi' => $item['distirbusi'],
+                        'harga' => $item['harga'],
+                    ];
+                    $this->db->insert('tb_harga', $data2);
+                }
+                redirect('download');
             } else {
                 echo "Gagal mengambil data dari API. Kode status: " . $statusCode;
             }

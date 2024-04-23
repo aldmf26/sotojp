@@ -1234,7 +1234,7 @@ public function order()
 
         'perlengkapan'  => $this->db->query("SELECT a.id_produk, a.nm_produk, a.qty_toping, b.harga
         FROM tb_produk as a
-        left JOIN(
+        JOIN(
         SELECT b.id_produk, b.harga
             FROM harga_toping as b 
             where b.id_distibusi ='$dis'
