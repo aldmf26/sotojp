@@ -8417,10 +8417,10 @@ public function export_template_resep()
     $sheet->getStyle("A1:G1")->applyFromArray($style_atas);
     $sheet->getStyle("J1:L1")->applyFromArray($style_atas);
 
-    $resep = $this->db->query("SELECT a.id_resep,a.id_servis,a.id_produk,a.takaran,b.nm_servis,c.nm_produk,d.satuan FROM tb_resep as a
-    JOIN tb_servis as b on a.id_servis = b.id_servis
-    JOIN tb_produk as c on a.id_produk = c.id_produk
-    JOIN tb_satuan as d on c.id_satuan = d.id_satuan")->result();
+    $resep = $this->db->query("SELECT a.hapus,a.id_resep,a.id_servis,a.id_produk,a.takaran,b.nm_servis,c.nm_produk,d.satuan FROM tb_resep as a
+    LEFT JOIN tb_servis as b on a.id_servis = b.id_servis
+    LEFT JOIN tb_produk as c on a.id_produk = c.id_produk
+    LEFT JOIN tb_satuan as d on c.id_satuan = d.id_satuan")->result();
     $kolom = 2;
     foreach ($resep as $p) {
         $sheet->setCellValue('A' . $kolom, $p->id_resep);
@@ -8430,6 +8430,7 @@ public function export_template_resep()
         $sheet->setCellValue('E' . $kolom, $p->nm_produk);
         $sheet->setCellValue('F' . $kolom, $p->takaran);
         $sheet->setCellValue('G' . $kolom, $p->satuan);
+        $sheet->setCellValue('H' . $kolom, $p->hapus);
         $kolom++;
     }
     $baris = count($resep) + 1;
