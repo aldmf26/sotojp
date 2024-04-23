@@ -357,6 +357,8 @@ class Download extends CI_Controller
                         ];
                         $this->db->insert('voucher_void', $data2);
                     }
+
+               
                 } else {
                     echo "Data menu tidak tersedia.";
                 }
@@ -408,7 +410,6 @@ class Download extends CI_Controller
                             $this->db->insert('tb_voucher_invoice', $data2);
                         }
                     }
-                    redirect('download');
                 } else {
                     echo "Data menu tidak tersedia.";
                 }

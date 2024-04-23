@@ -8483,26 +8483,26 @@ public function import_resep()
                 $id_produk = $row['D'];
                 $takaran = $row['F'];
 
-                // if(empty($id_resep)){
-                //     $data = [
-                //         'id_servis' => $id_servis,
-                //         'id_produk' => $id_produk,
-                //         'takaran' => $takaran,
-                //         'hapus' => 'T',
-                //         'tgl_hapus' => '',
-                //         'admin_hapus' => ''
-                //     ];
-                //     $this->db->insert('tb_resep',$data);
-                // } else {
-                //     $this->db->where('id_servis', $id_servis);
-                //     $this->db->where('id_produk', $id_produk);
-                //     $this->db->update('tb_resep', [
-                //         'takaran' => $takaran,
-                //         'hapus' => 'T',
-                //         'tgl_hapus' => '',
-                //         'admin_hapus' => ''
-                //     ]);
-                // }
+                if(empty($id_resep)){
+                    $data = [
+                        'id_servis' => $id_servis,
+                        'id_produk' => $id_produk,
+                        'takaran' => $takaran,
+                        'hapus' => 'T',
+                        'tgl_hapus' => '',
+                        'admin_hapus' => ''
+                    ];
+                    $this->db->insert('tb_resep',$data);
+                } else {
+                    $this->db->where('id_servis', $id_servis);
+                    $this->db->where('id_produk', $id_produk);
+                    $this->db->update('tb_resep', [
+                        'takaran' => $takaran,
+                        'hapus' => 'T',
+                        'tgl_hapus' => '',
+                        'admin_hapus' => ''
+                    ]);
+                }
             }
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
