@@ -26,6 +26,7 @@ class Opname extends CI_Controller
         FROM tb_stok_produk as a
         where a.tgl between '$tgl1' and '$tgl2' and a.jenis = 'Opname' 
         group by a.kode_stok_produk
+        ORDER BY a.id_stok_produk DESC
         ")->result();
 
         $data = [

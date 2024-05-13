@@ -716,11 +716,13 @@ public function form_opname(){
 public function print_opname(){
     $kode_opname = $this->input->get('kode_opname');
     $data = array(
-        'opname' => $this->db->group_by('kode_opname')->get_where('tb_opname',['kode_opname' => $kode_opname])->result()[0],
-        'detail_opname' => $this->db->join('tb_produk','tb_opname.id_produk = tb_produk.id_produk','left')
-        ->join('tb_kategori','tb_produk.id_kategori = tb_kategori.id_kategori','left')
-        ->join('tb_satuan','tb_produk.id_satuan = tb_satuan.id_satuan','left')
-        ->get_where('tb_opname',['kode_opname'=>$kode_opname])->result(),
+        'opname' => $this->db->group_by('kode_stok_produk')->get_where('tb_stok_produk',['kode_stok_produk' => $kode_opname])->result()[0],
+        'detail_opname' => $this->db->query("SELECT *
+        FROM tb_stok_produk as a 
+        LEFT JOIN tb_produk ON a.id_produk = tb_produk.id_produk
+        LEFT JOIN tb_kategori ON tb_produk.id_kategori = tb_kategori.id_kategori
+        LEFT JOIN tb_satuan ON tb_produk.id_satuan = tb_satuan.id_satuan
+        WHERE a.kode_stok_produk = '$kode_opname';")->result(),
         'kode_opname' => $kode_opname
     );
     $this->load->view('produk/print_opname', $data);

@@ -34,7 +34,7 @@
                 <button type="button" id="atur_barang" class="btn btn-info float-right ml-2" data-toggle="modal" data-target="#exampleModal">
                     <i class="fas fa-plus"></i> Tambah
                 </button>
-                <a href="<?= base_url() ?>match/print_opname?kode_opname=<?= $kode_opname ?>" class="btn btn-info float-right ml-2"><i class="fas fa-print"></i> Print</a>
+                <!-- <a href="<?= base_url() ?>match/print_opname?kode_opname=<?= $kode_opname ?>" class="btn btn-info float-right ml-2"><i class="fas fa-print"></i> Print</a> -->
                 <a href="<?= base_url() ?>match/form_opname?kode_opname=<?= $kode_opname ?>" class="btn btn-info float-right ml-2"><i class="fas fa-print"></i> Formulir</a>
             </div>
         </div>

@@ -30,7 +30,7 @@
         <tbody>
             <tr>
                 <td>
-                    <?= $opname->kode_opname ?>    
+                    <?= $opname->kode_stok_produk ?>    
                 </td>
                 <?php if($opname->status == 'Selesai'): ?>
                 <td>
@@ -66,7 +66,7 @@
         <?php $no = 1; ?>
             <?php foreach($detail_opname as $d): ?>
                 <?php 
-            $selisih = $d->stok_program - $d->stok_aktual;
+            $selisih = $d->stok_program - $d->stok_program;
             if($selisih < 0){
                 $selisih *= -1;
             }
@@ -77,12 +77,12 @@
                 <td><?= $d->sku ?></td>
                 <td><?= $d->nm_produk ?></td>
                 <td><?= $d->stok_program ?></td>
-                <td><?= $d->stok_aktual ?></td>
+                <td><?= $d->stok_program ?></td>
                 <td><?= $selisih ?></td>
                 <td><?= number_format($d->harga,0) ?></td>
                 <td><?= number_format($d->harga * $d->stok_program,0) ?></td>
                 <td><?= number_format($ttl_selisih,0) ?></td>
-                <td><?= $d->catatan ?></td>
+                <!-- <td><?= $d->catatan ?></td> -->
             </tr>
             <?php endforeach; ?>
         </tbody>

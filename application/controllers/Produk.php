@@ -266,7 +266,7 @@ class Produk extends CI_Controller
                     'kode_stok_produk' => $no_nota,
                     'id_produk' => $t['id_produk'],
                     'debit' => '0',
-                    'kredit' => $dt_toping->qty_toping,
+                    'kredit' => $t['qty'] * $dt_toping->qty_toping,
                     'tgl' => date('Y-m-d'),
                     'tgl_input' => date('Y-m-d'),
                     'admin' => $admin,
