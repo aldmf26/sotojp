@@ -8152,7 +8152,10 @@ function summary_denda(){
     $data = array(
         'tgl1'      => $tgl1,
         'tgl2'      => $tgl2,
-        'denda'     => $this->M_salon->summary_denda($tgl1, $tgl2),
+        'denda'     => $this->db->query("SELECT a.nm_denda, sum(a.nominal) as total, GROUP_CONCAT(a.alasan SEPARATOR ', ') AS alasan
+        FROM ctt_denda as a 
+        where a.tanggal BETWEEN '$tgl1' and '$tgl2'
+        GROUP by a.nm_denda;")->result(),
         'sort'      => date('d-M-y', strtotime($tgl1))." ~ ".date('d-M-y', strtotime($tgl2))
     );
 

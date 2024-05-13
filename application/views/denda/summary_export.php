@@ -1,7 +1,6 @@
-
 <table class="table" border="1">
 	<thead>
-		<th colspan="3"><?= $sort ?></th>	
+		<th colspan="3"><?= $sort ?></th>
 	</thead>
 	<thead>
 		<tr>
@@ -10,13 +9,13 @@
 			<th>ALASAN</th>
 		</tr>
 	</thead>
-	
+
 	<tbody style="text-align: center;">
 		<?php
 		$ttl = 0;
-		foreach ($denda as $k): 
+		foreach ($denda as $k) :
 			$ttl += $k->total;
-			?>
+		?>
 			<tr>
 				<td><?= $k->nm_denda; ?></td>
 				<td><?= number_format($k->total, 0) ?></td>
@@ -24,8 +23,8 @@
 			</tr>
 		<?php endforeach ?>
 	</tbody>
-	<tfoot>	
-		<tr>	
+	<tfoot>
+		<tr>
 			<th>TOTAL</th>
 			<th><?= number_format($ttl, 0); ?></th>
 			<th></th>
@@ -35,15 +34,13 @@
 
 
 <style>
-    @media print {
+	@media print {
 
-        .no_print,
-        .no-print * {
-            display: none !important;
-        }
-    }
+		.no_print,
+		.no-print * {
+			display: none !important;
+		}
+	}
 </style>
-<hr>	
-<a href="<?= base_url('Match/excel_denda_sum/').$tgl1.'/'.$tgl2; ?>" class="no_print" target="_blank"><i>Excel_Summary Klik Here ...</i></a>
-
-
+<hr>
+<a href="<?= base_url('Match/excel_denda_sum/') . $tgl1 . '/' . $tgl2; ?>" class="no_print" target="_blank"><i>Excel_Summary Klik Here ...</i></a>
