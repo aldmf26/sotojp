@@ -1558,8 +1558,7 @@ public function stok()
         left join (
             SELECT b.id_produk , sum(b.debit - b.kredit) stok
             FROM tb_stok_produk as b 
-            JOIN tb_invoice as c on b.kode_stok_produk = c.no_nota
-            where b.opname = 'T' and c.status = 0
+            where b.opname = 'T' 
             group by b.id_produk
         ) as b on b.id_produk = a.id_produk
         left join tb_kategori as c on c.id_kategori = a.id_kategori
