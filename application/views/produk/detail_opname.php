@@ -92,7 +92,7 @@
                                         <td><?= $op->nm_kategori ?></td>
                                         <td><?= $op->stok_program ?> </td>
                                         <td>
-                                            <center><input type="text" name="stok_aktual[]" value="<?= $op->stok_aktual ?>" style="width: 120px; text-align: center;" class="form-control fill" <?= $op->status == 'Selesai' ? 'Readonly' : '' ?>></center>
+                                            <center><input type="text" name="stok_aktual[]" value="<?= $op->stok_program ?>" style="width: 120px; text-align: center;" class="form-control fill" <?= $op->status == 'Selesai' ? 'Readonly' : '' ?>></center>
                                         </td>
                                         <td><?= $selisih ?></td>
                                         <td><?= number_format($op->harga, 0) ?></td>

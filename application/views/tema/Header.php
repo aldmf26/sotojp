@@ -34,7 +34,7 @@
 
   <link rel="stylesheet" href="<?= base_url('asset/'); ?>ambil/apis.css">
   <link rel="stylesheet" href="<?= base_url('asset/'); ?>popover.js">
-  <link rel="icon" type="image/png" href="<?= base_url('asset/img/');  ?>crepe_logo.png" />
+  <link rel="icon" type="image/png" href="<?= base_url('asset/img/');  ?>crepe_logo1.png" />
   <link rel="stylesheet" href="<?= base_url() ?>asset/time/jquery.skedTape.css">
 </head>
 
