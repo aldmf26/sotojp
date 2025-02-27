@@ -58,24 +58,7 @@
             </p>
           </a>
         </li>
-        <?php if(base_url() != 'https://crepesignature.putrirembulan.com/'){ ?>
-        <li class="nav-item has-treeview">
-          <a href="<?= base_url('sinkron') ?>" class="nav-link">
-            <i class="nav-icon fas fa-cloud-upload-alt "></i>
-            <p>
-              Upload data <?= base_url(); ?>
-            </p>
-          </a>
-        </li>
-        <li class="nav-item has-treeview">
-          <a href="<?= base_url('download') ?>" class="nav-link">
-            <i class="nav-icon fas fa-cloud-download-alt"></i>
-            <p>
-              Download data
-            </p>
-          </a>
-        </li>
-          <?php } ?>
+        
 
 
 
