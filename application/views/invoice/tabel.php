@@ -79,14 +79,13 @@
 								<tr>
 									<th>#</th>
 									<th>NO NOTA</th>
-									<th class="text-right">GOPAY</th>
-									<th class="text-right">GRABFOOD</th>
-									<th class="text-right">CASH</th>
-									<th class="text-right">DISKON</th>
-									<th class="text-right">VOUCHER</th>
-									<th class="text-right">BAYAR</th>
+									<th class="text-right">Grand Total</th>
+									<th class="text-right">Voucher</th>
+									<th class="text-right">Dp</th>
+									<th class="text-right">Total bayar</th>
+									<th class="text-right">BCA</th>
+									<th class="text-right">TRANSFER</th>
 									<th class="text-right">KEMBALIAN</th>
-									<th class="text-right">TOTAL</th>
 									<th>TANGGAL</th>
 									<th>AKSES 1</th>
 								</tr>
@@ -96,15 +95,24 @@
 								<?php foreach ($invoice as $key => $value) : ?>
 									<tr class="clickable-row" id="<?= $value->no_nota ?>">
 										<td><?= $i++ ?></td>
-										<td><a href="<?= base_url(); ?>produk/detail_invoice?invoice=<?= $value->no_nota; ?>"><?= $value->no_nota ?></a></td>
-										<td class="text-right"><?= number_format($value->gopay, 0) ?></td>
-										<td class="text-right"><?= number_format($value->bca_debit, 0) ?></td>
-										<td class="text-right"><?= number_format($value->cash, 0) ?></td>
-										<td class="text-right"><?= number_format($value->diskon, 0) ?></td>
-										<td class="text-right"><?= number_format($value->nominal_voucher, 0) ?></td>
-										<td class="text-right"><?= number_format($value->bayar, 0) ?></td>
-										<td class="text-right"><?= number_format($value->kembali, 0) ?></td>
+										<?php
+										$pembayaran = ($value->bca_debit + $value->cash);
+										$subTotal = $value->total + $value->nominal_voucher;
+										$nominal_dp = (empty($value->kd_dp)) ? 0 : $this->db->get_where('tb_dp', ['kd_dp' => $value->kd_dp])->row()->jumlah_dp;
+
+										?>
+										<td>
+											<a href="<?= base_url(); ?>produk/nota?invoice=<?= $value->no_nota; ?>"><?= $value->no_nota ?></a>
+										</td>
 										<td class="text-right"><?= number_format($value->total, 0) ?></td>
+										<td class="text-right"><?= number_format($value->nominal_voucher, 0) ?></td>
+										<td class="text-right"><?= number_format($nominal_dp, 0) ?></td>
+										<td class="text-right"><?= number_format($value->bayar, 0) ?></td>
+
+
+										<td class="text-right"><?= number_format($value->cash, 0) ?></td>
+										<td class="text-right"><?= number_format($value->bca_debit, 0) ?></td>
+										<td class="text-right"><?= number_format($value->kembali, 0) ?></td>
 										<td><?= date('d/m/Y', strtotime($value->tgl_jam)) ?></td>
 
 
@@ -260,10 +268,10 @@
 					</div>
 					<div class="modal-body">
 						<div class="row">
-							<div class="col-lg-6">
+							<!-- <div class="col-lg-6">
 								<label for="">Voucher</label>
 								<input class="form-control" type="text" name="voucher" required>
-							</div>
+							</div> -->
 							<div class="col-lg-6">
 								<label for="">Keterangan</label>
 								<input class="form-control" type="text" name="ket_void" required>
@@ -281,73 +289,5 @@
 	</form>
 <?php endforeach; ?>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-<script src="<?= base_url() ?>asset/time/jquery.skedTape.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables/jquery.dataTables.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/select2/js/select2.full.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/moment/moment.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/daterangepicker/daterangepicker.js"></script>
-
-<script>
-	$(document).ready(function() {
-		// $(".void").click(function() {
-
-		//     $('#modal_aside_left').modal('hide');
-
-		// });
-
-
-		// $(".clickable-row").click(function() {
-
-		//     var no_nota = $(this).attr("id");
-		//     // var no_nota = $(this).atr("no_nota");
-
-		//     $.ajax({
-		//         url:"<?= base_url(); ?>match/get_invoice/",
-		//         method:"POST",
-		//         data:{no_nota:no_nota},
-		//         success:function(data){
-
-
-		//           $('#modal_aside_left').modal('show');
-
-		//           $('#get_invoice').html(data);
-		// 		  $("#print").attr("href", "<?= base_url() ?>match/nota?invoice="+no_nota)
-
-		//         }
-
-		//       });
-
-		// });
-
-
-
-	});
-</script>
-
-
-
-<script>
-	function autofill_anak() {
-		var nm_kry = document.getElementById('nm_kry').value;
-		$.ajax({
-			url: "<?php echo base_url(); ?>Match/cari_anak",
-			data: '&nm_kry=' + nm_kry,
-			success: function(data) {
-				var hasil = JSON.parse(data);
-
-				$.each(hasil, function(key, val) {
-					document.getElementById('id_kry').value = val.id_kry;
-					document.getElementById('nm_kry').value = val.nm_kry;
-				});
-			}
-		});
-	}
-</script>
 
 <?php $this->load->view('tema/Footer'); ?>

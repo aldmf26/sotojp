@@ -160,10 +160,10 @@ if(!$beda){
                 <li class="nav-item dropdown">
                   <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link shadow dropdown-toggle" style="color: white;">Catatan</a>
                   <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                    <li><a href="<?= base_url('Match/absen'); ?>" class="dropdown-item">Absen Harian</a></li>
+                    <!-- <li><a href="<?= base_url('Match/absen'); ?>" class="dropdown-item">Absen Harian</a></li>
                     <li><a href="<?= base_url('Match/denda'); ?>" class="dropdown-item">Denda</a></li>
                     <li><a href="<?= base_url('Match/kasbon'); ?>" class="dropdown-item">Kasbon</a></li>
-                    <li><a href="<?= base_url('Match/tips'); ?>" class="dropdown-item">Tips</a></li>
+                    <li><a href="<?= base_url('Match/tips'); ?>" class="dropdown-item">Tips</a></li> -->
                   </ul>
                 </li>
                 <?php if ($this->session->userdata('id_role')=='1'): ?>

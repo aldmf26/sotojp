@@ -180,15 +180,88 @@ class Produk extends CI_Controller
         $productItems = array_filter($allCartItems, function ($item) {
             return isset($item['kategori']) && $item['kategori'] == 'product';
         });
+
+        $subtotal_produk = 0;
+        $ttl_toping = 0;
+
+        foreach ($productItems as $value) {
+            $allCartItems = $this->cart->contents();
+            $topink = array_filter($allCartItems, function ($item) use ($value) {
+                return isset($item['ibu']) && $item['ibu'] == $value['id_produk'];
+            });
+            $toping = $topink;
+
+            $subtotal_produk += ($value['price'] * $value['qty']) - $value['diskon'];
+
+            foreach ($toping as $t) {
+                $ttl_toping += $t['qty'] * $t['price'];
+            }
+        }
+
+        $totalPembayaran = $subtotal_produk + $ttl_toping;
+
         $data = array(
             'title'  => "Crepe Payment Order Produk",
-            'dp' => $this->db->join('tb_customer', 'tb_dp.id_customer = tb_customer.id_customer')->get_where('tb_dp', ['status' => '1'])->result(),
+            // 'dp' => $this->db->join('tb_customer', 'tb_dp.id_customer = tb_customer.id_customer')->get_where('tb_dp', ['status' => '1'])->result(),
             'diskon' => $diskon,
-            'customer' => $this->db->get('tb_customer')->result(),
             'cart' => $productItems,
+            'dp' => $this->db->join('tb_customer', 'tb_dp.id_customer = tb_customer.id_customer')->get_where('tb_dp', ['status' => '1'])->result(),
+            'totalPembayaran' => $totalPembayaran,
             'dis' => $this->input->get('dis')
         );
         $this->load->view('order/payment', $data);
+    }
+
+    public function getVoucher()
+    {
+        $subTotal = $this->input->get('subTotal');
+        $voucher = $this->input->get('voucher');
+
+        $getVoucher = $this->db->where('no_voucher', $voucher)
+            ->where('status', 1)
+            ->get('tb_voucher_invoice')
+            ->row_array(); // Mengambil satu baris data
+
+        if ($getVoucher) {
+            if ($getVoucher['jenis'] == 2) {
+                $nominal = $subTotal * ($getVoucher['jumlah'] / 100);
+                $subTotal = $subTotal - $nominal;
+            } else {
+                $nominal = $getVoucher['jumlah'];
+            }
+
+            echo json_encode([
+                'status' => 'success',
+                'nominal' => $nominal, // Ambil jumlah diskon dari voucher
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Voucher tidak ditemukan atau tidak valid',
+            ]);
+        }
+    }
+
+    public function getDp()
+    {
+        $dp = $this->input->get('dp');
+        $id_customer = $this->input->get('id_customer');
+        $getDp = $this->db
+            ->where('status', 1)->where('id_dp', $dp)
+            ->get('tb_dp')
+            ->row();
+        $nominal = $getDp->jumlah_dp;
+        if ($getDp) {
+            echo json_encode([
+                'status' => 'success',
+                'nominal' => $nominal, // Ambil jumlah diskon dari voucher
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Voucher tidak ditemukan atau tidak valid',
+            ]);
+        }
     }
 
     public function checkout()
@@ -196,13 +269,16 @@ class Produk extends CI_Controller
         $no_invoice = $this->M_invoice->get_no_invoice();
         $i_invoice = $this->M_invoice->simpan_invoice($no_invoice);
 
-        $no_nota = 'CRP' . $no_invoice;
+        $no_nota = 'STJP' . $no_invoice;
         $cash = $this->input->post('cash');
         $bca_kredit = $this->input->post('bca_kredit');
-        $bca_debit = $this->input->post('bca_debit');
+        $bca_debit = $this->input->post('bca');
         $mandiri_kredit = $this->input->post('mandiri_kredit');
         $mandiri_debit = $this->input->post('mandiri_debit');
         $shoope = $this->input->post('shoope');
+        $id_dp = $this->input->post('kd_dp');
+        $kd_dp = $this->db->get_where('tb_dp', ['id_dp' => $id_dp])->row()->kd_dp;
+        $nominal_dp = $this->db->get_where('tb_dp', ['id_dp' => $id_dp])->row()->jumlah_dp;
         $tokopedia = $this->input->post('tokopedia');
         $id_diskon = $this->input->post('id_diskon');
         $nominal_voucher = $this->input->post('nominal_voucher');
@@ -223,7 +299,7 @@ class Produk extends CI_Controller
         $tanggal = date('Y-m-d');
         $admin = $this->session->userdata('nm_user');
 
-
+        $ttlPembayaran = 0;
         foreach ($keranjang as $key => $value) {
             $servis = $this->db->get_where('tb_resep', ['id_servis' => $value['id_produk']])->result();
             $allCartItems = $this->cart->contents();
@@ -246,6 +322,7 @@ class Produk extends CI_Controller
                 $this->db->insert('tb_stok_produk', $data);
             }
             $subharga = ($value['qty'] * $value['price']) - $value['diskon'];
+            $ttlPembayaran += $subharga;
             $data_pembelian = array(
                 'no_nota' => $no_nota,
                 'id_produk'   => $value['id_produk'],
@@ -274,6 +351,7 @@ class Produk extends CI_Controller
                 ];
                 $this->db->insert('tb_stok_produk', $data);
                 $subharga = $t['qty'] * $t['price'];
+                $ttlPembayaran += $subharga;
                 $data_pembelian = array(
                     'no_nota' => $no_nota,
                     'id_produk'   => $t['id_produk'],
@@ -292,48 +370,40 @@ class Produk extends CI_Controller
 
         $bayar = $cash + $bca_kredit + $bca_debit + $shoope + $mandiri_kredit + $mandiri_debit;
 
-        $ttl = $total - $diskon - $nominal_voucher;
+        $ttl = $ttlPembayaran - $diskon - $nominal_voucher - $nominal_dp;
 
-        if ($ttl < 0) {
-            $ttl_input = 0;
-        } else {
-            $ttl_input = $ttl;
-        }
+        $ttl_input = max(0, $ttl);
 
-
+        $id_voucher = $this->input->post('id_voucher');
         $data = [
             'no_nota' => $no_nota,
-            'total' => $ttl_input,
-            'bayar' => $bayar,
+            'total' => $total,
+            'bayar' => $ttl_input,
             'kembali' => $bayar - $ttl_input,
             'cash' => $cash,
-            'mandiri_kredit' => $mandiri_kredit,
-            'mandiri_debit' => $mandiri_debit,
             'bca_debit' => $bca_debit,
-            'bca_kredit' => $bca_kredit,
-            'gopay' => $shoope,
             'diskon' => $diskon,
             'nominal_voucher' => $nominal_voucher,
             'tgl_jam' => $tanggal,
             'admin' => $admin,
             'status' => 0,
-            'id_distribusi' => $id_distribusi
+            'kd_dp' => $kd_dp,
+            'id_distribusi' => $id_distribusi,
+            'id_voucher' => $id_voucher,
 
         ];
         $this->db->insert('tb_invoice', $data);
 
+        $this->db->where('kd_dp',$kd_dp);
+        $this->db->update('tb_dp',[
+            'status' => 2
+        ]);
 
-        $id_voucher = $this->input->post('id_voucher');
-
-        if (empty($id_voucher)) {
-            # code...
-        } else {
-            $data_off_voucher = [
-                'tgl_pakai' => date('Y-m-d'),
-                'status' => 0
-            ];
-            $this->db->where('id_voucher', $id_voucher);
-            $this->db->update('tb_voucher_invoice', $data_off_voucher);
+        if (!empty($id_voucher)) {
+            $this->db->set('tgl_pakai', date('Y-m-d'))
+                ->set('status', 0)
+                ->where('id_voucher', $id_voucher)
+                ->update('tb_voucher_invoice');
         }
 
         $this->cart->destroy();
@@ -350,7 +420,8 @@ class Produk extends CI_Controller
         ])->result()[0];
 
         $produk = $this->db->select('tb_pembelian.harga as harga,  tb_pembelian.id_produk, tb_pembelian.jumlah as jumlah, tb_servis.nm_servis, tb_pembelian.diskon')->join('tb_invoice', 'tb_invoice.no_nota = tb_pembelian.no_nota', 'left')->join('tb_servis', 'tb_pembelian.id_produk = tb_servis.id_servis', 'left')->get_where('tb_pembelian', [
-            'tb_pembelian.no_nota' => $no_nota, 'kategori' => 'product'
+            'tb_pembelian.no_nota' => $no_nota,
+            'kategori' => 'product'
         ])->result();
 
 
@@ -407,7 +478,7 @@ class Produk extends CI_Controller
         }
 
         $data = [
-            'title'  => "Crepese Signature | Detail Invoice",
+            'title'  => "Soto JP | Detail Invoice",
             'invoice' => $invoice,
             'produk' => $produk,
             'no_nota' => $no_nota,
@@ -452,7 +523,7 @@ class Produk extends CI_Controller
 
 
         $data = [
-            'title'  => "Crepese Signature | Detail Invoice",
+            'title'  => "Soto JP | Detail Invoice",
             'invoice' => $invoice,
             'produk' => $produk,
             'no_nota' => $no_nota,

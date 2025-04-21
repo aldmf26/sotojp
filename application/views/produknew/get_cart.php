@@ -89,7 +89,7 @@
                 <hr>
                 <strong style="font-size: 20px;">Total</strong> <strong style="float: right; font-size: 22px;">Rp. <?= number_format($subtotal_produk + $total_toping) ?></strong>
                 <hr>
-                <a type="button" data-toggle="modal" data-target="#myModalp" class="btn btn-primary btn-block" style="background-image: linear-gradient(to right, #FFF192 0%, #FFF192 19%, #FFEA61 60%, #FFDD3C 100%); border-color: #F7889D; font-weight: bold; color: #EF0097;">LANJUTKAN KE PEMBAYARAN</a>
+                <a type="button" data-toggle="modal" data-target="#myModalp" class="btn btn-primary btn-block" style="background-image: linear-gradient(to right, #fed53b 0%, #fed53b 19%, #FFEA61 60%, #FFDD3C 100%); border-color: #F7889D; font-weight: bold; color: #EF0097;">LANJUTKAN KE PEMBAYARAN</a>
             </div>
         </div>
     </div>

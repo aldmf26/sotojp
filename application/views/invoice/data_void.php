@@ -2,28 +2,6 @@
 
 <script src="<?= base_url('css_maruti/'); ?>js/jquery.min.js"></script> 
 <script src="<?php echo base_url('css_maruti/'); ?>assets/ajax.js"></script>
-
-<!-- <style type="text/css">
-
-.modal .modal-dialog-aside{
-	width: 500px;
-	max-width:80%; height: 100%; margin:0;
-	transform: translate(0); transition: transform .2s;
-}
-
-
-.modal .modal-dialog-aside .modal-content{  height: inherit; border:0; border-radius: 0;}
-.modal .modal-dialog-aside .modal-content .modal-body{ overflow-y: auto }
-.modal.fixed-left .modal-dialog-aside{ margin-left:auto;  transform: translateX(100%); }
-.modal.fixed-right .modal-dialog-aside{ margin-right:auto; transform: translateX(-100%); }
-
-.modal.show .modal-dialog-aside{ transform: translateX(0);  }
-
-</style> -->
-
-<!-- ======================================================== conten ======================================================= -->
-<!-- Content Wrapper. Contains page content -->
-<!-- <div class="content-wrapper"> -->
 	
 	<div class="content-header">
 		<div class="container">
@@ -204,69 +182,7 @@
 						</div>
 					</div>
 				</form>
-
-
-                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-<script src="<?= base_url() ?>asset/time/jquery.skedTape.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables/jquery.dataTables.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/select2/js/select2.full.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/moment/moment.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/daterangepicker/daterangepicker.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $(".clickable-row").click(function() {
-            
-            var no_nota = $(this).attr("id");
-            // var no_nota = $(this).atr("no_nota");
-
-            $.ajax({
-                url:"<?= base_url(); ?>match/get_invoice/",
-                method:"POST",
-                data:{no_nota:no_nota},
-                success:function(data){
-                  
-                  
-                  $('#modal_aside_left').modal('show');
-                  
-                  $('#get_invoice').html(data);
-				  $("#print").attr("href", "<?=base_url()?>match/nota?invoice="+no_nota)
-                  
-                }
-
-              });
-
-
-            
-        });
-    });
-</script>
-
-
-
-	<script>
-		function autofill_anak(){
-			var nm_kry = document.getElementById('nm_kry').value;
-			$.ajax({
-				url:"<?php echo base_url();?>Match/cari_anak",
-				data:'&nm_kry='+nm_kry,
-				success:function(data){
-					var hasil = JSON.parse(data);  
-
-					$.each(hasil, function(key,val){ 
-						document.getElementById('id_kry').value=val.id_kry;
-						document.getElementById('nm_kry').value=val.nm_kry;  
-					});
-				}
-			});                   
-		}
-
-	</script>
+	
 
 	<?php $this->load->view('tema/Footer'); ?>
 

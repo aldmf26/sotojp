@@ -379,51 +379,6 @@
     });
 
     $(document).ready(function() {
-        // $('#cash').on('change blur',function(){
-        // 	if($(this).val().trim().length === 0){
-        // 		$(this).val(0);
-        // 	}
-        // 	});
-        // $('#mandiri_kredit').on('change blur',function(){
-        // 	if($(this).val().trim().length === 0){
-        // 		$(this).val(0);
-        // 	}
-        // 	});
-        // $('#mandiri_debit').on('change blur',function(){
-        // 	if($(this).val().trim().length === 0){
-        // 		$(this).val(0);
-        // 	}
-        // 	});
-        // $('#bca_kredit').on('change blur',function(){
-        // 	if($(this).val().trim().length === 0){
-        // 		$(this).val(0);
-        // 	}
-        // 	});
-        // $('#bca_debit').on('change blur',function(){
-        // 	if($(this).val().trim().length === 0){
-        // 		$(this).val(0);
-        // 	}
-        // 	});
-
-
-        // $('.pembayaran').keyup(function(){
-        //     var cash = parseInt($("#cash").val());
-        //     var mandiri_kredit = parseInt($("#mandiri_kredit").val());
-        // 	var mandiri_debit = parseInt($("#mandiri_debit").val());
-        // 	var bca_kredit = parseInt($("#bca_kredit").val());
-        // 	var bca_debit = parseInt($("#bca_debit").val());
-        // 	var total = parseInt($("#total").val());
-        //     var bayar = mandiri_kredit + mandiri_debit + cash + bca_kredit + bca_debit;
-        // 	if(total <= bayar){
-        // 		$('#btn_bayar').removeAttr('disabled');
-        // 	}else{
-        // 		$('#btn_bayar').attr('disabled','true');
-        // 	}
-
-
-        //   });
-
-
         $('#d_customer').select2({
             width: '100%',
             language: {
@@ -498,22 +453,6 @@
 </script>
 
 
-<script>
-    function autofill_anak() {
-        var nm_kry = document.getElementById('nm_kry').value;
-        $.ajax({
-            url: "<?php echo base_url(); ?>Match/cari_anak",
-            data: '&nm_kry=' + nm_kry,
-            success: function(data) {
-                var hasil = JSON.parse(data);
 
-                $.each(hasil, function(key, val) {
-                    document.getElementById('id_kry').value = val.id_kry;
-                    document.getElementById('nm_kry').value = val.nm_kry;
-                });
-            }
-        });
-    }
-</script>
 
 <?php $this->load->view('tema/Footer'); ?>

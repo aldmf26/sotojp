@@ -8,7 +8,7 @@
 <!-- /.control-sidebar -->
 
 <!-- Main Footer -->
-<footer class="main-footer shadow" style=" background:#FFF192;">
+<footer class="main-footer shadow" style=" background:#fed53b;">
   <div class="float-right d-none d-sm-inline">
     Anything you want
   </div>

@@ -4,7 +4,7 @@
 <script src="<?php echo base_url('css_maruti/'); ?>assets/ajax.js"></script>
 <style>
 	.toko_active {
-		background-color: #FFF192;
+		background-color: #fed53b;
 		color: #EF7A8A;
 		font-weight: bold;
 	}

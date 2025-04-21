@@ -145,38 +145,9 @@
 								display: none;
 							}
 						</style>
-						<div class="form-group row hilang_row">
-							<label for="mandiri_kredit" class="col-md-4 col-form-label">Mandiri Kredit</label>
-							<div class="col-md-6">
-								<input type="number" class="form-control pembayaran" id="mandiri_kredit" value="<?= $invoice->mandiri_kredit; ?>" name="mandiri_kredit">
-							</div>
-						</div>
-						<div class="form-group row hilang_row">
-							<label for="mandiri_debit" class="col-md-4 col-form-label">Mandiri Debit</label>
-							<div class="col-md-6">
-								<input type="number" class="form-control pembayaran" id="mandiri_debit" value="<?= $invoice->mandiri_debit; ?>" name="mandiri_debit">
-							</div>
-						</div>
-						<div class="form-group row hilang_row">
-							<label for="bca_kredit" class="col-md-4 col-form-label">BCA Kredit</label>
-							<div class="col-md-6">
-								<input type="number" class="form-control pembayaran" id="bca_kredit" value="<?= $invoice->bca_kredit; ?>" name="bca_kredit">
-							</div>
-						</div>
-						<!-- <div class="form-group row hilang_row">
-								<label for="bca_debit" class="col-md-4 col-form-label">BCA Debit</label>
-								<div class="col-md-6">
-									<input type="number" class="form-control pembayaran" id="bca_debit" value="<?= $invoice->bca_debit; ?>" name="bca_debit">
-								</div>
-							</div> -->
+					
 						<div class="form-group row ">
-							<label for="bca_debit" class="col-md-4 col-form-label">GOPAY</label>
-							<div class="col-md-6">
-								<input type="number" class="form-control pembayaran" id="shoope" value="<?= $invoice->gopay; ?>" name="gopay">
-							</div>
-						</div>
-						<div class="form-group row ">
-							<label for="bca_debit" class="col-md-4 col-form-label">GRABFOOD</label>
+							<label for="bca_debit" class="col-md-4 col-form-label">TRANSFER</label>
 							<div class="col-md-6">
 								<input type="number" class="form-control pembayaran" id="bca_debit" value="<?= $invoice->bca_debit; ?>" name="bca_debit">
 							</div>
@@ -192,7 +163,7 @@
 						<div class="form-group row">
 							<label for="kembalian" class="col-md-4 col-form-label">Kembalian</label>
 							<div class="col-md-6">
-								<input type="number" class="form-control" id="kembalian" value="<?= $invoice->bayar - $invoice->total ?>" disabled>
+								<input type="number" class="form-control" id="kembalian" value="<?= $invoice->kembali ?>" disabled>
 							</div>
 						</div>
 
@@ -317,119 +288,5 @@
 	}
 </style>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-<script src="<?= base_url() ?>asset/time/jquery.skedTape.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables/jquery.dataTables.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/select2/js/select2.full.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/moment/moment.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/daterangepicker/daterangepicker.js"></script>
-
-<script>
-	$(document).ready(function() {
-		$('#cash').on('change blur', function() {
-			if ($(this).val().trim().length === 0) {
-				$(this).val(0);
-			}
-		});
-
-		$('#mandiri_kredit').on('change blur', function() {
-			if ($(this).val().trim().length === 0) {
-				$(this).val(0);
-			}
-		});
-		$('#mandiri_debit').on('change blur', function() {
-			if ($(this).val().trim().length === 0) {
-				$(this).val(0);
-			}
-		});
-		$('#bca_kredit').on('change blur', function() {
-			if ($(this).val().trim().length === 0) {
-				$(this).val(0);
-			}
-		});
-		$('#bca_debit').on('change blur', function() {
-			if ($(this).val().trim().length === 0) {
-				$(this).val(0);
-			}
-		});
-		$('.d_dp_input').hide();
-		$('.select_dp').attr('disabled', 'true');
-		$('#cb_dp').change(function() {
-			if ($(this).is(':checked')) {
-				$('.d_dp_input').show();
-				$('.select_dp').removeAttr('disabled', 'true');
-			} else {
-				$('.d_dp_input').hide();
-				$('.select_dp').attr('disabled', 'true');
-				$("#debit").val(0);
-				$("#kd_dp").val('');
-			}
-
-
-		});
-		$('.pembayaran').keyup(function() {
-			// var dp = parseInt($("#dp").val());
-
-			var cash = parseInt($("#cash").val());
-			var bca_debit = parseInt($("#bca_debit").val());
-			var shoope = parseInt($("#shoope").val());
-			var total = parseInt($("#total").val());
-			var bayar = cash + shoope + bca_debit;
-			$("#kembalian").val(bayar - total);
-			if (total <= bayar) {
-				$('#edit_pembayaran').removeAttr('disabled');
-			} else {
-				$('#edit_pembayaran').attr('disabled', 'true');
-			}
-
-
-		});
-		$('#data_dp').change(function() {
-			var id_dp = $("#data_dp").val();
-			$.ajax({
-				url: "<?= base_url(); ?>match/get_dp/",
-				method: "POST",
-				data: {
-					id_dp: id_dp
-				},
-				dataType: "json",
-				success: function(data) {
-					$("#dp").val(data.kredit);
-					$("#id_customer").val(data.id_customer);
-					$("#kd_dp").val(data.kd_dp);
-					$("#tgl_dp").val(data.tgl_dp);
-					$("#metode").val(data.metode);
-
-					bayar_default();
-
-				}
-			});
-		});
-	});
-</script>
-
-
-<script>
-	function autofill_anak() {
-		var nm_kry = document.getElementById('nm_kry').value;
-		$.ajax({
-			url: "<?php echo base_url(); ?>Match/cari_anak",
-			data: '&nm_kry=' + nm_kry,
-			success: function(data) {
-				var hasil = JSON.parse(data);
-
-				$.each(hasil, function(key, val) {
-					document.getElementById('id_kry').value = val.id_kry;
-					document.getElementById('nm_kry').value = val.nm_kry;
-				});
-			}
-		});
-	}
-</script>
 
 <?php $this->load->view('tema/Footer'); ?>

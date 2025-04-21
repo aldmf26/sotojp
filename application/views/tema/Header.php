@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="<?= base_url('asset/'); ?>popover.js">
   <link rel="icon" type="image/png" href="<?= base_url('asset/img/');  ?>crepe_logo1.png" />
   <link rel="stylesheet" href="<?= base_url() ?>asset/time/jquery.skedTape.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <style type="text/css">
@@ -46,7 +47,7 @@
   }
 
   .bg-gradient {
-    background-image: linear-gradient(to right, #FFF192 0%, #FFF192 19%, #FFEA61 60%, #FFDD3C 100%);
+    background-image: linear-gradient(to right, #fed53b 0%, #fed53b 19%, #FFEA61 60%, #FFDD3C 100%);
     color: #EF0097;
   }
 
@@ -63,7 +64,7 @@
   } */
 
   th {
-    background: #FFF192;
+    background: #fed53b;
     position: sticky;
     color: #787878;
     top: 0;
@@ -123,7 +124,7 @@
 <body class="hold-transition sidebar-mini sidebar-collapse">
   <div class="wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light" style=" background:#FFF192; color: #787878;">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light" style=" background:#fed53b; color: #787878;">
       <!-- Left navbar links -->
       <ul class="navbar-nav">
         <li class="nav-item">

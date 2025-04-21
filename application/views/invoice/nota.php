@@ -22,12 +22,12 @@
 <div class="invoice">
 	<br>
 	<center>
-		<img width="100" src="<?= base_url('asset/');  ?>img/crepe_logo.png" alt="">
+		<img width="100" src="<?= base_url('asset/');  ?>img/logo_fix.png" alt="">
 	</center>
-	<p align="center" class="huruf">Crepe Signature Banjarmasin</p>
+	<p align="center" class="huruf">Soto JP Banjarmasin</p>
 	<p style=" margin-top: -10px;" align="center" class="huruf">0811-518-870</p>
-	<p style=" margin-top: -10px;" align="center" class="huruf">ig:crepesignature.bjm</p>
-	<p style=" margin-top: -10px;" align="center" class="huruf">Dutamall</p>
+	<p style=" margin-top: -10px;" align="center" class="huruf"> ig: sotojp_banjarmasin</p>
+	<p style=" margin-top: -10px;" align="center" class="huruf">Jl. Pangeran Antasari 147 A, Banjarmasin</p>
 	<!-- <p style=" margin-top: -10px;" align="center" class="huruf">Kota Banjarmasin</p> -->
 
 
@@ -40,10 +40,10 @@
 			<td width="40%" class="huruf">Waktu</td>
 			<td style="text-align: left; " class="huruf">: <?= date('d M Y', strtotime($invoice->tgl_jam)) ?> <?= date('H:i') ?></td>
 		</tr>
-		<tr>
+		<!-- <tr>
 			<td width="40%" class="huruf">Order</td>
 			<td style="text-align: left; " class="huruf">: <?= $invoice->admin ?></td>
-		</tr>
+		</tr> -->
 		<tr>
 			<td width="40%" class="huruf">Kasir</td>
 			<td style="text-align: left; " class="huruf">: <?= $this->session->userdata('nm_user') ?></td>
@@ -110,12 +110,19 @@
 	</table>
 	<hr>
 	<table width="100%">
-		<?php if ($qty_produk != 0) : ?>
+		<!-- <?php if ($qty_produk != 0) : ?>
 			<tr class="huruf">
 				<td>Subtotal <?= $qty_produk; ?> Product</td>
 				<td style="text-align: right;"><?= number_format($total_produk + $total_toping, 0) ?></td>
 			</tr>
-		<?php endif; ?>
+		<?php endif; ?> -->
+		<tr class="huruf">
+			<td><strong>Grand Total</strong></td>
+			<?php
+			$gradngTotal = $total_produk + $total_toping - $invoice->diskon - $invoice->nominal_voucher;
+			?>
+			<td style="text-align: right;"><strong><?= number_format($invoice->total, 0); ?></strong></td>
+		</tr>
 		<?php if ($invoice->diskon != 0) : ?>
 			<tr class="huruf">
 				<td>Diskon</td>
@@ -128,58 +135,45 @@
 				<td style="text-align: right;"><?= number_format($invoice->nominal_voucher, 0); ?></td>
 			</tr>
 		<?php endif; ?>
-		<tr class="huruf">
-			<td><strong>Grand Total</strong></td>
-			<td style="text-align: right;"><strong><?= number_format($total_produk + $total_toping - $invoice->diskon - $invoice->nominal_voucher, 0); ?></strong></td>
-		</tr>
+		<?php if ($invoice->kd_dp) : ?>
+			<?php
+			$nominal_dp = $this->db->get_where('tb_dp', ['kd_dp' => $invoice->kd_dp])->row()->jumlah_dp;
+			?>
+			<tr class="huruf">
+				<td>Kode Dp : <?= $invoice->kd_dp ?></td>
+				<td style="text-align: right;"><?= number_format($nominal_dp, 0); ?></td>
+			</tr>
+		<?php endif; ?>
+		
 	</table>
 	<hr>
 	<table width="100%">
 
 
-		<?php if ($invoice->bca_kredit != 0) : ?>
-			<tr class="huruf">
-				<td>Kredit BCA</td>
-				<td style="text-align: right;"><?= number_format($invoice->bca_kredit, 0); ?></td>
-			</tr>
-		<?php endif; ?>
+		
+
+		<tr class="huruf">
+			<td><strong>Total Bayar</strong></td>
+			<td style="text-align: right;"><strong><?= number_format($invoice->bayar, 0); ?></strong></td>
+		</tr>
 		<?php if ($invoice->bca_debit != 0) : ?>
 			<tr class="huruf">
-				<td>GRABFOOD</td>
+				<td>Transfer</td>
 				<td style="text-align: right;"><?= number_format($invoice->bca_debit, 0); ?></td>
 			</tr>
 		<?php endif; ?>
-		<?php if ($invoice->mandiri_kredit != 0) : ?>
-			<tr class="huruf">
-				<td>Kredit Mandiri</td>
-				<td style="text-align: right;"><?= number_format($invoice->mandiri_kredit, 0); ?></td>
-			</tr>
-		<?php endif; ?>
-		<?php if ($invoice->mandiri_debit != 0) : ?>
-			<tr class="huruf">
-				<td>Debit Mandiri</td>
-				<td style="text-align: right;"><?= number_format($invoice->mandiri_debit, 0); ?></td>
-			</tr>
-		<?php endif; ?>
+
 		<?php if ($invoice->cash != 0) : ?>
 			<tr class="huruf">
 				<td>Cash</td>
 				<td style="text-align: right;"><?= number_format($invoice->cash, 0); ?></td>
 			</tr>
 		<?php endif; ?>
-		<?php if ($invoice->gopay != 0) : ?>
-			<tr class="huruf">
-				<td>GOPAY</td>
-				<td style="text-align: right;"><?= number_format($invoice->gopay, 0); ?></td>
-			</tr>
-		<?php endif; ?>
-		<tr class="huruf">
-			<td><strong>Total Pembayaran</strong></td>
-			<td style="text-align: right;"><strong><?= number_format($invoice->total, 0); ?></strong></td>
-		</tr>
+
+
 		<tr class="huruf">
 			<td>Kembalian</td>
-			<td style="text-align: right;"><?= number_format($invoice->bayar - $invoice->total, 0); ?></td>
+			<td style="text-align: right;"><?= number_format($invoice->kembali, 0); ?></td>
 		</tr>
 	</table>
 	<hr>
