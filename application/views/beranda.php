@@ -7,7 +7,7 @@
 	<div class="row justify-content-center">
 		<div class="card-header">
 			<div class="col-12">
-				<img src="<?= base_url('asset/img/crepe_logo.png'); ?>" width="400">
+				<img src="<?= base_url('asset/img/logo_fix.png'); ?>" width="400">
 			</div>
 		</div>
 	</div>
