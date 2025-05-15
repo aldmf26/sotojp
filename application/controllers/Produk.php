@@ -627,7 +627,7 @@ class Produk extends CI_Controller
             where c.kategori = 'toping'
             group by c.id_produk_toping, c.no_nota
         )as c on c.id_produk_toping = a.id_produk and c.no_nota = a.no_nota
-        where a.kategori = 'product' and a.tanggal between '$tgl1' and '$tgl2' and a.id_distribusi = '2'
+        where a.void = 0 AND a.kategori = 'product' and a.tanggal between '$tgl1' and '$tgl2' and a.id_distribusi = '2'
         group by a.id_produk;")->result();
 
         $data = [

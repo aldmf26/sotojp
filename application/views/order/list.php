@@ -50,7 +50,7 @@
 									<th>TANGGAL</th>
 									<th>PRODUK</th>
 									<th>JUMLAH</th>
-									<th>SANTUAN</th>
+									<th>SATUAN</th>
 									<th>HARGA</th>
 									<th>DISKON</th>
 									<th>TOTAL</th>
