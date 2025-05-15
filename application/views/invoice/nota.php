@@ -1,190 +1,201 @@
-<style>
-	.invoice {
-		margin: auto;
-		width: 80mm;
-		background: #FFF;
-	}
+<!DOCTYPE html>
+<html lang="id">
 
-	.huruf {
-		font-size: 14px;
-	}
-</style>
-<script>
-	window.print();
-</script>
+<head>
+	<meta charset="UTF-8">
+	<title>Nota</title>
+	<style>
+		@media print {
+			@page {
+				size: 80mm auto;
+				margin: 0;
+			}
 
+			body {
+				margin: 0;
+				padding: 0;
+			}
+		}
 
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
 
+		.invoice {
+			width: 80mm;
+			margin: auto;
+			background: #fff;
+			padding: 5px;
+		}
 
+		.huruf {
+			font-size: 14px;
+			line-height: 1.2;
+		}
 
+		table {
+			width: 100%;
+			border-collapse: collapse;
+		}
 
+		td {
+			vertical-align: top;
+		}
 
-<div class="invoice">
-	<br>
-	<center>
-		<img width="100" src="<?= base_url('asset/');  ?>img/logo_fix.png" alt="">
-	</center>
-	<p align="center" class="huruf">Soto JP Banjarmasin</p>
-	<p style=" margin-top: -10px;" align="center" class="huruf">0811-518-870</p>
-	<p style=" margin-top: -10px;" align="center" class="huruf"> ig: sotojp_banjarmasin</p>
-	<p style=" margin-top: -10px;" align="center" class="huruf">Jl. Pangeran Antasari 147 A, Banjarmasin</p>
-	<!-- <p style=" margin-top: -10px;" align="center" class="huruf">Kota Banjarmasin</p> -->
+		hr {
+			border: none;
+			border-top: 1px solid #000;
+			margin: 4px 0;
+		}
 
+		center img {
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+	</style>
+	<script>
+		window.onload = function() {
+			window.print();
+		}
+	</script>
+</head>
 
-	<table width="100%">
-		<tr>
-			<td width="40%" class="huruf">No Nota</td>
-			<td style="text-align: left; " class="huruf">: <?= $invoice->no_nota; ?></td>
-		</tr>
-		<tr>
-			<td width="40%" class="huruf">Waktu</td>
-			<td style="text-align: left; " class="huruf">: <?= date('d M Y', strtotime($invoice->tgl_jam)) ?> <?= date('H:i') ?></td>
-		</tr>
-		<!-- <tr>
-			<td width="40%" class="huruf">Order</td>
-			<td style="text-align: left; " class="huruf">: <?= $invoice->admin ?></td>
-		</tr> -->
-		<tr>
-			<td width="40%" class="huruf">Kasir</td>
-			<td style="text-align: left; " class="huruf">: <?= $this->session->userdata('nm_user') ?></td>
-		</tr>
-	</table>
+<body>
+	<div class="invoice">
+		<center>
+			<img width="100" src="<?= base_url('asset/'); ?>img/logo_fix.png" alt="">
+		</center>
+		<p align="center" class="huruf">Soto JP Banjarmasin</p>
+		<p align="center" class="huruf">0811-518-870</p>
+		<p align="center" class="huruf">ig: sotojp_banjarmasin</p>
+		<p align="center" class="huruf">Jl. Pangeran Antasari 147 A, Banjarmasin</p>
 
-	<hr>
-	<table width="100%">
-		<?php
-		$total_produk = 0;
-		$qty_produk = 0;
-		?>
-		<?php if (!empty($produk)) : ?>
-			<?php $total_toping = 0;
-			foreach ($produk as $p) :
-				$toping = $this->db->query("SELECT a.*, b.nm_produk
-				FROM tb_pembelian as a 
-				left join tb_produk as b on b.id_produk = a.id_produk
-				where a.id_produk_toping = '$p->id_produk' and a.no_nota = '$no_nota'
-				")->result();
+		<table>
+			<tr>
+				<td class="huruf">No Nota</td>
+				<td class="huruf">: <?= $invoice->no_nota; ?></td>
+			</tr>
+			<tr>
+				<td class="huruf">Waktu</td>
+				<td class="huruf">: <?= date('d M Y', strtotime($invoice->tgl_jam)) ?> <?= date('H:i') ?></td>
+			</tr>
+			<tr>
+				<td class="huruf">Kasir</td>
+				<td class="huruf">: <?= $this->session->userdata('nm_user') ?></td>
+			</tr>
+		</table>
+
+		<hr>
+
+		<table>
+			<?php
+			$total_produk = 0;
+			$qty_produk = 0;
+			$total_toping = 0;
+			if (!empty($produk)) :
+				foreach ($produk as $p) :
+					$toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
+					LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
+					WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
+
+					$total_produk += ($p->jumlah * $p->harga) - $p->diskon;
+					$qty_produk += $p->jumlah;
+					$nm_servis = strtolower($p->nm_servis);
+					$hrg_produk = $p->jumlah * $p->harga;
 			?>
-				<?php
-				$total_produk += ($p->jumlah * $p->harga) - $p->diskon;
-				$qty_produk += $p->jumlah;
-				$nm_servis = strtolower($p->nm_servis);
-				$hrg_produk = $p->jumlah * $p->harga;
-				$hrg_asli = $p->jumlah * $p->harga_asli;
-
-				?>
-				<tr class="huruf" style="margin-bottom: 2px;">
-					<td width="10%"><?= $p->jumlah; ?></td>
-					<td width="50%">
-						<?= ucwords($nm_servis); ?> <br> @<?= number_format($p->harga, 0); ?>
-					</td>
-
-					<td width="40%" style="text-align: right;">
-						<?php if (!empty($p->diskon)) : ?>
-
-							<strike><?= number_format($hrg_produk, 0); ?></strike><br>
-							<?= number_format($hrg_produk - $p->diskon, 0); ?>
-
-						<?php else : ?>
-							<?= number_format($hrg_produk, 0); ?>
-						<?php endif; ?>
-					</td>
-				</tr>
-				<?php
-
-				foreach ($toping as $t) :
-
-				?>
-					<tr class="huruf" style="margin-bottom: 2px;">
-						<td width="10%">
+					<tr class="huruf">
+						<td width="10%"><?= $p->jumlah; ?></td>
+						<td width="50%">
+							<?= ucwords($nm_servis); ?> <br> @<?= number_format($p->harga, 0); ?>
 						</td>
-						<td width="50%" style="font-size: smaller;">
-							<?= $t->jumlah; ?> &nbsp; <?= ucwords(strtolower($t->nm_produk)); ?></td>
-						<td width="40%" style="text-align: right; font-size: smaller;">
-							<?= number_format($t->harga * $t->jumlah, 0); ?>
+						<td width="40%" style="text-align: right;">
+							<?php if (!empty($p->diskon)) : ?>
+								<strike><?= number_format($hrg_produk, 0); ?></strike><br>
+								<?= number_format($hrg_produk - $p->diskon, 0); ?>
+							<?php else : ?>
+								<?= number_format($hrg_produk, 0); ?>
+							<?php endif; ?>
 						</td>
 					</tr>
-				<?php $total_toping += $t->harga * $t->jumlah;
-				endforeach; ?>
+					<?php foreach ($toping as $t) :
+						$total_toping += $t->harga * $t->jumlah;
+					?>
+						<tr class="huruf">
+							<td></td>
+							<td style="font-size: smaller;"><?= $t->jumlah; ?> &nbsp; <?= ucwords(strtolower($t->nm_produk)); ?></td>
+							<td style="text-align: right; font-size: smaller;">
+								<?= number_format($t->harga * $t->jumlah, 0); ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
 			<?php
-			endforeach; ?>
-		<?php endif; ?>
-	</table>
-	<hr>
-	<table width="100%">
-		<!-- <?php if ($qty_produk != 0) : ?>
-			<tr class="huruf">
-				<td>Subtotal <?= $qty_produk; ?> Product</td>
-				<td style="text-align: right;"><?= number_format($total_produk + $total_toping, 0) ?></td>
-			</tr>
-		<?php endif; ?> -->
-		<tr class="huruf">
-			<td><strong>Grand Total</strong></td>
-			<?php
-			$gradngTotal = $total_produk + $total_toping - $invoice->diskon - $invoice->nominal_voucher;
+				endforeach;
+			endif;
 			?>
-			<td style="text-align: right;"><strong><?= number_format($invoice->total, 0); ?></strong></td>
-		</tr>
-		<?php if ($invoice->diskon != 0) : ?>
+		</table>
+
+		<hr>
+
+		<table>
 			<tr class="huruf">
-				<td>Diskon</td>
-				<td style="text-align: right;color: red; ">-<?= number_format($invoice->diskon, 0); ?></td>
+				<td><strong>Grand Total</strong></td>
+				<td style="text-align: right;"><strong><?= number_format($invoice->total, 0); ?></strong></td>
 			</tr>
-		<?php endif; ?>
-		<?php if ($invoice->nominal_voucher > 0) : ?>
-			<tr class="huruf">
-				<td>Voucher</td>
-				<td style="text-align: right;"><?= number_format($invoice->nominal_voucher, 0); ?></td>
-			</tr>
-		<?php endif; ?>
-		<?php if ($invoice->kd_dp) : ?>
-			<?php
-			$nominal_dp = $this->db->get_where('tb_dp', ['kd_dp' => $invoice->kd_dp])->row()->jumlah_dp;
+			<?php if ($invoice->diskon != 0) : ?>
+				<tr class="huruf">
+					<td>Diskon</td>
+					<td style="text-align: right; color: red;">-<?= number_format($invoice->diskon, 0); ?></td>
+				</tr>
+			<?php endif; ?>
+			<?php if ($invoice->nominal_voucher > 0) : ?>
+				<tr class="huruf">
+					<td>Voucher</td>
+					<td style="text-align: right;"><?= number_format($invoice->nominal_voucher, 0); ?></td>
+				</tr>
+			<?php endif; ?>
+			<?php if ($invoice->kd_dp) :
+				$nominal_dp = $this->db->get_where('tb_dp', ['kd_dp' => $invoice->kd_dp])->row()->jumlah_dp;
 			?>
+				<tr class="huruf">
+					<td>Kode DP: <?= $invoice->kd_dp ?></td>
+					<td style="text-align: right;"><?= number_format($nominal_dp, 0); ?></td>
+				</tr>
+			<?php endif; ?>
+		</table>
+
+		<hr>
+
+		<table>
 			<tr class="huruf">
-				<td>Kode Dp : <?= $invoice->kd_dp ?></td>
-				<td style="text-align: right;"><?= number_format($nominal_dp, 0); ?></td>
+				<td><strong>Total Bayar</strong></td>
+				<td style="text-align: right;"><strong><?= number_format($invoice->bayar, 0); ?></strong></td>
 			</tr>
-		<?php endif; ?>
-
-	</table>
-	<hr>
-	<table width="100%">
-
-
-
-
-		<tr class="huruf">
-			<td><strong>Total Bayar</strong></td>
-			<td style="text-align: right;"><strong><?= number_format($invoice->bayar, 0); ?></strong></td>
-		</tr>
-		<?php if ($invoice->bca_debit != 0) : ?>
+			<?php if ($invoice->bca_debit != 0) : ?>
+				<tr class="huruf">
+					<td>Transfer</td>
+					<td style="text-align: right;"><?= number_format($invoice->bca_debit, 0); ?></td>
+				</tr>
+			<?php endif; ?>
+			<?php if ($invoice->cash != 0) : ?>
+				<tr class="huruf">
+					<td>Cash</td>
+					<td style="text-align: right;"><?= number_format($invoice->cash, 0); ?></td>
+				</tr>
+			<?php endif; ?>
 			<tr class="huruf">
-				<td>Transfer</td>
-				<td style="text-align: right;"><?= number_format($invoice->bca_debit, 0); ?></td>
+				<td>Kembalian</td>
+				<td style="text-align: right;"><?= number_format($invoice->kembali, 0); ?></td>
 			</tr>
-		<?php endif; ?>
+		</table>
 
-		<?php if ($invoice->cash != 0) : ?>
-			<tr class="huruf">
-				<td>Cash</td>
-				<td style="text-align: right;"><?= number_format($invoice->cash, 0); ?></td>
-			</tr>
-		<?php endif; ?>
+		<hr>
 
+		<p class="huruf" align="center">Thank You For Next Order!</p>
+		<h4 class="huruf" align="center">NOMOR ANTRIAN</h4>
+		<h4 align="center"><?= $invoice->antrian ?></h4>
+	</div>
+</body>
 
-		<tr class="huruf">
-			<td>Kembalian</td>
-			<td style="text-align: right;"><?= number_format($invoice->kembali, 0); ?></td>
-		</tr>
-	</table>
-	<hr>
-	<hr>
-	<p class="huruf" align="center">Thank You For Next Order !</p>
-
-	<h4 class="huruf" align="center">NOMOR ANTRIAN</h4>
-	<h4 align="center"><?= $invoice->antrian ?></h4>
-	<!-- <p class="huruf" align="center">Tunggu nomor kamu dipanggil</p> -->
-	<script>
-
-	</script>
+</html>
