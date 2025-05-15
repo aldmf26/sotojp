@@ -75,7 +75,9 @@
 				?>
 				<tr class="huruf" style="margin-bottom: 2px;">
 					<td width="10%"><?= $p->jumlah; ?></td>
-					<td width="50%"><?= ucwords($nm_servis); ?></td>
+					<td width="50%">
+						<?= ucwords($nm_servis); ?> <br> @<?= number_format($p->harga, 0); ?>
+					</td>
 
 					<td width="40%" style="text-align: right;">
 						<?php if (!empty($p->diskon)) : ?>

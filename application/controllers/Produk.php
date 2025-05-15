@@ -394,8 +394,8 @@ class Produk extends CI_Controller
         ];
         $this->db->insert('tb_invoice', $data);
 
-        $this->db->where('kd_dp',$kd_dp);
-        $this->db->update('tb_dp',[
+        $this->db->where('kd_dp', $kd_dp);
+        $this->db->update('tb_dp', [
             'status' => 2
         ]);
 
@@ -615,7 +615,7 @@ class Produk extends CI_Controller
             where c.kategori = 'toping'
             group by c.id_produk_toping, c.no_nota
         )as c on c.id_produk_toping = a.id_produk and c.no_nota = a.no_nota
-        where a.kategori = 'product' and a.tanggal between '$tgl1' and '$tgl2' and a.id_distribusi = '1'
+        where a.void = 0 AND a.kategori = 'product' and a.tanggal between '$tgl1' and '$tgl2' and a.id_distribusi = '1'
         group by a.id_produk;")->result();
 
         $gojek = $this->db->query("SELECT b.nm_servis, sum(a.total + if(c.total_toping is null ,0,c.total_toping)) as total, sum(a.jumlah) as jumlah

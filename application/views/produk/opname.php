@@ -13,12 +13,7 @@
 				<h1 class="m-0 text-dark">Opname Product</h1>
 			</div>
 			<div class="col-sm-6">
-				<?php if ($this->session->userdata('edit_hapus') == '1') : ?>
-					<!-- <button data-toggle="modal" data-target="#modal-detail" class="btn btn-success"><i class="fas fa-download"></i> Detail</button> -->
-					<!--<button data-toggle="modal" data-target="#modal-view" class="btn btn-success"><i class="fas fa-eye"></i> View</button>-->
-					<!--<button data-toggle="modal" data-target="#modal-summary" class="btn btn-success"><i class="fas fa-print"></i> Summary</button>-->
-					<!-- <button data-toggle="modal" data-target="#modal-delete" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button> -->
-				<?php endif ?>
+
 				<a href="<?= base_url() ?>Opname/create_opname" class="btn btn-success float-right ml-2"><i class="fas fa-plus"></i> Stok Opname</a>
 				<a href="<?= base_url('Export') ?>" class="btn btn-success float-right ml-2"><i class="fas fa-file-excel"></i> Export all</a>
 				<button data-toggle="modal" data-target="#modal-view" class="btn btn-success float-right"><i class="fas fa-eye"></i> View</button>
@@ -100,19 +95,7 @@
 </form>
 
 
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-<script src="<?= base_url() ?>asset/time/jquery.skedTape.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables/jquery.dataTables.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/select2/js/select2.full.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/moment/moment.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/daterangepicker/daterangepicker.js"></script>
-
+<?php $this->load->view('tema/Footer'); ?>
 <script>
 	$(document).ready(function() {
 		$(".clickable-row").click(function() {
@@ -122,23 +105,3 @@
 		});
 	});
 </script>
-
-<script>
-	function autofill_anak() {
-		var nm_kry = document.getElementById('nm_kry').value;
-		$.ajax({
-			url: "<?php echo base_url(); ?>Match/cari_anak",
-			data: '&nm_kry=' + nm_kry,
-			success: function(data) {
-				var hasil = JSON.parse(data);
-
-				$.each(hasil, function(key, val) {
-					document.getElementById('id_kry').value = val.id_kry;
-					document.getElementById('nm_kry').value = val.nm_kry;
-				});
-			}
-		});
-	}
-</script>
-
-<?php $this->load->view('tema/Footer'); ?>

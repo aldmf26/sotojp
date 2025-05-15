@@ -16,7 +16,7 @@
             <hp style="font-weight: bold; color: #FA778E; font-size: 10px;">Discount Rp. <?= number_format($produk->diskon) ?></hp>
         <?php endif ?>
         <div class="row">
-            <div class="col-sm-6 col-md-6">
+            <div class="col-sm-2 col-md-2">
                 <div class="form-group">
                     <label for="">Jumlah *</label>
                     <input type="number" name="jumlah" id="cart_jumlah" class="form-control" value="1" required="">

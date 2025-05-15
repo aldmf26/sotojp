@@ -79,15 +79,32 @@
 								<tr>
 									<th>#</th>
 									<th>NO NOTA</th>
+									<th>JENIS</th>
 									<th class="text-right">Grand Total</th>
 									<th class="text-right">Voucher</th>
 									<th class="text-right">Dp</th>
 									<th class="text-right">Total bayar</th>
-									<th class="text-right">BCA</th>
+									<th class="text-right">CASH</th>
 									<th class="text-right">TRANSFER</th>
 									<th class="text-right">KEMBALIAN</th>
 									<th>TANGGAL</th>
 									<th>AKSES 1</th>
+								</tr>
+							</thead>
+							<thead>
+								<tr>
+									<th colspan="3" class="text-right">Total</th>
+									<th class="text-right"><?= number_format(array_sum(array_column($invoice, 'total')), 0) ?></th>
+									<th class="text-right"><?= number_format(array_sum(array_column($invoice, 'nominal_voucher')), 0) ?></th>
+									<th class="text-right"><?= number_format(array_sum(array_map(function ($inv) {
+																return empty($inv->kd_dp) ? 0 : $this->db->get_where('tb_dp', ['kd_dp' => $inv->kd_dp])->row()->jumlah_dp;
+															}, $invoice)), 0) ?></th>
+									<th class="text-right"><?= number_format(array_sum(array_column($invoice, 'bayar')), 0) ?></th>
+									<th class="text-right"><?= number_format(array_sum(array_column($invoice, 'cash')), 0) ?></th>
+									<th class="text-right"><?= number_format(array_sum(array_column($invoice, 'bca_debit')), 0) ?></th>
+									<th class="text-right"><?= number_format(array_sum(array_column($invoice, 'kembali')), 0) ?></th>
+									<th></th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -96,30 +113,25 @@
 									<tr class="clickable-row" id="<?= $value->no_nota ?>">
 										<td><?= $i++ ?></td>
 										<?php
-										$pembayaran = ($value->bca_debit + $value->cash);
-										$subTotal = $value->total + $value->nominal_voucher;
 										$nominal_dp = (empty($value->kd_dp)) ? 0 : $this->db->get_where('tb_dp', ['kd_dp' => $value->kd_dp])->row()->jumlah_dp;
-
 										?>
 										<td>
 											<a href="<?= base_url(); ?>produk/nota?invoice=<?= $value->no_nota; ?>"><?= $value->no_nota ?></a>
 										</td>
+										<td class="text-right"><?= $value->id_distribusi == 1 ? 'Offline' : 'Online' ?></td>
 										<td class="text-right"><?= number_format($value->total, 0) ?></td>
 										<td class="text-right"><?= number_format($value->nominal_voucher, 0) ?></td>
 										<td class="text-right"><?= number_format($nominal_dp, 0) ?></td>
 										<td class="text-right"><?= number_format($value->bayar, 0) ?></td>
-
-
 										<td class="text-right"><?= number_format($value->cash, 0) ?></td>
 										<td class="text-right"><?= number_format($value->bca_debit, 0) ?></td>
 										<td class="text-right"><?= number_format($value->kembali, 0) ?></td>
 										<td><?= date('d/m/Y', strtotime($value->tgl_jam)) ?></td>
-
-
-										<td><button type="button" class="btn btn-danger btn-sm void" data-toggle="modal" data-target="#modalvoid<?= $value->id ?>">
-												<i class="fas fa-exclamation"></i> Void
-											</button></td>
-
+										<?php if ($this->session->userdata('id_role') == '1'): ?>
+											<td><button type="button" class="btn btn-danger btn-sm void" data-toggle="modal" data-target="#modalvoid<?= $value->id ?>">
+													<i class="fas fa-exclamation"></i> Void
+												</button></td>
+										<?php endif; ?>
 									</tr>
 								<?php endforeach ?>
 							</tbody>

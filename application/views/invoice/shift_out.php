@@ -1,143 +1,217 @@
-<style>
-    .invoice {
-        margin: auto;
-        width: 80mm;
-        background: #FFF;
-    }
+<!DOCTYPE html>
+<html lang="en">
 
-    .huruf {
-        font-size: 14px;
-    }
-</style>
-<script>
-    window.print();
-</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Out Report</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #FFF;
+        }
 
+        .invoice {
+            margin: auto;
+            width: 80mm;
+            padding: 10px;
+            background: #FFF;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+        }
 
+        .huruf {
+            font-size: 12px;
+            margin: 5px 0;
+        }
 
+        .header,
+        .footer {
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+        }
 
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
 
-<div class="invoice">
-    <br>
-    <br>
-    <p style=" margin-top: -10px;" align="center" class="huruf">****************MULAI****************</p>
-    <p style=" margin-top: -10px;" align="center" class="huruf">Laporan Shift Out</p>
-    <p style=" margin-top: -10px;" align="center" class="huruf"><?= date('d-M-y', strtotime($tgl1)) ?> ~ <?= date('d-M-y', strtotime($tgl2)) ?></p>
+        .date-range {
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+            margin-bottom: 15px;
+        }
 
-    <table width="100%">
-        <tr>
-            <td colspan="3">===============================</td>
-        </tr>
-        <tr>
-            <td colspan="3" align="center">Penj. Menu Berdasarkan Mode Transaksi</td>
-        </tr>
-        <tr>
-            <td colspan="3">-------------------------------------------------------</td>
-        </tr>
-        <tr>
-            <td colspan="3" align="center">DINE IN</td>
-        </tr>
-        <tr>
-            <td colspan="3">-------------------------------------------------------</td>
-        </tr>
-        <?php
-        $total = 0;
-        $jlh = 0;
-        foreach ($dinein as $s) : ?>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
 
-            <tr class="huruf">
-                <td><?= $s->nm_servis ?></td>
-                <td></td>
-                <td></td>
+        tr {
+            line-height: 1.6;
+        }
+
+        td {
+            padding: 3px 0;
+            vertical-align: top;
+        }
+
+        .divider {
+            border-top: 1px dashed #999;
+            margin: 10px 0;
+        }
+
+        .double-divider {
+            border-top: 2px solid #333;
+            margin: 10px 0;
+        }
+
+        .right-align {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .spacer {
+            height: 10px;
+        }
+
+        @media print {
+            .invoice {
+                width: 80mm;
+                padding: 0;
+                margin: 0 auto;
+            }
+
+            body {
+                margin: 0;
+            }
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            window.print();
+        };
+    </script>
+</head>
+
+<body>
+    <div class="invoice">
+        <div class="header huruf">================ MULAI ================</div>
+        <p class="section-title huruf">Laporan Shift Out</p>
+        <p class="date-range huruf"><?= date('d-M-y', strtotime($tgl1)) ?> ~ <?= date('d-M-y', strtotime($tgl2)) ?></p>
+
+        <div class="section-title huruf">Penj. Menu Berdasarkan Mode Transaksi</div>
+        <div class="divider"></div>
+
+        <div class="section-title huruf">DINE IN</div>
+        <table>
+            <?php
+            $total = 0;
+            $jlh = 0;
+            foreach ($dinein as $s) : ?>
+                <tr class="huruf">
+                    <td><?= $s->nm_servis ?></td >
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="huruf">
+                    <td>Jumlah</td>
+                    <td>:</td>
+                    <td class="right-align"><?= number_format($s->jumlah) ?></td>
+                </tr>
+                <tr class="huruf">
+                    <td>Total</td>
+                    <td>:</td>
+                    <td class="right-align"><?= number_format($s->total) ?></td>
+                </tr>
+            <?php
+                $total += $s->total;
+                $jlh += $s->jumlah;
+            endforeach ?>
+            <tr>
+                <td colspan="3" class="divider"></td>
             </tr>
-            <tr class="huruf">
-                <td>Jumlah</td>
+            <tr class="huruf bold">
+                <td>Jumlah Total</td>
                 <td>:</td>
-                <td align="right"><?= number_format($s->jumlah) ?></td>
+                <td class="right-align"><?= number_format($jlh) ?></td>
             </tr>
-            <tr class="huruf">
-                <td>Total</td>
+            <tr class="huruf bold">
+                <td>Penjualan</td>
                 <td>:</td>
-                <td align="right"><?= number_format($s->total) ?></td>
+                <td class="right-align"><?= number_format($total) ?></td>
             </tr>
-        <?php
-            $total += $s->total;
-            $jlh += $s->jumlah;
-        endforeach ?>
-        <tr>
-            <td colspan="3">-------------------------------------------------------</td>
-        </tr>
-        <tr class="huruf">
-            <td>Jumlah Total</td>
-            <td>:</td>
-            <td align="right"><?= number_format($jlh) ?></td>
-        </tr>
-        <tr class="huruf">
-            <td>Penjualan</td>
-            <td>:</td>
-            <td align="right"><?= number_format($total) ?></td>
-        </tr>
-        <tr>
-            <td colspan="3">-------------------------------------------------------</td>
-        </tr>
-        <tr>
-            <td colspan="3" align="center">ONLINE</td>
-        </tr>
-        <tr>
-            <td colspan="3">-------------------------------------------------------</td>
-        </tr>
-        <?php
-        $total1 = 0;
-        $jlh1 = 0;
-        foreach ($gojek as $s) : ?>
+        </table>
 
-            <tr class="huruf">
-                <td><?= $s->nm_servis ?></td>
-                <td></td>
-                <td></td>
+        <div class="divider"></div>
+        <div class="section-title huruf">ONLINE</div>
+        <table>
+            <?php
+            $total1 = 0;
+            $jlh1 = 0;
+            foreach ($gojek as $s) : ?>
+                <tr class="huruf">
+                    <td><?= $s->nm_servis ?></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="huruf">
+                    <td>Jumlah</td>
+                    <td>:</td>
+                    <td class="right-align"><?= number_format($s->jumlah) ?></td>
+                </tr>
+                <tr class="huruf">
+                    <td>Total</td>
+                    <td>:</td>
+                    <td class="right-align"><?= number_format($s->total) ?></td>
+                </tr>
+            <?php
+                $total1 += $s->total;
+                $jlh1 += $s->jumlah;
+            endforeach ?>
+            <tr>
+                <td colspan="3" class="divider"></td>
             </tr>
-            <tr class="huruf">
-                <td>Jumlah</td>
+            <tr class="huruf bold">
+                <td>Jumlah Total</td>
                 <td>:</td>
-                <td align="right"><?= number_format($s->jumlah) ?></td>
+                <td class="right-align"><?= number_format($jlh1) ?></td>
             </tr>
-            <tr class="huruf">
-                <td>Total</td>
+            <tr class="huruf bold">
+                <td>Penjualan</td>
                 <td>:</td>
-                <td align="right"><?= number_format($s->total) ?></td>
+                <td class="right-align"><?= number_format($total1) ?></td>
             </tr>
-        <?php
-            $total1 += $s->total;
-            $jlh1 += $s->jumlah;
-        endforeach ?>
-        <tr>
-            <td colspan="3">-------------------------------------------------------</td>
-        </tr>
-        <tr class="huruf">
-            <td>Jumlah Total</td>
-            <td>:</td>
-            <td align="right"><?= number_format($jlh1) ?></td>
-        </tr>
-        <tr class="huruf">
-            <td>Penjualan</td>
-            <td>:</td>
-            <td align="right"><?= number_format($total1) ?></td>
-        </tr>
-        <tr>
-            <td colspan="3">=================================</td>
-        </tr>
-        <tr class="huruf">
-            <td>Total Semua Jumlah</td>
-            <td>:</td>
-            <td align="right"><?= number_format($jlh + $jlh1) ?></td>
-        </tr>
-        <tr class="huruf">
-            <td>Total Semua Penjualan</td>
-            <td>:</td>
-            <td align="right"><?= number_format($total + $total1) ?></td>
-        </tr>
-    </table>
-    <hr>
-    <hr>
-    <br>
-    <p style=" margin-top: -10px;" align="center" class="huruf">****************AKHIR****************</p>
+        </table>
+
+        <div class="double-divider"></div>
+        <table>
+            <tr class="huruf bold">
+                <td>Total Semua Jumlah</td>
+                <td>:</td>
+                <td class="right-align"><?= number_format($jlh + $jlh1) ?></td>
+            </tr>
+            <tr class="huruf bold">
+                <td>Total Semua Penjualan</td>
+                <td>:</td>
+                <td class="right-align"><?= number_format($total + $total1) ?></td>
+            </tr>
+        </table>
+
+        <div class="spacer"></div>
+        <div class="footer huruf">================ AKHIR ================</div>
+    </div>
+</body>
+
+</html>

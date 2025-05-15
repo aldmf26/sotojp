@@ -229,7 +229,7 @@
 									</div>
 								</div>
 								<div class="form-group row">
-									<label for="staticEmail" class="col-md-4 col-form-label">BCA</label>
+									<label for="staticEmail" class="col-md-4 col-form-label">Transfer</label>
 									<div class="col-md-6">
 										<input type="number" name="bca" class="form-control pembayaran pembca" tipe_pem="bca" value="0" id="bca">
 									</div>
@@ -242,7 +242,38 @@
 								<input type="hidden" name="total" id="total" value="<?= $total; ?>">
 								<input type="hidden" name="id_distribusi" value="<?= $dis; ?>">
 
-								<button class="btn btn-primary btn-block" type="submit">PROSES BAYAR <i class="fas fa-money-check-alt"></i> <i class="fa fa-chevron-right" style="float: right;"></i></button>
+								<button class="btn btn-primary btn-block" type="submit" id="proses_bayar" disabled>PROSES BAYAR <i class="fas fa-money-check-alt"></i> <i class="fa fa-chevron-right" style="float: right;"></i></button>
+
+								<script>
+									document.addEventListener('DOMContentLoaded', function() {
+										const cashInput = document.getElementById('cash');
+										const bcaInput = document.getElementById('bca');
+										const prosesBayarButton = document.getElementById('proses_bayar');
+										const salinNominalButtons = document.querySelectorAll('.salin_nominal');
+
+										function validatePayment() {
+											const cashValue = parseFloat(cashInput.value) || 0;
+											const bcaValue = parseFloat(bcaInput.value) || 0;
+
+											if (cashValue > 0 || bcaValue > 0) {
+												prosesBayarButton.disabled = false;
+											} else {
+												prosesBayarButton.disabled = true;
+											}
+										}
+
+										cashInput.addEventListener('input', validatePayment);
+										bcaInput.addEventListener('input', validatePayment);
+
+										salinNominalButtons.forEach(button => {
+											button.addEventListener('click', function() {
+												prosesBayarButton.disabled = false;
+											});
+										});
+
+										validatePayment(); // Initial check
+									});
+								</script>
 							</div>
 						</div>
 					</div>
@@ -311,7 +342,7 @@
 
 				let url = '<?= base_url('produk/getDp') ?>';
 
-					url += `?dp=${this.dp}`;
+				url += `?dp=${this.dp}`;
 
 				fetch(url)
 					.then(res => res.json())

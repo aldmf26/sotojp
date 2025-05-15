@@ -242,7 +242,7 @@
 			<div class="modal-header">
 				<h5 class="modal-title">Detail Produk</h5>
 				<form method="post" class="input_cart">
-					<button type="submit" class="btn btn-primary btn-simpan" disabled> SIMPAN</button>
+					<button type="submit" class="btn btn-primary btn-simpan"> SIMPAN</button>
 			</div>
 			<!-- Modal body -->
 			<div class="modal-body">
@@ -256,7 +256,7 @@
 
 					<div class="row">
 						<?php foreach ($perlengkapan as $key => $t) : ?>
-							
+
 							<div class="col-lg-3">
 								<div class="card">
 									<div class="card-body">
@@ -656,11 +656,7 @@
 			e.preventDefault();
 			$('.qty_toping').val(0);
 			var id_kategori = $(this).attr('id_kategori');
-			if (id_kategori == 28 || id_kategori == 26) {
-				$('.btn-simpan').prop('disabled', false);
-			} else {
-				$('.btn-simpan').prop('disabled', true);
-			}
+
 			var id_produk = $(this).attr('id_produk');
 			var id_distribusi = $("#id_distribusi").val();
 
@@ -674,7 +670,14 @@
 				},
 				success: function(response) {
 					$('.load_detail').html(response);
+					$(document).on('click', '.minus_toping', function(e) {
+						e.preventDefault();
+					});
 
+					$(document).on('click', '.plus_toping', function(e) {
+						e.preventDefault();
+
+					});
 				}
 			});
 
