@@ -144,13 +144,13 @@
 				<td style="text-align: right;"><?= number_format($nominal_dp, 0); ?></td>
 			</tr>
 		<?php endif; ?>
-		
+
 	</table>
 	<hr>
 	<table width="100%">
 
 
-		
+
 
 		<tr class="huruf">
 			<td><strong>Total Bayar</strong></td>
@@ -179,31 +179,10 @@
 	<hr>
 	<hr>
 	<p class="huruf" align="center">Thank You For Next Order !</p>
-	<!-- <p class="huruf" align="center" style="margin-top: -10px;">Call 0811-518-870</p> -->
-	<!-- <p class="huruf" align="center">Instagram : crepesignature.bjm</p> -->
-	<!-- <p class="huruf" align="center">Terbayar</p>
-	<p class="huruf" align="center" style="margin-top: -10px;"><-------- <?= date('d M Y h:i'); ?> -------->
+
 	<h4 class="huruf" align="center">NOMOR ANTRIAN</h4>
 	<h4 align="center"><?= $invoice->antrian ?></h4>
-	<p class="huruf" align="center">Tunggu nomor kamu dipanggil</p>
-	<br>
-	<br>
-	<br>
-	<br>
+	<!-- <p class="huruf" align="center">Tunggu nomor kamu dipanggil</p> -->
+	<script>
 
-
-	<!-- <script>
-  var url = document.getElementById('url').value;
-    var count = 5; // dalam detik
-    function countDown() {
-      if (count > 0) {
-        count--;
-        var waktu = count + 1;
-        $('#pesan').html('Anda akan di redirect ke ' + url + ' dalam ' + waktu + ' detik.');
-        setTimeout("countDown()", 1000);
-      } else {
-        window.location.href = url;
-      }
-    }
-    countDown();
-  </script>  -->
+	</script>
