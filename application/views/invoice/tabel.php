@@ -52,7 +52,7 @@
 			</div>
 			<div class="col-sm-6">
 				<button data-toggle="modal" data-target="#modal-view" class="btn btn-success float-right ml-2"><i class="fas fa-eye"></i> View</button>
-				<a target="_blank" href="<?= base_url("Produk/summary?tgl1=$tgl1&tgl2=$tgl2") ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Summary</a>
+				<!-- <a target="_blank" href="<?= base_url("Produk/summary?tgl1=$tgl1&tgl2=$tgl2") ?>" class="btn btn-success float-right"><i class="fas fa-print"></i> Summary</a> -->
 				<a target="_blank" href="<?= base_url("Produk/shift_out?tgl1=$tgl1&tgl2=$tgl2") ?>" class="btn btn-success mr-2 float-right"><i class="fas fa-print"></i> Shift Out</a>
 				<!-- <button data-toggle="modal" data-target="#laporan-pemasukan" class="btn btn-success"><i class="fas fa-print"></i> Laporan item penjualan</button> -->
 			</div>
