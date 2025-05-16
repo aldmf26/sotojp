@@ -225,7 +225,7 @@
 
 		function cetakNotaRawBT() {
 			const nota = `
-${center('<img width="100" src="' + base_url('asset/') + 'img/logo_fix.png" alt="">', 32)}
+${center('<img width="100" src="' + window.location.origin + '/asset/img/logo_fix.png" alt="">', 32)}
 ${center('Soto JP Banjarmasin', 32)}
 ${center('0811-518-870', 32)}
 ${center('ig: sotojp_banjarmasin', 32)}
