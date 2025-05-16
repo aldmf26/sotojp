@@ -24,7 +24,8 @@
 		}
 
 		.invoice {
-			width: 80mm;
+			width: 302px;
+			/* fix ukuran 80mm @96dpi */
 			margin: auto;
 			background: #fff;
 			padding: 5px;
@@ -54,16 +55,28 @@
 			margin-top: 5px;
 			margin-bottom: 5px;
 		}
-	</style>
-	<script>
-		window.onload = function() {
-			window.print();
+
+		#btnRawbt {
+			display: block;
+			width: 302px;
+			margin: 10px auto;
+			padding: 10px;
+			text-align: center;
+			background-color: #000;
+			color: #fff;
+			text-decoration: none;
+			font-weight: bold;
+			border-radius: 5px;
 		}
-	</script>
+	</style>
 </head>
 
 <body>
-	<div class="invoice">
+
+	<!-- Tombol cetak pakai RawBT -->
+	<a id="btnRawbt" href="#">🖨️ CETAK RAWBT</a>
+
+	<div class="invoice" id="nota">
 		<center>
 			<img width="100" src="<?= base_url('asset/'); ?>img/logo_fix.png" alt="">
 		</center>
@@ -97,8 +110,8 @@
 			if (!empty($produk)) :
 				foreach ($produk as $p) :
 					$toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
-					LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
-					WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
+          LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
+          WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
 
 					$total_produk += ($p->jumlah * $p->harga) - $p->diskon;
 					$qty_produk += $p->jumlah;
@@ -196,6 +209,19 @@
 		<h4 class="huruf" align="center">NOMOR ANTRIAN</h4>
 		<h4 align="center"><?= $invoice->antrian ?></h4>
 	</div>
+
+	<!-- html2canvas script -->
+	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+	<script>
+		document.getElementById("btnRawbt").addEventListener("click", function(e) {
+			e.preventDefault();
+			const invoice = document.getElementById("nota");
+			html2canvas(invoice).then(canvas => {
+				const imgData = canvas.toDataURL("image/png");
+				window.location.href = "rawbt:base64," + imgData.replace("data:image/png;base64,", "");
+			});
+		});
+	</script>
 </body>
 
 </html>
