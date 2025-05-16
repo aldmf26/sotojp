@@ -97,7 +97,7 @@
 	$nota .= center("Banjarmasin") . "\n";
 	$nota .= str_repeat("-", 32) . "\n";
 	$nota .= "No Nota : " . $invoice->no_nota . "\n";
-	$nota .= "Waktu   : " . date('d M Y H:i', strtotime($invoice->tgl_jam)) . "\n";
+	$nota .= "Waktu   : " . date('d M Y', strtotime($invoice->tgl_jam)) .  " " . date('H:i') . "\n";
 	$nota .= "Kasir   : " . $this->session->userdata('nm_user') . "\n";
 	$nota .= str_repeat("-", 32) . "\n";
 
