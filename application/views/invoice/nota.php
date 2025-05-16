@@ -225,29 +225,115 @@
 
 		function cetakNotaRawBT() {
 			const nota = `
-${center('Soto JP Banjarmasin')}
-${center('0811-518-870')}
-${center('ig: sotojp_banjarmasin')}
-${center('Jl. Pangeran Antasari 147 A')}
-${center('Banjarmasin')}
+${center('<img width="100" src="' + base_url('asset/') + 'img/logo_fix.png" alt="">', 32)}
+${center('Soto JP Banjarmasin', 32)}
+${center('0811-518-870', 32)}
+${center('ig: sotojp_banjarmasin', 32)}
+${center('Jl. Pangeran Antasari 147 A, Banjarmasin', 32)}
 ${'-'.repeat(32)}
-No Nota : STJP2505150027
-Waktu   : 15 May 2025 10:23
-Kasir   : Aldi
+<p align="center" class="huruf">No Nota : <?= $invoice->no_nota; ?></p>
+<p align="center" class="huruf">Waktu   : <?= date('d M Y', strtotime($invoice->tgl_jam)) ?> <?= date('H:i') ?></p>
+<p align="center" class="huruf">Kasir   : <?= $this->session->userdata('nm_user') ?></p>
 ${'-'.repeat(32)}
-1 Extra Ayam         10,000
-@10,000
-1 Mangkuk                0
-${'-'.repeat(32)}
-${padItem('Grand Total', '10,000')}
-${padItem('Total Bayar', '10,000')}
-${padItem('Cash', '10,000')}
-${padItem('Kembalian', '0')}
-${'-'.repeat(32)}
-${center('Thank You For Next Order!')}
-${center('NOMOR ANTRIAN')}
-${center('10')}
-`;
+<?php
+$total_produk = 0;
+$qty_produk = 0;
+$total_toping = 0;
+if (!empty($produk)) :
+	foreach ($produk as $p) :
+		$toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a
+					LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
+					WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
+		$total_produk += ($p->jumlah * $p->harga) - $p->diskon;
+		$qty_produk += $p->jumlah;
+		$nm_servis = strtolower($p->nm_servis);
+		$hrg_produk = $p->jumlah * $p->harga;
+?>
+					<tr class="huruf">
+						<td width="10%"><?= $p->jumlah; ?></td>
+						<td width="50%">
+							<?= ucwords($nm_servis); ?> <br> @<?= number_format($p->harga, 0); ?>
+						</td>
+						<td width="40%" style="text-align: right;">
+							<?php if (!empty($p->diskon)) : ?>
+								<strike><?= number_format($hrg_produk, 0); ?></strike><br>
+								<?= number_format($hrg_produk - $p->diskon, 0); ?>
+							<?php else : ?>
+								<?= number_format($hrg_produk, 0); ?>
+							<?php endif; ?>
+						</td>
+					</tr>
+					<?php foreach ($toping as $t) :
+						$total_toping += $t->harga * $t->jumlah;
+					?>
+						<tr class="huruf">
+							<td></td>
+							<td style="font-size: smaller;"><?= $t->jumlah; ?> &nbsp; <?= ucwords(strtolower($t->nm_produk)); ?></td>
+							<td style="text-align: right; font-size: smaller;">
+								<?= number_format($t->harga * $t->jumlah, 0); ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+			<?php
+		endforeach;
+	endif;
+			?>
+			</table>
+			<hr>
+			<table>
+				<tr class="huruf">
+					<td><strong>Grand Total</strong></td>
+					<td style="text-align: right;"><strong><?= number_format($invoice->total, 0); ?></strong></td>
+				</tr>
+				<?php if ($invoice->diskon != 0) : ?>
+					<tr class="huruf">
+						<td>Diskon</td>
+						<td style="text-align: right; color: red;">-<?= number_format($invoice->diskon, 0); ?></td>
+					</tr>
+				<?php endif; ?>
+				<?php if ($invoice->nominal_voucher > 0) : ?>
+					<tr class="huruf">
+						<td>Voucher</td>
+						<td style="text-align: right;"><?= number_format($invoice->nominal_voucher, 0); ?></td>
+					</tr>
+				<?php endif; ?>
+				<?php if ($invoice->kd_dp) :
+					$nominal_dp = $this->db->get_where('tb_dp', ['kd_dp' => $invoice->kd_dp])->row()->jumlah_dp;
+				?>
+					<tr class="huruf">
+						<td>Kode DP: <?= $invoice->kd_dp ?></td>
+						<td style="text-align: right;"><?= number_format($nominal_dp, 0); ?></td>
+					</tr>
+				<?php endif; ?>
+			</table>
+			<hr>
+			<table>
+				<tr class="huruf">
+					<td><strong>Total Bayar</strong></td>
+					<td style="text-align: right;"><strong><?= number_format($invoice->bayar, 0); ?></strong></td>
+				</tr>
+				<?php if ($invoice->bca_debit != 0) : ?>
+					<tr class="huruf">
+						<td>Transfer</td>
+						<td style="text-align: right;"><?= number_format($invoice->bca_debit, 0); ?></td>
+					</tr>
+				<?php endif; ?>
+				<?php if ($invoice->cash != 0) : ?>
+					<tr class="huruf">
+						<td>Cash</td>
+						<td style="text-align: right;"><?= number_format($invoice->cash, 0); ?></td>
+					</tr>
+				<?php endif; ?>
+				<tr class="huruf">
+					<td>Kembalian</td>
+					<td style="text-align: right;"><?= number_format($invoice->kembali, 0); ?></td>
+				</tr>
+			</table>
+			<hr>
+			<p class="huruf" align="center">Thank You For Next Order!</p>
+			<h4 class="huruf" align="center">NOMOR ANTRIAN</h4>
+			<h4 align="center"><?= $invoice->antrian ?></h4>
+			`;
 
 			const rawbtLink = "rawbt:" + encodeURIComponent(nota);
 			window.location.href = rawbtLink;
