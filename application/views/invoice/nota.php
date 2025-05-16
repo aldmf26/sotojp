@@ -210,7 +210,69 @@
 	</div>
 
 	<!-- Tombol cetak -->
-	<a href="#" onclick="return cetakNotaRawBT();">🖨️ Print Nota</a>
+	<?php
+	// Fungsi bantu
+	function center($text, $width = 32)
+	{
+		$space = floor(($width - strlen($text)) / 2);
+		return str_repeat(" ", max($space, 0)) . $text;
+	}
+	function padItem($left, $right, $width = 32)
+	{
+		$dots = str_repeat(" ", max(1, $width - strlen($left) - strlen($right)));
+		return $left . $dots . $right;
+	}
+
+	// Ambil data invoice dan produk
+	$nota = "";
+	$nota .= center("Soto JP Banjarmasin") . "\n";
+	$nota .= center("0811-518-870") . "\n";
+	$nota .= center("ig: sotojp_banjarmasin") . "\n";
+	$nota .= center("Jl. Pangeran Antasari 147 A") . "\n";
+	$nota .= center("Banjarmasin") . "\n";
+	$nota .= str_repeat("-", 32) . "\n";
+	$nota .= "No Nota : " . $invoice->no_nota . "\n";
+	$nota .= "Waktu   : " . date('d M Y H:i', strtotime($invoice->tgl_jam)) . "\n";
+	$nota .= "Kasir   : " . $this->session->userdata('nm_user') . "\n";
+	$nota .= str_repeat("-", 32) . "\n";
+
+	// Loop produk
+	foreach ($produk as $p) {
+		$hrg_produk = $p->jumlah * $p->harga;
+		$harga_tampil = $p->diskon ? number_format($hrg_produk - $p->diskon, 0) : number_format($hrg_produk, 0);
+		$nota .= "{$p->jumlah} " . ucwords(strtolower($p->nm_servis)) . "  " . str_pad($harga_tampil, 10, " ", STR_PAD_LEFT) . "\n";
+		$nota .= "@" . number_format($p->harga, 0) . "\n";
+		// Toping
+		$toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
+        LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
+        WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
+		foreach ($toping as $t) {
+			$nota .= "  {$t->jumlah} " . ucwords(strtolower($t->nm_produk)) . "   " . str_pad(number_format($t->harga * $t->jumlah, 0), 10, " ", STR_PAD_LEFT) . "\n";
+		}
+	}
+	$nota .= str_repeat("-", 32) . "\n";
+	$nota .= padItem("Grand Total", number_format($invoice->total, 0)) . "\n";
+	if ($invoice->diskon != 0) $nota .= padItem("Diskon", "-" . number_format($invoice->diskon, 0)) . "\n";
+	if ($invoice->nominal_voucher > 0) $nota .= padItem("Voucher", number_format($invoice->nominal_voucher, 0)) . "\n";
+	if ($invoice->kd_dp) {
+		$nominal_dp = $this->db->get_where('tb_dp', ['kd_dp' => $invoice->kd_dp])->row()->jumlah_dp;
+		$nota .= padItem("Kode DP", number_format($nominal_dp, 0)) . "\n";
+	}
+	$nota .= str_repeat("-", 32) . "\n";
+	$nota .= padItem("Total Bayar", number_format($invoice->bayar, 0)) . "\n";
+	if ($invoice->bca_debit != 0) $nota .= padItem("Transfer", number_format($invoice->bca_debit, 0)) . "\n";
+	if ($invoice->cash != 0) $nota .= padItem("Cash", number_format($invoice->cash, 0)) . "\n";
+	$nota .= padItem("Kembalian", number_format($invoice->kembali, 0)) . "\n";
+	$nota .= str_repeat("-", 32) . "\n";
+	$nota .= center("Thank You For Next Order!") . "\n";
+	$nota .= center("NOMOR ANTRIAN") . "\n";
+	$nota .= center($invoice->antrian) . "\n";
+
+	// Encode dan buat tombol
+	$url = "rawbt:" . rawurlencode($nota);
+	?>
+	<a href="<?= $url ?>">🖨️ Print Nota</a>
+
 
 	<script>
 		function center(text, width = 32) {
@@ -225,115 +287,29 @@
 
 		function cetakNotaRawBT() {
 			const nota = `
-${center('<img width="100" src="' + window.location.origin + '/asset/img/logo_fix.png" alt="">', 32)}
-${center('Soto JP Banjarmasin', 32)}
-${center('0811-518-870', 32)}
-${center('ig: sotojp_banjarmasin', 32)}
-${center('Jl. Pangeran Antasari 147 A, Banjarmasin', 32)}
+${center('Soto JP Banjarmasin')}
+${center('0811-518-870')}
+${center('ig: sotojp_banjarmasin')}
+${center('Jl. Pangeran Antasari 147 A')}
+${center('Banjarmasin')}
 ${'-'.repeat(32)}
-<p align="center" class="huruf">No Nota : <?= $invoice->no_nota; ?></p>
-<p align="center" class="huruf">Waktu   : <?= date('d M Y', strtotime($invoice->tgl_jam)) ?> <?= date('H:i') ?></p>
-<p align="center" class="huruf">Kasir   : <?= $this->session->userdata('nm_user') ?></p>
+No Nota : STJP2505150027
+Waktu   : 15 May 2025 10:23
+Kasir   : Aldi
 ${'-'.repeat(32)}
-<?php
-$total_produk = 0;
-$qty_produk = 0;
-$total_toping = 0;
-if (!empty($produk)) :
-	foreach ($produk as $p) :
-		$toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a
-					LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
-					WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
-		$total_produk += ($p->jumlah * $p->harga) - $p->diskon;
-		$qty_produk += $p->jumlah;
-		$nm_servis = strtolower($p->nm_servis);
-		$hrg_produk = $p->jumlah * $p->harga;
-?>
-					<tr class="huruf">
-						<td width="10%"><?= $p->jumlah; ?></td>
-						<td width="50%">
-							<?= ucwords($nm_servis); ?> <br> @<?= number_format($p->harga, 0); ?>
-						</td>
-						<td width="40%" style="text-align: right;">
-							<?php if (!empty($p->diskon)) : ?>
-								<strike><?= number_format($hrg_produk, 0); ?></strike><br>
-								<?= number_format($hrg_produk - $p->diskon, 0); ?>
-							<?php else : ?>
-								<?= number_format($hrg_produk, 0); ?>
-							<?php endif; ?>
-						</td>
-					</tr>
-					<?php foreach ($toping as $t) :
-						$total_toping += $t->harga * $t->jumlah;
-					?>
-						<tr class="huruf">
-							<td></td>
-							<td style="font-size: smaller;"><?= $t->jumlah; ?> &nbsp; <?= ucwords(strtolower($t->nm_produk)); ?></td>
-							<td style="text-align: right; font-size: smaller;">
-								<?= number_format($t->harga * $t->jumlah, 0); ?>
-							</td>
-						</tr>
-					<?php endforeach; ?>
-			<?php
-		endforeach;
-	endif;
-			?>
-			</table>
-			<hr>
-			<table>
-				<tr class="huruf">
-					<td><strong>Grand Total</strong></td>
-					<td style="text-align: right;"><strong><?= number_format($invoice->total, 0); ?></strong></td>
-				</tr>
-				<?php if ($invoice->diskon != 0) : ?>
-					<tr class="huruf">
-						<td>Diskon</td>
-						<td style="text-align: right; color: red;">-<?= number_format($invoice->diskon, 0); ?></td>
-					</tr>
-				<?php endif; ?>
-				<?php if ($invoice->nominal_voucher > 0) : ?>
-					<tr class="huruf">
-						<td>Voucher</td>
-						<td style="text-align: right;"><?= number_format($invoice->nominal_voucher, 0); ?></td>
-					</tr>
-				<?php endif; ?>
-				<?php if ($invoice->kd_dp) :
-					$nominal_dp = $this->db->get_where('tb_dp', ['kd_dp' => $invoice->kd_dp])->row()->jumlah_dp;
-				?>
-					<tr class="huruf">
-						<td>Kode DP: <?= $invoice->kd_dp ?></td>
-						<td style="text-align: right;"><?= number_format($nominal_dp, 0); ?></td>
-					</tr>
-				<?php endif; ?>
-			</table>
-			<hr>
-			<table>
-				<tr class="huruf">
-					<td><strong>Total Bayar</strong></td>
-					<td style="text-align: right;"><strong><?= number_format($invoice->bayar, 0); ?></strong></td>
-				</tr>
-				<?php if ($invoice->bca_debit != 0) : ?>
-					<tr class="huruf">
-						<td>Transfer</td>
-						<td style="text-align: right;"><?= number_format($invoice->bca_debit, 0); ?></td>
-					</tr>
-				<?php endif; ?>
-				<?php if ($invoice->cash != 0) : ?>
-					<tr class="huruf">
-						<td>Cash</td>
-						<td style="text-align: right;"><?= number_format($invoice->cash, 0); ?></td>
-					</tr>
-				<?php endif; ?>
-				<tr class="huruf">
-					<td>Kembalian</td>
-					<td style="text-align: right;"><?= number_format($invoice->kembali, 0); ?></td>
-				</tr>
-			</table>
-			<hr>
-			<p class="huruf" align="center">Thank You For Next Order!</p>
-			<h4 class="huruf" align="center">NOMOR ANTRIAN</h4>
-			<h4 align="center"><?= $invoice->antrian ?></h4>
-			`;
+1 Extra Ayam         10,000
+@10,000
+1 Mangkuk                0
+${'-'.repeat(32)}
+${padItem('Grand Total', '10,000')}
+${padItem('Total Bayar', '10,000')}
+${padItem('Cash', '10,000')}
+${padItem('Kembalian', '0')}
+${'-'.repeat(32)}
+${center('Thank You For Next Order!')}
+${center('NOMOR ANTRIAN')}
+${center('10')}
+`;
 
 			const rawbtLink = "rawbt:" + encodeURIComponent(nota);
 			window.location.href = rawbtLink;
