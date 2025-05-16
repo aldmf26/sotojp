@@ -213,42 +213,40 @@
 	<a href="#" onclick="return cetakNotaRawBT();">🖨️ Print Nota</a>
 
 	<script>
-		function centerText(text, width = 32) {
-			const space = Math.max(0, Math.floor((width - text.length) / 2));
-			return ' '.repeat(space) + text;
+		function center(text, width = 32) {
+			const space = Math.floor((width - text.length) / 2);
+			return ' '.repeat(Math.max(space, 0)) + text;
 		}
 
-		function padItem(name, price, width = 32) {
-			let namePart = name;
-			let pricePart = price.toString();
-			let dots = '.'.repeat(Math.max(1, width - namePart.length - pricePart.length));
-			return namePart + dots + pricePart;
+		function padItem(kiri, kanan, width = 32) {
+			let dots = '.'.repeat(Math.max(1, width - kiri.length - kanan.length));
+			return kiri + dots + kanan;
 		}
 
 		function cetakNotaRawBT() {
 			const nota = `
-${centerText('KASIROK POS')}
-${centerText('Jl. Mawar No.123')}
-${centerText('Telp: 0812-3456-7890')}
+${center('Soto JP Banjarmasin')}
+${center('0811-518-870')}
+${center('ig: sotojp_banjarmasin')}
+${center('Jl. Pangeran Antasari 147 A')}
+${center('Banjarmasin')}
 ${'-'.repeat(32)}
-Tanggal : 2025-05-16 14:30
-Kasir   : Admin
-Nota    : INV0001
+No Nota : STJP2505150027
+Waktu   : 15 May 2025 10:23
+Kasir   : Aldi
 ${'-'.repeat(32)}
-${padItem('1x Nasi Goreng', '15.000')}
-${padItem('2x Teh Manis', '10.000')}
-${padItem('1x Air Mineral', '5.000')}
+1 Extra Ayam         10,000
+@10,000
+1 Mangkuk                0
 ${'-'.repeat(32)}
-${padItem('Subtotal', '30.000')}
-${padItem('Diskon', '0')}
-${padItem('Total', '30.000')}
-Bayar   : 50.000
-Kembali : 20.000
+${padItem('Grand Total', '10,000')}
+${padItem('Total Bayar', '10,000')}
+${padItem('Cash', '10,000')}
+${padItem('Kembalian', '0')}
 ${'-'.repeat(32)}
-${centerText('Terima kasih')}
-${centerText('Barang yang sudah dibeli')}
-${centerText('tidak dapat dikembalikan')}
-${centerText('---')}
+${center('Thank You For Next Order!')}
+${center('NOMOR ANTRIAN')}
+${center('10')}
 `;
 
 			const rawbtLink = "rawbt:" + encodeURIComponent(nota);
