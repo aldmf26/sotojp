@@ -90,6 +90,7 @@
 
 	// Ambil data invoice dan produk
 	$nota = "";
+	$nota .= center("<img src='" . base_url('asset/img/logo_fix.png') . "' width='100' />") . "\n";
 	$nota .= center("Soto JP Banjarmasin") . "\n";
 	$nota .= center("0811-518-870") . "\n";
 	$nota .= center("ig: sotojp_banjarmasin") . "\n";
@@ -140,7 +141,6 @@
 	<script>
 		function cetakNotaRawBT() {
 			const nota = `<?php echo $nota ?>`;
-			console.log(nota);
 			const rawbtLink = "rawbt:" + encodeURIComponent(nota);
 			window.location.href = rawbtLink;
 			return false;
