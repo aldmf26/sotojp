@@ -108,12 +108,12 @@
 		$nota .= padItem("{$p->jumlah} " . ucwords(strtolower($p->nm_servis)), $harga_tampil) . "\n";
 		$nota .= padItem("@" . number_format($p->harga, 0), "") . "\n";
 		// Toping
-		// $toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
-		// LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
-		// WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
-		// foreach ($toping as $t) {
-		// 	$nota .= "  {$t->jumlah} " . ucwords(strtolower($t->nm_produk)) . "   " . str_pad(number_format($t->harga * $t->jumlah, 0), 10, " ", STR_PAD_LEFT) . "\n";
-		// }
+		$toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
+		LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
+		WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
+		foreach ($toping as $t) {
+			$nota .= padItem("  {$t->jumlah} " . ucwords(strtolower($t->nm_produk)), number_format($t->harga * $t->jumlah, 0)) . "\n";
+		}
 	}
 	$nota .= str_repeat("-", 32) . "\n";
 	$nota .= padItem("Grand Total", number_format($invoice->total, 0)) . "\n";
@@ -136,7 +136,7 @@
 	// Encode dan buat tombol
 	$url = "rawbt:" . rawurlencode($nota);
 	?>
-x
+	x
 
 
 	<script>
