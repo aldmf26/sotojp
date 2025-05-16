@@ -1456,11 +1456,29 @@ public function get_cart(){
 
 public function delete_cart()
 {
-    $rowid = $_POST['rowid'];
-    $this->cart->remove($rowid);
-    // $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Produk berhasil dihapus dari keranjang!  <div class="ml-5 btn btn-sm"><i class="fas fa-times-circle fa-2x"></i></div></div>');
-    // redirect(base_url('Match/order'),'refresh');
-    // echo '<div style="background-color: #FFA07A;" class="alert" role="alert">Produk berhasil dihapus dari keranjang!  <div class="ml-5 btn btn-sm"><i class="fas fa-times-circle fa-2x"></i></div></div>';
+    $rowid = $this->input->post('rowid'); // Ambil rowid produk utama yang akan dihapus
+    $cart_content = $this->cart->contents(); // Ambil semua isi keranjang
+
+    // Cari data produk utama berdasarkan rowid
+    $main_product = null;
+    foreach ($cart_content as $item) {
+        if ($item['rowid'] == $rowid) {
+            $main_product = $item;
+            break;
+        }
+    }
+
+    if ($main_product) {
+        // Hapus produk utama
+        $this->cart->remove($rowid);
+
+        // Cari dan hapus semua topping yang terkait (memiliki properti 'ibu' sesuai dengan id_produk produk utama)
+        foreach ($cart_content as $item) {
+            if (isset($item['ibu']) && $item['ibu'] == $main_product['id_produk']) {
+                $this->cart->remove($item['rowid']);
+            }
+        }
+    }
 }
 
 public function min_cart()

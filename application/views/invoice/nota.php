@@ -90,7 +90,7 @@
 
 	// Ambil data invoice dan produk
 	$nota = "";
-	// $nota .= center(base_url('asset/img/logo_fix.png')) . "\n";
+
 	$nota .= center("Soto JP Banjarmasin") . "\n";
 	$nota .= center("0811-518-870") . "\n";
 	$nota .= center("ig: sotojp_banjarmasin") . "\n";
@@ -146,11 +146,14 @@
 			return false;
 		}
 	</script>
-	<!-- Tombol cetak pakai RawBT -->
+	<!-- <pre style="font-family: monospace; background: #f0f0f0; padding: 10px;">
+		<?= htmlspecialchars($nota); ?>
+	</pre> -->
 
 	<div class="invoice" id="nota">
 		<br>
 		<center>
+			<!-- Tombol cetak pakai RawBT -->
 			<a href="<?= $url ?>" style="background-color: #0d6efd; border-color: #0d6efd; color: #ffffff; padding: 0.5rem 1rem; font-size: 1rem; border-radius: 0.25rem; text-decoration: none;">🖨️ Print Nota</a>
 		</center>
 		<br>
