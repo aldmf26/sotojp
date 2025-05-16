@@ -69,10 +69,14 @@
 			border-radius: 5px;
 		}
 	</style>
+
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 </head>
 
 <body>
-<!-- Tombol cetak -->
+	<!-- Tombol cetak -->
 	<?php
 	// Fungsi bantu
 	function center($text, $width = 32)
@@ -104,7 +108,7 @@
 		$hrg_produk = $p->jumlah * $p->harga;
 		$harga_tampil = $p->diskon ? number_format($hrg_produk - $p->diskon, 0) : number_format($hrg_produk, 0);
 		$nota .= padItem("{$p->jumlah} " . ucwords(strtolower($p->nm_servis)), $harga_tampil) . "\n";
-		$nota .= padItem("@".number_format($p->harga, 0), "") . "\n";
+		$nota .= padItem("@" . number_format($p->harga, 0), "") . "\n";
 		// Toping
 		// $toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
 		// LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
@@ -283,7 +287,7 @@
 		<h4 align="center"><?= $invoice->antrian ?></h4>
 	</div>
 
-	
+
 </body>
 
 </html>
