@@ -136,9 +136,7 @@
 	// Encode dan buat tombol
 	$url = "rawbt:" . rawurlencode($nota);
 	?>
-	<div style="text-align: center">
-		<a href="<?= $url ?>" style="background-color: #0d6efd; border-color: #0d6efd; color: #ffffff; padding: 0.5rem 1rem; font-size: 1rem; border-radius: 0.25rem; text-decoration: none; margin-top: 1rem;">🖨️ Print Nota</a>
-	</div>
+x
 
 
 	<script>
@@ -152,6 +150,8 @@
 	<!-- Tombol cetak pakai RawBT -->
 
 	<div class="invoice" id="nota">
+		<a href="<?= $url ?>" style="background-color: #0d6efd; border-color: #0d6efd; color: #ffffff; padding: 0.5rem 1rem; font-size: 1rem; border-radius: 0.25rem; text-decoration: none;">🖨️ Print Nota</a>
+
 		<center>
 			<img width="100" src="<?= base_url('asset/'); ?>img/logo_fix.png" alt="">
 		</center>
