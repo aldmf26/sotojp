@@ -74,7 +74,6 @@
 <body>
 
 	<!-- Tombol cetak pakai RawBT -->
-	<a id="btnRawbt" href="#">🖨️ CETAK RAWBT</a>
 
 	<div class="invoice" id="nota">
 		<center>
@@ -210,17 +209,23 @@
 		<h4 align="center"><?= $invoice->antrian ?></h4>
 	</div>
 
-	<!-- html2canvas script -->
+	<!-- Tombol cetak -->
+	<div style="text-align: center; margin: 10px;">
+		<button onclick="cetakNota()">🖨️ Cetak Nota</button>
+	</div>
+
+	<!-- Script html2canvas dan RawBT -->
 	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 	<script>
-		document.getElementById("btnRawbt").addEventListener("click", function(e) {
-			e.preventDefault();
-			const invoice = document.getElementById("nota");
-			html2canvas(invoice).then(canvas => {
-				const imgData = canvas.toDataURL("image/png");
-				window.location.href = "rawbt:base64," + imgData.replace("data:image/png;base64,", "");
+		function cetakNota() {
+			const nota = document.getElementById("nota");
+			html2canvas(nota, {
+				scale: 2 // kualitas lebih tinggi, cetakan tajam
+			}).then(canvas => {
+				const imgData = canvas.toDataURL("image/jpeg", 0.6); // kompres ke 60% kualitas JPEG
+				window.location.href = "rawbt:base64," + imgData.replace("data:image/jpeg;base64,", "");
 			});
-		});
+		}
 	</script>
 </body>
 
