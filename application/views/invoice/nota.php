@@ -275,42 +275,8 @@
 
 
 	<script>
-		function center(text, width = 32) {
-			const space = Math.floor((width - text.length) / 2);
-			return ' '.repeat(Math.max(space, 0)) + text;
-		}
-
-		function padItem(kiri, kanan, width = 32) {
-			let dots = '.'.repeat(Math.max(1, width - kiri.length - kanan.length));
-			return kiri + dots + kanan;
-		}
-
 		function cetakNotaRawBT() {
-			const nota = `
-${center('Soto JP Banjarmasin')}
-${center('0811-518-870')}
-${center('ig: sotojp_banjarmasin')}
-${center('Jl. Pangeran Antasari 147 A')}
-${center('Banjarmasin')}
-${'-'.repeat(32)}
-No Nota : STJP2505150027
-Waktu   : 15 May 2025 10:23
-Kasir   : Aldi
-${'-'.repeat(32)}
-1 Extra Ayam         10,000
-@10,000
-1 Mangkuk                0
-${'-'.repeat(32)}
-${padItem('Grand Total', '10,000')}
-${padItem('Total Bayar', '10,000')}
-${padItem('Cash', '10,000')}
-${padItem('Kembalian', '0')}
-${'-'.repeat(32)}
-${center('Thank You For Next Order!')}
-${center('NOMOR ANTRIAN')}
-${center('10')}
-`;
-
+			const nota = `<?php echo $nota ?>`;
 			const rawbtLink = "rawbt:" + encodeURIComponent(nota);
 			window.location.href = rawbtLink;
 			return false;
