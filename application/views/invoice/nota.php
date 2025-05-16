@@ -90,7 +90,7 @@
 
 	// Ambil data invoice dan produk
 	$nota = "";
-	$nota .= center(base_url('asset/img/logo_fix.png')) . "\n";
+	// $nota .= center(base_url('asset/img/logo_fix.png')) . "\n";
 	$nota .= center("Soto JP Banjarmasin") . "\n";
 	$nota .= center("0811-518-870") . "\n";
 	$nota .= center("ig: sotojp_banjarmasin") . "\n";
