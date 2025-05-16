@@ -213,6 +213,7 @@
 	<div style="text-align: center; margin: 10px;">
 		<button onclick="cetakNota()">🖨️ Cetak Nota</button>
 	</div>
+	<a href="rawbt:Hello,%20world!%0A%0A"> Hello, world! </a>
 
 	<!-- Script html2canvas dan RawBT -->
 	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
