@@ -240,8 +240,8 @@
 	foreach ($produk as $p) {
 		$hrg_produk = $p->jumlah * $p->harga;
 		$harga_tampil = $p->diskon ? number_format($hrg_produk - $p->diskon, 0) : number_format($hrg_produk, 0);
-		$nota .= "{$p->jumlah} " . ucwords(strtolower($p->nm_servis)) . "  " . str_pad($harga_tampil, 10, " ", STR_PAD_LEFT) . "\n";
-		$nota .= "@" . number_format($p->harga, 0) . "\n";
+		$nota .= padItem("{$p->jumlah} " . ucwords(strtolower($p->nm_servis)), $harga_tampil) . "\n";
+		$nota .= padItem("@".number_format($p->harga, 0), "") . "\n";
 		// Toping
 		// $toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
 		// LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
