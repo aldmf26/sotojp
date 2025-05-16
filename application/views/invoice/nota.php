@@ -221,10 +221,18 @@
 		function cetakNota() {
 			const nota = document.getElementById("nota");
 			html2canvas(nota, {
-				scale: 2 // kualitas lebih tinggi, cetakan tajam
+				scale: 2,
+				useCORS: true
 			}).then(canvas => {
-				const imgData = canvas.toDataURL("image/jpeg", 0.6); // kompres ke 60% kualitas JPEG
-				window.location.href = "rawbt:base64," + imgData.replace("data:image/jpeg;base64,", "");
+				// Ambil gambar base64 JPEG
+				const imgData = canvas.toDataURL("image/jpeg", 0.8);
+
+				// Tunggu 100ms untuk memastikan browser siap
+				setTimeout(() => {
+					// Kirim ke RawBT via base64 (tanpa prefix)
+					const rawbtUrl = "rawbt:base64," + imgData.replace("data:image/jpeg;base64,", "");
+					window.location.href = rawbtUrl;
+				}, 100);
 			});
 		}
 	</script>
