@@ -137,7 +137,7 @@
 	$url = "rawbt:" . rawurlencode($nota);
 	?>
 	<div style="text-align: center">
-		<a href="<?= $url ?>" style="background-color: #0d6efd; border-color: #0d6efd; color: #ffffff; padding: 0.5rem 1rem; font-size: 1rem; border-radius: 0.25rem; text-decoration: none;">🖨️ Print Nota</a>
+		<a href="<?= $url ?>" style="background-color: #0d6efd; border-color: #0d6efd; color: #ffffff; padding: 0.5rem 1rem; font-size: 1rem; border-radius: 0.25rem; text-decoration: none; margin-top: 1rem;">🖨️ Print Nota</a>
 	</div>
 
 
