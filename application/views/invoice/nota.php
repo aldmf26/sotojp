@@ -210,25 +210,50 @@
 	</div>
 
 	<!-- Tombol cetak -->
-	<div style="text-align: center; margin: 10px;">
-		<button onclick="cetakNota()">🖨️ Cetak Nota</button>
-	</div>
+	<a href="#" onclick="return cetakNotaRawBT();">🖨️ Print Nota</a>
 
-	<!-- Script html2canvas dan RawBT -->
-	<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 	<script>
-		function cetakNota() {
-			let isiNota = '';
-			isiNota += 'Nota Penjualan\n';
-			isiNota += '--------------------------\n';
-			isiNota += 'Item 1    Rp10.000\n';
-			isiNota += 'Item 2    Rp15.000\n';
-			isiNota += '--------------------------\n';
-			isiNota += 'Total     Rp25.000\n\n';
-			isiNota += 'Terima kasih!\n';
+		function centerText(text, width = 32) {
+			const space = Math.max(0, Math.floor((width - text.length) / 2));
+			return ' '.repeat(space) + text;
+		}
 
-			const encoded = encodeURIComponent(isiNota);
-			window.location.href = 'rawbt:' + encoded;
+		function padItem(name, price, width = 32) {
+			let namePart = name;
+			let pricePart = price.toString();
+			let dots = '.'.repeat(Math.max(1, width - namePart.length - pricePart.length));
+			return namePart + dots + pricePart;
+		}
+
+		function cetakNotaRawBT() {
+			const nota = `
+${centerText('KASIROK POS')}
+${centerText('Jl. Mawar No.123')}
+${centerText('Telp: 0812-3456-7890')}
+${'-'.repeat(32)}
+Tanggal : 2025-05-16 14:30
+Kasir   : Admin
+Nota    : INV0001
+${'-'.repeat(32)}
+${padItem('1x Nasi Goreng', '15.000')}
+${padItem('2x Teh Manis', '10.000')}
+${padItem('1x Air Mineral', '5.000')}
+${'-'.repeat(32)}
+${padItem('Subtotal', '30.000')}
+${padItem('Diskon', '0')}
+${padItem('Total', '30.000')}
+Bayar   : 50.000
+Kembali : 20.000
+${'-'.repeat(32)}
+${centerText('Terima kasih')}
+${centerText('Barang yang sudah dibeli')}
+${centerText('tidak dapat dikembalikan')}
+${centerText('---')}
+`;
+
+			const rawbtLink = "rawbt:" + encodeURIComponent(nota);
+			window.location.href = rawbtLink;
+			return false;
 		}
 	</script>
 </body>
