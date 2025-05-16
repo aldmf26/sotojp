@@ -72,7 +72,81 @@
 </head>
 
 <body>
+<!-- Tombol cetak -->
+	<?php
+	// Fungsi bantu
+	function center($text, $width = 32)
+	{
+		$space = floor(($width - strlen($text)) / 2);
+		return str_repeat(" ", max($space, 0)) . $text;
+	}
+	function padItem($left, $right, $width = 32)
+	{
+		$dots = str_repeat(" ", max(1, $width - strlen($left) - strlen($right)));
+		return $left . $dots . $right;
+	}
 
+	// Ambil data invoice dan produk
+	$nota = "";
+	$nota .= center("Soto JP Banjarmasin") . "\n";
+	$nota .= center("0811-518-870") . "\n";
+	$nota .= center("ig: sotojp_banjarmasin") . "\n";
+	$nota .= center("Jl. Pangeran Antasari 147 A") . "\n";
+	$nota .= center("Banjarmasin") . "\n";
+	$nota .= str_repeat("-", 32) . "\n";
+	$nota .= "No Nota : " . $invoice->no_nota . "\n";
+	$nota .= "Waktu   : " . date('d M Y H:i', strtotime($invoice->tgl_jam)) . "\n";
+	$nota .= "Kasir   : " . $this->session->userdata('nm_user') . "\n";
+	$nota .= str_repeat("-", 32) . "\n";
+
+	// Loop produk
+	foreach ($produk as $p) {
+		$hrg_produk = $p->jumlah * $p->harga;
+		$harga_tampil = $p->diskon ? number_format($hrg_produk - $p->diskon, 0) : number_format($hrg_produk, 0);
+		$nota .= padItem("{$p->jumlah} " . ucwords(strtolower($p->nm_servis)), $harga_tampil) . "\n";
+		$nota .= padItem("@".number_format($p->harga, 0), "") . "\n";
+		// Toping
+		// $toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
+		// LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
+		// WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
+		// foreach ($toping as $t) {
+		// 	$nota .= "  {$t->jumlah} " . ucwords(strtolower($t->nm_produk)) . "   " . str_pad(number_format($t->harga * $t->jumlah, 0), 10, " ", STR_PAD_LEFT) . "\n";
+		// }
+	}
+	$nota .= str_repeat("-", 32) . "\n";
+	$nota .= padItem("Grand Total", number_format($invoice->total, 0)) . "\n";
+	if ($invoice->diskon != 0) $nota .= padItem("Diskon", "-" . number_format($invoice->diskon, 0)) . "\n";
+	if ($invoice->nominal_voucher > 0) $nota .= padItem("Voucher", number_format($invoice->nominal_voucher, 0)) . "\n";
+	if ($invoice->kd_dp) {
+		$nominal_dp = $this->db->get_where('tb_dp', ['kd_dp' => $invoice->kd_dp])->row()->jumlah_dp;
+		$nota .= padItem("Kode DP", number_format($nominal_dp, 0)) . "\n";
+	}
+	$nota .= str_repeat("-", 32) . "\n";
+	$nota .= padItem("Total Bayar", number_format($invoice->bayar, 0)) . "\n";
+	if ($invoice->bca_debit != 0) $nota .= padItem("Transfer", number_format($invoice->bca_debit, 0)) . "\n";
+	if ($invoice->cash != 0) $nota .= padItem("Cash", number_format($invoice->cash, 0)) . "\n";
+	$nota .= padItem("Kembalian", number_format($invoice->kembali, 0)) . "\n";
+	$nota .= str_repeat("-", 32) . "\n";
+	$nota .= center("Thank You For Next Order!") . "\n";
+	$nota .= center("NOMOR ANTRIAN") . "\n";
+	$nota .= center($invoice->antrian) . "\n";
+
+	// Encode dan buat tombol
+	$url = "rawbt:" . rawurlencode($nota);
+	?>
+	<div style="text-align: center">
+		<a href="<?= $url ?>" class="btn btn-secondary">🖨️ Print Nota</a>
+	</div>
+
+
+	<script>
+		function cetakNotaRawBT() {
+			const nota = `<?php echo $nota ?>`;
+			const rawbtLink = "rawbt:" + encodeURIComponent(nota);
+			window.location.href = rawbtLink;
+			return false;
+		}
+	</script>
 	<!-- Tombol cetak pakai RawBT -->
 
 	<div class="invoice" id="nota">
@@ -209,79 +283,7 @@
 		<h4 align="center"><?= $invoice->antrian ?></h4>
 	</div>
 
-	<!-- Tombol cetak -->
-	<?php
-	// Fungsi bantu
-	function center($text, $width = 32)
-	{
-		$space = floor(($width - strlen($text)) / 2);
-		return str_repeat(" ", max($space, 0)) . $text;
-	}
-	function padItem($left, $right, $width = 32)
-	{
-		$dots = str_repeat(" ", max(1, $width - strlen($left) - strlen($right)));
-		return $left . $dots . $right;
-	}
-
-	// Ambil data invoice dan produk
-	$nota = "";
-	$nota .= center("Soto JP Banjarmasin") . "\n";
-	$nota .= center("0811-518-870") . "\n";
-	$nota .= center("ig: sotojp_banjarmasin") . "\n";
-	$nota .= center("Jl. Pangeran Antasari 147 A") . "\n";
-	$nota .= center("Banjarmasin") . "\n";
-	$nota .= str_repeat("-", 32) . "\n";
-	$nota .= "No Nota : " . $invoice->no_nota . "\n";
-	$nota .= "Waktu   : " . date('d M Y H:i', strtotime($invoice->tgl_jam)) . "\n";
-	$nota .= "Kasir   : " . $this->session->userdata('nm_user') . "\n";
-	$nota .= str_repeat("-", 32) . "\n";
-
-	// Loop produk
-	foreach ($produk as $p) {
-		$hrg_produk = $p->jumlah * $p->harga;
-		$harga_tampil = $p->diskon ? number_format($hrg_produk - $p->diskon, 0) : number_format($hrg_produk, 0);
-		$nota .= padItem("{$p->jumlah} " . ucwords(strtolower($p->nm_servis)), $harga_tampil) . "\n";
-		$nota .= padItem("@".number_format($p->harga, 0), "") . "\n";
-		// Toping
-		// $toping = $this->db->query("SELECT a.*, b.nm_produk FROM tb_pembelian as a 
-		// LEFT JOIN tb_produk as b ON b.id_produk = a.id_produk
-		// WHERE a.id_produk_toping = '$p->id_produk' AND a.no_nota = '$no_nota'")->result();
-		// foreach ($toping as $t) {
-		// 	$nota .= "  {$t->jumlah} " . ucwords(strtolower($t->nm_produk)) . "   " . str_pad(number_format($t->harga * $t->jumlah, 0), 10, " ", STR_PAD_LEFT) . "\n";
-		// }
-	}
-	$nota .= str_repeat("-", 32) . "\n";
-	$nota .= padItem("Grand Total", number_format($invoice->total, 0)) . "\n";
-	if ($invoice->diskon != 0) $nota .= padItem("Diskon", "-" . number_format($invoice->diskon, 0)) . "\n";
-	if ($invoice->nominal_voucher > 0) $nota .= padItem("Voucher", number_format($invoice->nominal_voucher, 0)) . "\n";
-	if ($invoice->kd_dp) {
-		$nominal_dp = $this->db->get_where('tb_dp', ['kd_dp' => $invoice->kd_dp])->row()->jumlah_dp;
-		$nota .= padItem("Kode DP", number_format($nominal_dp, 0)) . "\n";
-	}
-	$nota .= str_repeat("-", 32) . "\n";
-	$nota .= padItem("Total Bayar", number_format($invoice->bayar, 0)) . "\n";
-	if ($invoice->bca_debit != 0) $nota .= padItem("Transfer", number_format($invoice->bca_debit, 0)) . "\n";
-	if ($invoice->cash != 0) $nota .= padItem("Cash", number_format($invoice->cash, 0)) . "\n";
-	$nota .= padItem("Kembalian", number_format($invoice->kembali, 0)) . "\n";
-	$nota .= str_repeat("-", 32) . "\n";
-	$nota .= center("Thank You For Next Order!") . "\n";
-	$nota .= center("NOMOR ANTRIAN") . "\n";
-	$nota .= center($invoice->antrian) . "\n";
-
-	// Encode dan buat tombol
-	$url = "rawbt:" . rawurlencode($nota);
-	?>
-	<a href="<?= $url ?>">🖨️ Print Nota</a>
-
-
-	<script>
-		function cetakNotaRawBT() {
-			const nota = `<?php echo $nota ?>`;
-			const rawbtLink = "rawbt:" + encodeURIComponent(nota);
-			window.location.href = rawbtLink;
-			return false;
-		}
-	</script>
+	
 </body>
 
 </html>
