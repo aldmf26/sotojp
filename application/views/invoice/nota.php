@@ -70,8 +70,6 @@
 		}
 	</style>
 
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 </head>
 
@@ -139,7 +137,7 @@
 	$url = "rawbt:" . rawurlencode($nota);
 	?>
 	<div style="text-align: center">
-		<a href="<?= $url ?>" class="btn btn-secondary">🖨️ Print Nota</a>
+		<a href="<?= $url ?>" style="background-color: #0d6efd; border-color: #0d6efd; color: #ffffff; padding: 0.5rem 1rem; font-size: 1rem; border-radius: 0.25rem; text-decoration: none;">🖨️ Print Nota</a>
 	</div>
 
 
