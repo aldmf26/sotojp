@@ -60,9 +60,9 @@
                                     <th class="sticky-top th-top">Stok Program</th>
                                     <th class="sticky-top th-top">Stok Aktual</th>
                                     <th class="sticky-top th-top">Selisih</th>
-                                    <th class="sticky-top th-top">Harga Jual</th>
+                                    <!-- <th class="sticky-top th-top">Harga Jual</th>
                                     <th class="sticky-top th-top">Total Program</th>
-                                    <th class="sticky-top th-top">Total Selisih</th>
+                                    <th class="sticky-top th-top">Total Selisih</th> -->
                                     <th class="sticky-top th-top">Catatan</th>
                                 </tr>
                             </thead>
@@ -92,12 +92,12 @@
                                         <td><?= $op->nm_kategori ?></td>
                                         <td><?= $op->stok_program ?> </td>
                                         <td>
-                                            <center><input type="text" name="stok_aktual[]" value="<?= $op->stok_program ?>" style="width: 120px; text-align: center;" class="form-control fill" <?= $op->status == 'Selesai' ? 'Readonly' : '' ?>></center>
+                                            <center><input type="text" name="stok_aktual[]" value="<?= $op->stok_aktual ?>" style="width: 120px; text-align: center;" class="form-control fill" <?= $op->status == 'Selesai' ? 'Readonly' : '' ?>></center>
                                         </td>
                                         <td><?= $selisih ?></td>
-                                        <td><?= number_format($op->harga, 0) ?></td>
-                                        <td><?= number_format($op->harga * $op->stok_program, 0) ?></td>
-                                        <td><?= number_format($ttl_selisih, 0) ?></td>
+                                        <!-- <td><?= number_format($op->harga, 0) ?></td>
+                                        <td><?= number_format($op->stok_, 0) ?></td>
+                                        <td><?= number_format($ttl_selisih, 0) ?></td> -->
                                         <td>
                                             <center><input type="text" name="catatan[]" value="<?= $op->catatan ?>" style="width: 120px; text-align: center;" class="form-control fill" <?= $op->status == 'Selesai' ? 'Readonly' : '' ?>></center>
                                         </td>
@@ -253,18 +253,7 @@
 
 
 
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/solid.css" integrity="sha384-wnAC7ln+XN0UKdcPvJvtqIH3jOjs9pnKnq9qX68ImXvOGz2JuFoEiCjT8jyZQX2z" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css" integrity="sha384-HbmWTHay9psM8qyzEKPc8odH4DsOuzdejtnr+OFtDmOcIVnhgReQ4GZBH7uwcjf6" crossorigin="anonymous">
-<script src="<?= base_url() ?>asset/time/jquery.skedTape.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables/jquery.dataTables.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/select2/js/select2.full.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/moment/moment.min.js"></script>
-<script src="<?= base_url('asset/'); ?>/plugins/daterangepicker/daterangepicker.js"></script>
+<?php $this->load->view('tema/Footer'); ?>
 
 <script>
     $(document).ready(function() {
@@ -327,5 +316,3 @@
         });
     }
 </script>
-
-<?php $this->load->view('tema/Footer'); ?>
