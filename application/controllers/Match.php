@@ -7232,7 +7232,9 @@ public function void(){
 
     // if ($get_voucher->terpakai != 'Y' && !empty($get_voucher)) {
     if ($no_nota) {
-
+        $this->db->where('kode_stok_produk', $no_nota);
+        $this->db->delete('tb_stok_produk');
+        
         $data_void = [
             'status' => '1',
             'nm_void' => $nm_void,

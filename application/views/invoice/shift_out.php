@@ -112,68 +112,148 @@
         <p class="date-range huruf"><?= date('d-M-y', strtotime($tgl1)) ?> ~ <?= date('d-M-y', strtotime($tgl2)) ?></p>
 
         <div class="section-title huruf">Penj. Menu Berdasarkan Mode Transaksi</div>
+
+        <div class="divider"></div>
+        <div class="section-title huruf">PENJUALAN PER-ITEM</div>
+        <table>
+            <tr>
+                <th align="left">Nama Menu</th>
+                <th></th>
+                <th class="right-align">Qty</th>
+                <th class="right-align">Total (Rp)</th>
+            </tr>
+            <?php
+            // Gabungkan data dari $dinein dan $gojek
+            $combined = [];
+
+            // Proses data Dine-In
+            foreach ($dinein as $s) {
+                $menu = $s->nm_servis;
+                if (!isset($combined[$menu])) {
+                    $combined[$menu] = ['jumlah' => 0, 'total' => 0];
+                }
+                $combined[$menu]['jumlah'] += $s->jumlah;
+                $combined[$menu]['total'] += $s->total;
+            }
+
+            // Proses data Gojek
+            foreach ($gojek as $s) {
+                $menu = $s->nm_servis;
+                if (!isset($combined[$menu])) {
+                    $combined[$menu] = ['jumlah' => 0, 'total' => 0];
+                }
+                $combined[$menu]['jumlah'] += $s->jumlah;
+                $combined[$menu]['total'] += $s->total;
+            }
+
+            // Hitung total keseluruhan
+            $total_qty = 0;
+            $total_amount = 0;
+
+            // Tampilkan data per item
+            foreach ($combined as $menu => $data) : ?>
+                <tr class="huruf">
+                    <td><?= $menu ?></td>
+                    <td>:</td>
+                    <td class="right-align"><?= number_format($data['jumlah']) ?></td>
+                    <td class="right-align"><?= number_format($data['total']) ?></td>
+                </tr>
+            <?php
+                $total_qty += $data['jumlah'];
+                $total_amount += $data['total'];
+            endforeach;
+            ?>
+            <tr>
+                <td colspan="4" class="divider"></td>
+            </tr>
+            <tr class="huruf bold">
+                <td>Jumlah Penjualan</td>
+                <td>:</td>
+                <td class="right-align"><?= number_format($total_qty) ?></td>
+                <td class="right-align"><?= number_format($total_amount) ?></td>
+            </tr>
+            <?php
+            $cash_today = 0;
+            $transfer_today = 0;
+
+            foreach ($invoice as $value) {
+                $cash_today += $value->cash - $value->kembali;
+                $transfer_today += $value->bca_debit;
+            }
+
+
+            ?>
+            <tr class="huruf bold">
+                <td>Cash</td>
+                <td>:</td>
+                <td class="right-align"></td>
+                <td class="right-align"><?= number_format($cash_today) ?></td>
+            </tr>
+            <tr class="huruf bold">
+                <td>Transfer</td>
+                <td>:</td>
+                <td class="right-align"></td>
+                <td class="right-align"><?= number_format($transfer_today) ?></td>
+            </tr>
+        </table>
+
         <div class="divider"></div>
 
-        <div class="section-title huruf">DINE IN</div>
+        <div class="section-title huruf">PENJUALAN OFFLINE</div>
+
         <table>
+            <tr>
+                <th align="left">Nama Menu</th>
+                <th></th>
+                <th class="right-align">Qty</th>
+                <th class="right-align">Total (Rp)</th>
+            </tr>
             <?php
             $total = 0;
             $jlh = 0;
             foreach ($dinein as $s) : ?>
+
                 <tr class="huruf">
-                    <td><?= $s->nm_servis ?></td >
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="huruf">
-                    <td>Jumlah</td>
+                    <td><?= $s->nm_servis ?></td>
                     <td>:</td>
                     <td class="right-align"><?= number_format($s->jumlah) ?></td>
-                </tr>
-                <tr class="huruf">
-                    <td>Total</td>
-                    <td>:</td>
                     <td class="right-align"><?= number_format($s->total) ?></td>
                 </tr>
+
             <?php
                 $total += $s->total;
                 $jlh += $s->jumlah;
             endforeach ?>
             <tr>
-                <td colspan="3" class="divider"></td>
+                <td colspan="4" class="divider"></td>
             </tr>
             <tr class="huruf bold">
-                <td>Jumlah Total</td>
+                <td>Jumlah Penjualan</td>
                 <td>:</td>
                 <td class="right-align"><?= number_format($jlh) ?></td>
-            </tr>
-            <tr class="huruf bold">
-                <td>Penjualan</td>
-                <td>:</td>
                 <td class="right-align"><?= number_format($total) ?></td>
+
             </tr>
+
         </table>
 
         <div class="divider"></div>
-        <div class="section-title huruf">ONLINE</div>
+        <div class="section-title huruf">PENJUALAN ONLINE</div>
         <table>
+            <tr>
+                <th align="left">Nama Menu</th>
+                <th></th>
+                <th class="right-align">Qty</th>
+                <th class="right-align">Total (Rp)</th>
+            </tr>
             <?php
             $total1 = 0;
             $jlh1 = 0;
             foreach ($gojek as $s) : ?>
                 <tr class="huruf">
                     <td><?= $s->nm_servis ?></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="huruf">
-                    <td>Jumlah</td>
                     <td>:</td>
                     <td class="right-align"><?= number_format($s->jumlah) ?></td>
-                </tr>
-                <tr class="huruf">
-                    <td>Total</td>
-                    <td>:</td>
                     <td class="right-align"><?= number_format($s->total) ?></td>
                 </tr>
             <?php
@@ -181,33 +261,27 @@
                 $jlh1 += $s->jumlah;
             endforeach ?>
             <tr>
-                <td colspan="3" class="divider"></td>
+                <td colspan="4" class="divider"></td>
             </tr>
             <tr class="huruf bold">
-                <td>Jumlah Total</td>
+                <td>Jumlah Penjualan</td>
                 <td>:</td>
                 <td class="right-align"><?= number_format($jlh1) ?></td>
-            </tr>
-            <tr class="huruf bold">
-                <td>Penjualan</td>
-                <td>:</td>
                 <td class="right-align"><?= number_format($total1) ?></td>
             </tr>
+
         </table>
 
-        <div class="double-divider"></div>
+        <!-- <div class="double-divider"></div>
         <table>
             <tr class="huruf bold">
-                <td>Total Semua Jumlah</td>
-                <td>:</td>
+                <td width="55%">Total Semua Penjualan</td>
+                <td width="10%">:</td>
                 <td class="right-align"><?= number_format($jlh + $jlh1) ?></td>
-            </tr>
-            <tr class="huruf bold">
-                <td>Total Semua Penjualan</td>
-                <td>:</td>
                 <td class="right-align"><?= number_format($total + $total1) ?></td>
             </tr>
-        </table>
+
+        </table> -->
 
         <div class="spacer"></div>
         <div class="footer huruf">================ AKHIR ================</div>

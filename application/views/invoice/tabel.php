@@ -58,7 +58,52 @@
 			</div>
 		</div>
 	</div>
+
+	<?php
+	$cash_today = 0;
+	$transfer_today = 0;
+
+	foreach ($invoice as $value) {
+		$cash_today += $value->cash - $value->kembali;
+		$transfer_today += $value->bca_debit;
+	}
+
+
+	?>
+
+
+
 	<div style="margin-top: 40px;"></div>
+
+	<div class="row">
+		<div class="col-3">
+			<div class="card">
+				<div class="card-body">
+					<h3>Grand Total</h3>
+					<h5>Rp <?= number_format(array_sum(array_column($invoice, 'total')), 0) ?> </h5>
+				</div>
+			</div>
+		</div>
+		<div class="col-3">
+			<div class="card">
+				<div class="card-body">
+					<h3>Cash - Kembalian</h3>
+					<h5>Rp <?= number_format($cash_today) ?> </h5>
+				</div>
+			</div>
+		</div>
+		<div class="col-3">
+			<div class="card">
+				<div class="card-body">
+					<h3>Transfer</h3>
+					<h5>Rp <?= number_format($transfer_today) ?> </h5>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
 	<div class="row">
 		<div class="col-md-12">
 			<?= $this->session->flashdata('message'); ?>
@@ -91,7 +136,7 @@
 									<th>AKSES 1</th>
 								</tr>
 							</thead>
-							<thead>
+							<!-- <thead>
 								<tr>
 									<th colspan="3" class="text-right">Total</th>
 									<th class="text-right"><?= number_format(array_sum(array_column($invoice, 'total')), 0) ?></th>
@@ -106,7 +151,7 @@
 									<th></th>
 									<th></th>
 								</tr>
-							</thead>
+							</thead> -->
 							<tbody>
 								<?php $i = 1; ?>
 								<?php foreach ($invoice as $key => $value) : ?>

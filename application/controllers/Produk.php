@@ -9,6 +9,7 @@ class Produk extends CI_Controller
         parent::__construct();
         date_default_timezone_set('Asia/Makassar');
         $this->load->model('M_invoice');
+        $this->load->model('M_salon');
     }
 
     public function loadTabel()
@@ -630,11 +631,14 @@ class Produk extends CI_Controller
         where a.void = 0 AND a.kategori = 'product' and a.tanggal between '$tgl1' and '$tgl2' and a.id_distribusi = '2'
         group by a.id_produk;")->result();
 
+        $invoice = $this->M_salon->daftar_invoice(" where tb_invoice.tgl_jam >= '$tgl1' AND tb_invoice.tgl_jam <= '$tgl2' AND status = 0");
+
         $data = [
             'dinein' => $dinein,
             'gojek' => $gojek,
             'tgl1' => $tgl1,
-            'tgl2' => $tgl2
+            'tgl2' => $tgl2,
+            'invoice' => $invoice
         ];
         $this->load->view('invoice/shift_out', $data);
     }
