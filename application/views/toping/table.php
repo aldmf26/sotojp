@@ -99,44 +99,13 @@
     </div>
 </div>
 
-<!-- ======================================================== conten ======================================================= -->
-<!-- <form action="<?= base_url('Match/kasbon2'); ?>" method="post">
-				<div class="modal fade" id="modal-view">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header" style="background:#FFA07A;">
-								<h4 class="modal-title">View Data</h4>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-							<div class="modal-body">
-								<div class="form-group">
-									<table>
-										<tr>
-											<td ><label for="">Tanggal</label></td>
-											<td>:</td>
-											<td> <input style="width: 350px;" class="form-control" type="input" value="<?= date("Y-m-d"); ?>" name="tanggal" id="picker3"></td>
-										</tr>
-									</table>
 
-									<input class="form-control" type="date" value="" id="tanggal3" name="tgl1" hidden>  
-									<input class="form-control" type="date" value="" id="tanggal4" name="tgl2" hidden> 
-								</div>
-								<div class="modal-footer justify-content-between">
-									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-									<button type="submit" class="btn" style="background:#FFA07A;">Lanjutkan</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</form> -->
-
-
-<?php foreach ($bahan as $key => $value) : ?>
+<?php foreach ($bahan as $key => $value) :
+    $hrga_ofline = $this->db->get_where('harga_toping', ['id_produk' => $value->id_produk, 'id_distibusi' => '1'])->row();
+    $hrga_online = $this->db->get_where('harga_toping', ['id_produk' => $value->id_produk, 'id_distibusi' => '2'])->row();
+?>
     <div id="myModal<?= $value->id_produk ?>" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
 
             <!-- Modal content-->
             <div class="modal-content">
@@ -177,7 +146,12 @@
                                             <?php endforeach; ?>
                                         </select></td>
                                     <td width="20%"><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->qty_toping ?>" type="number" name="qty_toping" required></td>
-                                    <td width="20%"><input style="border:none; border-bottom: solid;" class="form-control" value="<?= $value->harga ?>" type="number" name="harga"></td>
+                                    <td width="20%">
+                                        Offline
+                                        <input style="border:none; border-bottom: solid;" class="form-control" value="<?= $hrga_ofline->harga ?>" type="number" name="harga_offline">
+                                        Online
+                                        <input style="border:none; border-bottom: solid;" class="form-control" value="<?= $hrga_online->harga ?>" type="number" name="harga_online">
+                                    </td>
                                     <td>
                                         <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
                                     </td>
@@ -194,73 +168,6 @@
         </div>
     </div>
 <?php endforeach ?>
-
-<!-- <form action="<?= base_url('Match/summary_kasbon'); ?>" method="post">
-			<div class="modal fade" id="modal-summary">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header" style="background:#FFA07A;">
-							<h4 class="modal-title">Export Summary</h4>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div class="form-group">
-								<table>
-									<tr>
-										<td ><label for="">Tanggal</label></td>
-										<td>:</td>
-										<td> <input style="width: 350px;" class="form-control" type="input" value="<?= date("Y-m-d"); ?>" name="tanggal" id="pickerkas"></td>
-									</tr>
-								</table>
-
-								<input class="form-control" type="date" value="" id="tanggalkas1" name="tgl3" hidden>  
-								<input class="form-control" type="date" value="" id="tanggalkas2" name="tgl4" hidden> 
-							</div>
-							<div class="modal-footer justify-content-between">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="submit" class="btn" style="background:#FFA07A;">Lanjutkan</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form> -->
-
-<!-- <form action="<?= base_url('Match/drop_kasbon_skala'); ?>" method="post">
-			<div class="modal fade" id="modal-delete">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header bg-red">
-							<h4 class="modal-title">Delete Skala Besar</h4>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div class="form-group">
-								<table>
-									<tr>
-										<td ><label for="">Tanggal</label></td>
-										<td>:</td>
-										<td> <input style="width: 350px;" class="form-control" type="input" value="<?= date("Y-m-d"); ?>" name="tanggal" id="picker_drop"></td>
-									</tr>
-								</table>
-
-								<input class="form-control" type="date" value="" id="tanggal5" name="tgl5" hidden>  
-								<input class="form-control" type="date" value="" id="tanggal6" name="tgl6" hidden> 
-							</div>
-							<div class="modal-footer justify-content-between">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="submit" onclick="return confirm('Yakin Hapus?')" class="btn btn-danger">Lanjutkan</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form> -->
-<!-- ======================================================== conten ======================================================= -->
 
 <script>
     function autofill_anak() {

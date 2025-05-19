@@ -79,8 +79,40 @@ class Toping extends CI_Controller
         redirect("Toping");
     }
 
+    public function edit_toping()
+    {
+        $id_produk  = $this->input->post('id_produk');
+        $data_input = array(
+            'nm_produk'   => $this->input->post('nm_produk'),
+            'id_satuan'  => $this->input->post('id_satuan'),
+            'qty_toping'   => $this->input->post('qty_toping'),
+        );
+        $this->db->where('id_produk', $id_produk);
+        $this->db->update('tb_produk', $data_input);
+
+        $hrga_ofline = [
+            'harga' => $this->input->post('harga_offline')
+        ];
+        $this->db->where('id_produk', $id_produk);
+        $this->db->where('id_distibusi', '1');
+        $this->db->update('harga_toping', $hrga_ofline);
+
+        $hrga_online = [
+            'harga' => $this->input->post('harga_online')
+        ];
+        $this->db->where('id_produk', $id_produk);
+        $this->db->where('id_distibusi', '2');
+        $this->db->update('harga_toping', $hrga_online);
+
+        $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Data Berhasil Di Ubah !! <div class="ml-5 btn btn-sm"><i class="fas fa-cloud-download-alt fa-2x"></i></div></div>');
+        redirect("Toping");
+    }
+
     public function edit_bahan()
     {
+        $hrgaOffline = $this->input->post('harga_offline');
+        $hrgaOnline = $this->input->post('harga_online');
+
         $id_produk  = $this->input->post('id_produk');
         $data_input = array(
             'nm_produk'   => $this->input->post('nm_produk'),
@@ -91,6 +123,15 @@ class Toping extends CI_Controller
         );
         $where = array('id_produk' => $id_produk);
         $res  = $this->M_salon->UpdateData('tb_produk', $data_input, $where);
+
+        $this->db->where('id_produk', $id_produk);
+        $this->db->where('id_distibusi', '1');
+        $this->db->update('harga_toping', array('harga' => $hrgaOffline));
+
+        $this->db->where('id_produk', $id_produk);
+        $this->db->where('id_distibusi', '2');
+        $this->db->update('harga_toping', array('harga' => $hrgaOnline));
+
         $this->session->set_flashdata('message', '<div style="background-color: #FFA07A;" class="alert" role="alert">Data Berhasil Di Update !!  <div class="ml-5 btn btn-sm"><i class="fas fa-sync-alt fa-2x"></i></div></div>');
         redirect("Toping");
     }
