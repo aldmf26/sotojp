@@ -328,6 +328,7 @@ class Produk extends CI_Controller
                 'no_nota' => $no_nota,
                 'id_produk'   => $value['id_produk'],
                 'tanggal'   => $tanggal,
+                'jam' => date('H:i:s'),
                 'jumlah'        => $value['qty'],
                 'harga'  => $value['price'],
                 'total'      => $subharga,
@@ -357,6 +358,7 @@ class Produk extends CI_Controller
                     'no_nota' => $no_nota,
                     'id_produk'   => $t['id_produk'],
                     'tanggal'   => $tanggal,
+                    'jam' => date('H:i:s'),
                     'jumlah'        => $t['qty'],
                     'harga'  => $t['price'],
                     'total'      => $subharga,
@@ -411,6 +413,8 @@ class Produk extends CI_Controller
         $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">Proses pembelian berhasil!<div class="ml-5 btn btn-sm"></div></div>');
         redirect(base_url("produk/detail_invoice?invoice=$no_nota"), 'refresh');
     }
+
+
 
     public function detail_invoice()
     {
@@ -641,5 +645,40 @@ class Produk extends CI_Controller
             'invoice' => $invoice
         ];
         $this->load->view('invoice/shift_out', $data);
+    }
+
+    public function laporan_perjam()
+    {
+        $tgl1 = $this->input->get('tgl1');
+        $tgl2 = $this->input->get('tgl2');
+        $perJam = $this->db->query("
+            SELECT 
+                CASE 
+                    WHEN HOUR(jam) BETWEEN 8 AND 9 THEN '08:00 - 09:59'
+                    WHEN HOUR(jam) BETWEEN 10 AND 11 THEN '10:00 - 11:59'
+                    WHEN HOUR(jam) BETWEEN 12 AND 13 THEN '12:00 - 13:59'
+                    WHEN HOUR(jam) BETWEEN 14 AND 15 THEN '14:00 - 15:59'
+                    WHEN HOUR(jam) BETWEEN 16 AND 17 THEN '16:00 - 17:59'
+                    WHEN HOUR(jam) BETWEEN 18 AND 19 THEN '18:00 - 19:59'
+                    ELSE '20:00+' 
+                END AS rentang_jam,
+                b.nm_servis AS nama_menu,
+                SUM(a.jumlah) AS qty,
+                SUM(a.total) AS total_rp
+            FROM tb_pembelian AS a
+            LEFT JOIN tb_servis AS b ON b.id_servis = a.id_produk
+            WHERE a.kategori = 'product' 
+                AND a.void = 0
+                AND a.tanggal BETWEEN '$tgl1' AND '$tgl2'
+            GROUP BY rentang_jam, nama_menu
+            ORDER BY MIN(HOUR(jam)), nama_menu
+        ")->result();
+
+        $data = [
+            'perJam' => $perJam,
+            'tgl1' => $tgl1,
+            'tgl2' => $tgl2,
+        ];
+        $this->load->view('invoice/laporan_perjam', $data);
     }
 }

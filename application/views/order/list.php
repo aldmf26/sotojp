@@ -59,7 +59,7 @@
 							</thead>
 							<tbody>
 								<?php foreach ($list as $key => $value) : ?>
-									<?php if (!empty($value->nm_servis)) : ?>
+									<?php if (!empty($value->nm_servis) && $value->harga > 0) : ?>
 										<tr>
 											<td><?= $key + 1 ?></td>
 											<td><a href="<?= base_url(); ?>match/detail_invoice?invoice=<?= $value->no_nota; ?>"><?= $value->no_nota; ?></a></td>
