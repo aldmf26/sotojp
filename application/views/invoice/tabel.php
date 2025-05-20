@@ -77,27 +77,28 @@
 	<div style="margin-top: 40px;"></div>
 
 	<div class="row">
+
 		<div class="col-3">
 			<div class="card">
-				<div class="card-body">
-					<h3>Grand Total</h3>
-					<h5>Rp <?= number_format(array_sum(array_column($invoice, 'total')), 0) ?> </h5>
+				<div class="card-body bg-success">
+					<h5>Grand Total</h5>
+					<h5><b>Rp <?= number_format(array_sum(array_column($invoice, 'total')), 0) ?> </b></h5>
 				</div>
 			</div>
 		</div>
 		<div class="col-3">
 			<div class="card">
 				<div class="card-body">
-					<h3>Cash - Kembalian</h3>
-					<h5>Rp <?= number_format($cash_today) ?> </h5>
+					<h5>Cash - Kembalian</h5>
+					<h5><b>Rp <?= number_format($cash_today) ?> </b></h5>
 				</div>
 			</div>
 		</div>
 		<div class="col-3">
 			<div class="card">
 				<div class="card-body">
-					<h3>Transfer</h3>
-					<h5>Rp <?= number_format($transfer_today) ?> </h5>
+					<h5>Transfer</h5>
+					<h5><b>Rp <?= number_format($transfer_today) ?> </b></h5>
 				</div>
 			</div>
 		</div>

@@ -15,12 +15,14 @@
         <div class="row">
             <div class="col-6">
                 <h5 class="text-center">Laporan Penjualan Per Jam</h5>
-                <table class="table table-bordered table-striped">
+                <p class="date-range huruf"><?= date('d-M-y', strtotime($tgl1)) ?> ~ <?= date('d-M-y', strtotime($tgl2)) ?></p>
+
+                <table class="table table-bordered border-dark table-striped">
                     <thead class="bg-primary text-white">
                         <tr>
-                            <th>Jam</th>
+                            <th class="text-center">Jam</th>
                             <th>Nama Menu</th>
-                            <th>Qty Terjual</th>
+                            <th class="text-end">Qty Terjual</th>
                             <!-- <th>Harga</th> -->
                         </tr>
                     </thead>
@@ -32,9 +34,9 @@
                         foreach ($perJam as $row):
                         ?>
                             <tr>
-                                <td><?= ($last_jam != $row->rentang_jam) ? $row->rentang_jam : '' ?></td>
+                                <td align="center"><?= ($last_jam != $row->rentang_jam) ? $row->rentang_jam : '' ?></td>
                                 <td><?= $row->nama_menu ?></td>
-                                <td><?= $row->qty ?></td>
+                                <td align="right"><?= $row->qty ?></td>
                             </tr>
                         <?php
                             $last_jam = $row->rentang_jam;
@@ -45,7 +47,7 @@
                     <tfoot>
                         <tr>
                             <th colspan="2">Total</th>
-                            <th><?= $total_qty ?></th>
+                            <th class="text-end"><?= $total_qty ?></th>
                         </tr>
                     </tfoot>
                 </table>

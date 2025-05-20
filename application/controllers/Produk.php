@@ -671,7 +671,7 @@ class Produk extends CI_Controller
                 AND a.void = 0
                 AND a.tanggal BETWEEN '$tgl1' AND '$tgl2'
             GROUP BY rentang_jam, nama_menu
-            ORDER BY MIN(HOUR(jam)), nama_menu
+            ORDER BY MIN(HOUR(jam)), nama_menu DESC
         ")->result();
 
         $data = [
