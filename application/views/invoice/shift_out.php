@@ -107,6 +107,7 @@
 
 <body>
     <div class="invoice">
+        <a href="<?= base_url("Produk/shift_out_excel?tgl1=$tgl1&tgl2=$tgl2"); ?>" target="_blank">Export Excel</a>
         <div class="header huruf">================ MULAI ================</div>
         <p class="section-title huruf">Laporan Shift Out</p>
         <p class="date-range huruf"><?= date('d-M-y', strtotime($tgl1)) ?> ~ <?= date('d-M-y', strtotime($tgl2)) ?></p>

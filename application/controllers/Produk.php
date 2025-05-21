@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+require 'vendor/autoload.php'; // Include the PhpSpreadsheet library
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Produk extends CI_Controller
 {
 
@@ -646,6 +651,50 @@ class Produk extends CI_Controller
         ];
         $this->load->view('invoice/shift_out', $data);
     }
+
+
+    public function shift_out_excel()
+    {
+        $tgl1 = $this->input->get('tgl1');
+        $tgl2 = $this->input->get('tgl2');
+
+        $result = $this->db->query("SELECT 
+            b.nm_servis, 
+            a.tanggal, 
+            sum(a.jumlah) as jumlah 
+            FROM tb_pembelian as a 
+            left join tb_servis as b on b.id_servis = a.id_produk 
+            where a.void = 0 and a.tanggal between '$tgl1' and '$tgl2' and a.id_distribusi != '3' 
+            and (a.kategori = 'product' or (a.kategori = 'toping' and a.id_produk = 1))
+            group by a.id_produk, a.tanggal order by a.tanggal;")->result();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set header
+        $sheet->setCellValue('A1', 'Tanggal');
+        $sheet->setCellValue('B1', 'Nama Servis');
+        $sheet->setCellValue('C1', 'Jumlah');
+
+        // Insert data
+        $row = 2;
+        foreach ($result as $data) {
+            $sheet->setCellValue('A' . $row, $data->tanggal);
+            $sheet->setCellValue('B' . $row, $data->nm_servis ?? 'box takeaway');
+            $sheet->setCellValue('C' . $row, $data->jumlah);
+            $row++;
+        }
+
+        // Generate Excel file
+        $writer = new Xlsx($spreadsheet);
+        $filename = "Shift_Out_" . date('d_M_Y', strtotime($tgl1)) . "_to_" . date('d_M_Y', strtotime($tgl2)) . ".xlsx";
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        $writer->save('php://output');
+    }
+
+
 
     public function laporan_perjam()
     {
