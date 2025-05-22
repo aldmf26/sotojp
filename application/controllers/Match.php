@@ -7234,6 +7234,9 @@ public function void(){
     if ($no_nota) {
         $this->db->where('kode_stok_produk', $no_nota);
         $this->db->delete('tb_stok_produk');
+
+        $this->db->where('no_invoice', $no_nota);
+        $this->db->delete('tb_kd_invoice');
         
         $data_void = [
             'status' => '1',
