@@ -79,12 +79,12 @@
                                 <td><?= $d->sku ?></td>
                                 <td><?= $d->nm_produk ?></td>
                                 <td><?= $d->stok_program ?></td>
-                                <td><?= $d->stok_program ?></td>
+                                <td><?= $d->stok_aktual ?></td>
                                 <!-- <td><?= $selisih ?></td>
                                 <td><?= number_format($d->harga, 0) ?></td>
                                 <td><?= number_format($d->harga * $d->stok_program, 0) ?></td>
                                 <td><?= number_format($ttl_selisih, 0) ?></td> -->
-                                <td><?= $d->ket ?></td>
+                                <td><?= $d->catatan ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

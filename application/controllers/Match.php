@@ -717,12 +717,14 @@ public function print_opname(){
     $kode_opname = $this->input->get('kode_opname');
     $data = array(
         'opname' => $this->db->group_by('kode_stok_produk')->get_where('tb_stok_produk',['kode_stok_produk' => $kode_opname])->result()[0],
-        'detail_opname' => $this->db->query("SELECT *
-        FROM tb_stok_produk as a 
-        LEFT JOIN tb_produk ON a.id_produk = tb_produk.id_produk
-        LEFT JOIN tb_kategori ON tb_produk.id_kategori = tb_kategori.id_kategori
-        LEFT JOIN tb_satuan ON tb_produk.id_satuan = tb_satuan.id_satuan
-        WHERE a.kode_stok_produk = '$kode_opname';")->result(),
+        'detail_opname' => $this->db->query("SELECT a.id_stok_produk as id_opname, a.id_produk, a.stok_program, a.debit as stok_aktual, b.harga, b.sku, b.nm_produk, c.satuan, d.nm_kategori, a.ket as catatan, a.status
+            FROM tb_stok_produk as a 
+            left join tb_produk as b on b.id_produk = a.id_produk
+            left join tb_satuan as c on c.id_satuan = b.id_satuan
+            left join tb_kategori as d on d.id_kategori = b.id_kategori
+            where a.kode_stok_produk = '$kode_opname'
+            group by a.id_stok_produk;
+            ")->result(),
         'kode_opname' => $kode_opname
     );
     $this->load->view('produk/print_opname', $data);
